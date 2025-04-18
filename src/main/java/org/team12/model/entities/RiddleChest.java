@@ -17,5 +17,5 @@
 
 package org.team12.model.entities;
 
-public class RiddleChest {
+public class RiddleChest extends Item {
 }
