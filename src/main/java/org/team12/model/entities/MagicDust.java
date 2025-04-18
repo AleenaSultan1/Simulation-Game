@@ -17,5 +17,5 @@
 
 package org.team12.model.entities;
 
-public class MagicDust {
+public class MagicDust extends Item{
 }

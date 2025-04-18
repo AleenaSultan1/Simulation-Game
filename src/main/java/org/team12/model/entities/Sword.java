@@ -17,5 +17,5 @@
 
 package org.team12.model.entities;
 
-public class Sword {
+public class Sword extends Item {
 }
