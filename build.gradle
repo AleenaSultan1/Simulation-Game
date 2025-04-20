@@ -66,3 +66,8 @@ def createJavaFXTask(String taskName, String description, String mainClassName) 
         ]
     }
 }
+
+// Create a task for the HelloFX test application
+createJavaFXTask('runDungeonGameApp',
+        'Runs the CSCI 205 Final Project: Dungeon Game application',
+        'org.team12.DungeonGameApp')
