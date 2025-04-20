@@ -18,4 +18,6 @@
 package org.team12.model.entities;
 
 public abstract class Entity {
+
+
 }
