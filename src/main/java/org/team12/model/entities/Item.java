@@ -17,5 +17,10 @@
 
 package org.team12.model.entities;
 
+import org.team12.states.ItemStatus;
+
 public abstract class Item {
+    private ItemStatus status;
+
+
 }
