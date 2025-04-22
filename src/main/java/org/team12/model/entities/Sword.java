@@ -17,5 +17,33 @@
 
 package org.team12.model.entities;
 
+import org.team12.states.ItemState;
+
 public class Sword extends Item {
+
+    private int strength;
+
+    public Sword (ItemState status, double interactDistance) {
+        super(status, interactDistance);
+        this.strength = 5;
+
+    }
+
+    public void attack(Player player) {
+        updateStatus();
+        calculatePlayerDistance(player);
+        if (enableAttack()) {
+            inflictDamage();
+        }
+    }
+
+    public void inflictDamage() {
+        EvilGoon.reduceHP();
+    }
+
+
+
+
 }
+
+

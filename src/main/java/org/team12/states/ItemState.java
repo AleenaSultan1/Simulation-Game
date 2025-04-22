@@ -17,5 +17,11 @@
 
 package org.team12.states;
 
-public class ItemState {
+import org.team12.model.entities.Item;
+
+public enum ItemState {
+    INTERACTABLE,
+    UNINTERACTABLE;
 }
+
+
