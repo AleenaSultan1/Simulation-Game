@@ -18,6 +18,6 @@
 package org.team12.model.entities;
 
 public abstract class Entity {
-
-
+    public int x, y;
+    public int speed;
 }

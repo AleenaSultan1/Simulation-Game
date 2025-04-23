@@ -18,6 +18,7 @@
 package org.team12.view;
 
 import org.team12.controller.InputController;
+import org.team12.model.entities.Player;
 
 import javax.swing.JPanel;
 import java.awt.*;
@@ -34,7 +35,12 @@ public class GameUI extends JPanel implements Runnable{
     InputController inputController = new InputController();
     Thread gameThread;
 
+    // FPS
     int FPS = 60;
+
+    //InputController inputController = new InputController();
+    Thread getGameThread;
+    Player player = new Player(this, inputController);
 
     // get player's default position
     int playerX = 100;
@@ -60,6 +66,8 @@ public class GameUI extends JPanel implements Runnable{
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
+        long timer = 0;
+        int drawCount = 0;
 
         // implement GameLoop
         while (gameThread != null) {
@@ -67,12 +75,20 @@ public class GameUI extends JPanel implements Runnable{
             currentTime = System.nanoTime();
 
             delta += (currentTime - lastTime) / drawInterval;
+            timer += (currentTime - lastTime);
             lastTime = currentTime;
 
             if(delta>=1){
                 update();
                 repaint();
                 delta--;
+                drawCount++;
+            }
+
+            if (timer >= 1000000000) {
+                System.out.println("FPS: " + drawCount);
+                drawCount = 0;
+                timer = 0;
             }
         }
     }
@@ -88,6 +104,15 @@ public class GameUI extends JPanel implements Runnable{
             playerX += playerSpeed;
         }
 
+        if (inputController.attackPressed) {
+            System.out.println("Player attack!");
+            // TODO: player.attackEnemy()
+        }
+
+        if (inputController.interactPressed) {
+            System.out.println("Player interact!");
+            // TODO: player.interactWithItem()
+        }
     }
 
     public void paintComponent(Graphics g){

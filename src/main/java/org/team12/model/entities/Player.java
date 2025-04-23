@@ -17,5 +17,23 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.InputController;
+import org.team12.view.GameUI;
+
+import javax.swing.plaf.basic.BasicComboBoxUI.KeyHandler;
+
 public class Player extends Entity {
+    GameUI gp;
+    InputController inputController;
+
+    public Player(GameUI gp, InputController inputController) {
+        this.gp = gp;
+        this.inputController = inputController;
+    }
+    public void setDefaultValues() {
+        x = 100;
+        y = 100;
+        speed = 4;
+    }
+
 }
