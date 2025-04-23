@@ -18,6 +18,43 @@
 package org.team12.model.entities;
 
 public abstract class Entity {
+    protected int HP;
+    protected boolean state; //true=alive
+    protected int xCoordinate;
+    protected int yCoordinate;
 
+    public Entity(int x, int y, int hp) {
+        this.xCoordinate = x;
+        this.yCoordinate = y;
+        this.HP = hp;
+        this.state = true; // alive by default
+    }
+
+    public abstract boolean attack();
+    public abstract boolean move();
+    public abstract boolean spawn();
+
+    public boolean survivalStatus() {
+        return this.state && this.HP > 0;
+    }
+
+    public int getXCoordinate() {
+        return xCoordinate;
+    }
+
+    public int getYCoordinate() {
+        return yCoordinate;
+    }
+
+    public int getHP() {
+        return HP;
+    }
+
+    public void takeDamage(int damage) {
+        this.HP -= damage;
+        if (this.HP <= 0) {
+            this.state = false;
+        }
+    }
 
 }
