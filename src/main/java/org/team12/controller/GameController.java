@@ -71,10 +71,12 @@ public class GameController {
             map.placeEnemy(goons[i], x, y);
         }
 
+        // Place Lily
+        map.placeEnemy(lily, 50, 10);
+
         // Place items
         map.placeItem(magicDust, 10, 10);
         map.placeItem(riddleChest, 15, 15);
-
     }
 
     public void startGame() {

@@ -52,6 +52,7 @@ public class Map {
             }
         }
 
+        //
         for (int y = 1; y < height; y++) {
             // Level 1/2
             grid[width - 3][y].setObstacle(true);
