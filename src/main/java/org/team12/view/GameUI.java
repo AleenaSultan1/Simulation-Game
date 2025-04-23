@@ -23,37 +23,44 @@ import javax.swing.JPanel;
 import java.awt.*;
 
 public class GameUI extends JPanel implements Runnable{
-    final int originalTileSize = 16;
-    final int scale = 3;
-    final int tileSize = originalTileSize * scale;
-    final int maxScreenCol = 16;
-    final int maxScreenRow = 12;
-    final int screenWidth = tileSize * maxScreenCol;
-    final int screenHeight = tileSize * maxScreenRow;
+    final int originalTileSize = 16; // 16 pixels wide
+    final int scale = 3; // scale everything up by a factor or 3
+    final int tileSize = originalTileSize * scale; // Standard tile size
+    final int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
+    final int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
+    final int screenWidth = tileSize * maxScreenCol; // Determines the default screen width of the UI
+    final int screenHeight = tileSize * maxScreenRow; // Determines the default screen height of the UI
 
-    InputController inputController = new InputController();
-    Thread gameThread;
+    InputController inputController = new InputController(); // Constructs and handles user movement
+    Thread gameThread; // Thread to start the game loop of 60 frames per second
+    int FPS = 60; // Used in the main game loop to run the game at 60 frames per second
 
-    int FPS = 60;
-
-    // get player's default position
+    // Set player's default position. Normally the player spawns in the top left at (0, 0). Moves the player more towards the center of the screen
     int playerX = 100;
     int playerY = 100;
-    int playerSpeed = 4; // moves 4 pixels
+    int playerSpeed = 4; // moves 4 pixels per frame
 
+    // Constructor for a game UI
     public GameUI(){
+        // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        // Sets the background of the map: will need to load/generate a map
         this.setBackground(Color.black);
+        // Double buffer for better efficiency
         this.setDoubleBuffered(true);
+        // Creates an object to register user inputs
         this.addKeyListener(inputController);
+        // Makes the GameUI interactable with the keyboard
         this.setFocusable(true);
     }
 
+    // Starts a gameThread which is used to run the game loop
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    // Runs the actual GameUI/Game
     @Override
     public void run() {
         double drawInterval = (double) 1000000000 / FPS; // 0.01666 seconds
@@ -70,13 +77,16 @@ public class GameUI extends JPanel implements Runnable{
             lastTime = currentTime;
 
             if(delta>=1){
+                // update player position, will also be used to update enemy position and status of items
                 update();
+                // Makes a new frame for the Game UI with the updated changes
                 repaint();
                 delta--;
             }
         }
     }
 
+    // At the moment: moves the player according to which key is pressed
     public void update(){
         if(inputController.upPressed){
             playerY -= playerSpeed;
@@ -90,6 +100,7 @@ public class GameUI extends JPanel implements Runnable{
 
     }
 
+    // Paints the player as a white rectangle
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
