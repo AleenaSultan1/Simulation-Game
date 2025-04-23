@@ -97,7 +97,7 @@ public class GameController {
     }
 
     public boolean validateLevel2() {
-        if ()
+        //if ()
     }
 
 }
