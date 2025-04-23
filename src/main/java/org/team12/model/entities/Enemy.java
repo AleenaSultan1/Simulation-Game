@@ -19,17 +19,29 @@ package org.team12.model.entities;
 
 import org.team12.states.EnemyState;
 import org.team12.states.EnemyStatus;
+import org.team12.view.GameUI;
 
 public class Enemy extends Entity {
     private EnemyStatus enemyState;
     private int hostilityArea; // the region where it can detect the player (might as well implement collision check)
 
-    public Enemy(int x, int y, int hp, int hostilityArea) {
+    public Enemy(int x, int y, int hp, int hostilityArea, GameUI gameUI) {
         super(x, y, hp);
         this.hostilityArea = hostilityArea;
         this.enemyState = EnemyStatus.PEACEFUL;
+        getImage();
     }
 
+    public void getImage() {
+        up1 = setup("/enemy/green_slime_original");
+        up2 = setup("/enemy/green_slime_with_legs");
+        down1 = setup("/enemy/green_slime_original");
+        down2 = setup("/enemy/green_slime_with_legs");
+        left1 = setup("/enemy/green_slime_original");
+        left2 = setup("/enemy/green_slime_with_legs");
+        right1 = setup("/enemy/green_slime_original");
+        right2 = setup("/enemy/green_slime_with_legs");
+    }
     @Override
     public boolean attack() {
         if (!survivalStatus()) {

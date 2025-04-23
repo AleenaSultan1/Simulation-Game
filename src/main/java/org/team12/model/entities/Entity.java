@@ -17,11 +17,16 @@
 
 package org.team12.model.entities;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
 public abstract class Entity {
     protected int HP;
     protected boolean state; //true=alive
     protected int xCoordinate;
     protected int yCoordinate;
+    public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
     public Entity(int x, int y, int hp) {
         this.xCoordinate = x;
@@ -57,4 +62,15 @@ public abstract class Entity {
         }
     }
 
+    public BufferedImage setup(String imagePath) {
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.err.println("Image not found: " + imagePath);
+        }
+        return image;
+    }
 }
