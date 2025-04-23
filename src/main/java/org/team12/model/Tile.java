@@ -24,14 +24,14 @@ public class Tile {
     private int y;
     private Item item;
     private Enemy enemy;
-    private boolean hasObstacle;
+    private boolean isObstacle;
 
     public Tile(int x, int y) {
         this.x = x;
         this.y = y;
         this.item = null;
         this.enemy = null;
-        this.hasObstacle = false;
+        this.isObstacle = false;
     }
 
     public Item getItem() {
@@ -51,10 +51,14 @@ public class Tile {
     }
 
     public boolean hasObstacle() {
-        return hasObstacle;
+        return isObstacle;
     }
 
-    public void setObstacle(boolean hasObstacle) {
-        this.hasObstacle = hasObstacle;
+    public void setObstacle(boolean isObstacle) {
+        this.isObstacle = isObstacle;
+    }
+
+    public boolean isOccupied() {
+        return (item != null) | (enemy != null) | (isObstacle);
     }
 }

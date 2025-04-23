@@ -17,33 +17,64 @@
 
 package org.team12.controller;
 
+import javafx.util.Pair;
 import org.team12.model.*;
 import org.team12.model.entities.*;
+
+import java.util.Random;
 
 
 public class GameController {
     private Map map;
 
     private Player player;
-    private Enemy goon;
     private LilyFinalBoss lily;
     private Sword sword;
     private MagicDust magicDust;
     private RiddleChest riddleChest;
-
     private StateManager stateManager;
 
+    private int numGoons = 5;
+    private int lvlHeight = 20;
+
+    private Enemy[] goons = new Enemy[numGoons];
+
+    private Pair<Integer, Integer> lvlOneDim = new Pair<>(lvlHeight, 0);
+    private Pair<Integer, Integer> lvlTwoDim = new Pair<>(lvlHeight*2 + 1, lvlHeight + 1);
+    private Pair<Integer, Integer> lvlThreeDim = new Pair<>(lvlHeight*3 + 2, lvlHeight*2 + 2);
+
+
     public GameController() {
-        map = new Map();
-        player = new Player();
         lily = new LilyFinalBoss();
         sword = new Sword();
         magicDust = new MagicDust();
         riddleChest = new RiddleChest();
-        stateManager = new StateManager();}
+        stateManager = new StateManager();
+    }
 
     public void initializeGame() {
-        map.generateMap();
+        player = new Player();
+
+        // Make map with hardcoded dimensions
+        map = new Map(lvlHeight + 4, lvlHeight + 2);
+
+        // Generate 5 random Goons in Lvl2
+        for (int i = 0; i < numGoons; i++) {
+            goons[i] = new Enemy();
+
+            int possibleX = lvlTwoDim.getKey() - lvlTwoDim.getValue();
+            int possibleY = lvlHeight;
+
+            Random rand = new Random();
+            int x = rand.nextInt(lvlHeight) + lvlTwoDim.getValue();
+            int y = rand.nextInt(lvlHeight) + 1;
+            map.placeEnemy(goons[i], x, y);
+        }
+
+        // Place items
+        map.placeItem(magicDust, 10, 10);
+        map.placeItem(riddleChest, 15, 15);
+
     }
 
     public void startGame() {

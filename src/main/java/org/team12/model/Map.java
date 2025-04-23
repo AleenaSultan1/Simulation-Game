@@ -25,8 +25,8 @@ import java.util.List;
 public class Map {
 
     private Tile[][] grid;
-    private List<Item> itemsOnMap;
-    private List<Enemy> enemiesOnMap;
+    public List<Item> itemsOnMap;
+    public List<Enemy> enemiesOnMap;
     private int width;
     private int height;
 
@@ -44,7 +44,20 @@ public class Map {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 grid[x][y] = new Tile(x, y);
+
+                // Build outline wall
+                if (x == 0 | y == 0 | x == width - 1 | y == height - 1) {
+                    grid[x][y].setObstacle(true);
+                }
             }
+        }
+
+        for (int y = 1; y < height; y++) {
+            // Level 1/2
+            grid[width - 3][y].setObstacle(true);
+
+            // Level 2/3
+            grid[width - 2][y].setObstacle(true);
         }
     }
 
@@ -57,6 +70,7 @@ public class Map {
         grid[x][y].setEnemy(enemy);
         enemiesOnMap.add(enemy);
     }
+
 
     public Item pickUpItem(int x, int y) {
         Item item = grid[x][y].getItem();
@@ -81,7 +95,7 @@ public class Map {
     }
 
     public boolean isOccupied(int x, int y) {
-        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();
+        return grid[x][y].isOccupied();
     }
 }
 

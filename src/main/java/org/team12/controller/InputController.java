@@ -23,6 +23,7 @@ import java.awt.event.KeyListener;
 public class InputController implements KeyListener {
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
+
     @Override
     public void keyTyped(KeyEvent e) {
     }
