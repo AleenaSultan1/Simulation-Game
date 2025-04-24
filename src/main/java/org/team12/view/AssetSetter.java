@@ -28,11 +28,11 @@ public class AssetSetter {
 
     public void setEnemy() {
         gameUI.enemy[0] = new Enemy(gameUI);
-        gameUI.enemy[0].worldX = gameUI.tileSize*23;
-        gameUI.enemy[0].worldY = gameUI.tileSize*36;
+        gameUI.enemy[0].worldX = gameUI.tileSize*9;
+        gameUI.enemy[0].worldY = gameUI.tileSize*7;
 
         gameUI.enemy[1] = new Enemy(gameUI);
-        gameUI.enemy[1].worldX = gameUI.tileSize*23;
-        gameUI.enemy[1].worldY = gameUI.tileSize*37;
+        gameUI.enemy[1].worldX = gameUI.tileSize*7;
+        gameUI.enemy[1].worldY = gameUI.tileSize*5;
     }
 }

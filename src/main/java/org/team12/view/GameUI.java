@@ -156,6 +156,13 @@ public class GameUI extends JPanel implements Runnable{
         // draw the map
         map.draw(g2);
 
+        // draw enemies
+        for (int i = 0; i < enemy.length; i++) {
+            if (enemy[i] != null) {
+                enemy[i].draw(g2);
+            }
+        }
+
         // draw the player
         player.draw(g2);
 

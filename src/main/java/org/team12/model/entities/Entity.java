@@ -103,55 +103,47 @@ public abstract class Entity {
         int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
         int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
 
-        //if (worldX + gameUI.titleSize > gameUI.player.worldX - gameUI.player.screenX &&
-        //worldX - gameUI.titleSize < gameUI.player.worldX + gameUI.player.screenX &&
-        //worldX + gameUI.titleSize > gameUI.player.worldX - gameUI.player.screenX &&
-        //worldX - gameUI.titleSize < gameUI.player.worldX + gameUI.player.screenX &&) {
+        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+            worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
+            worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+            worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
 
-        switch (direction) {
-            case "up":
-                if (spriteNum == 1) {
-                    image = up1;
-                }
-                if (spriteNum == 2) {
-                    image = up2;
-                }
-            case "down":
-                if (spriteNum == 1) {
-                    image = down1;
-                }
-                if (spriteNum == 2) {
-                    image = down2;
-                }
-            case "left":
-                if (spriteNum == 1) {
-                    image = left1;
-                }
-                if (spriteNum == 2) {
-                    image = left2;
-                }
-            case "right":
-                if (spriteNum == 1) {
-                    image = right1;
-                }
-                if (spriteNum == 2) {
-                    image = right2;
-                }
-                break;
+            switch (direction) {
+                case "up":
+                    if (spriteNum == 1) {
+                        image = up1;
+                    }
+                    if (spriteNum == 2) {
+                        image = up2;
+                    }
+                case "down":
+                    if (spriteNum == 1) {
+                        image = down1;
+                    }
+                    if (spriteNum == 2) {
+                        image = down2;
+                    }
+                case "left":
+                    if (spriteNum == 1) {
+                        image = left1;
+                    }
+                    if (spriteNum == 2) {
+                        image = left2;
+                    }
+                case "right":
+                    if (spriteNum == 1) {
+                        image = right1;
+                    }
+                    if (spriteNum == 2) {
+                        image = right2;
+                    }
+                    break;
+            }
+
+            g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
         }
-
-        //}    //g2.drawImage(image, screenX, screenY, gameUI.titleSize, gameUI.titleSize, null);
     }
 
-
-    //public BufferedImage setUp(String imagePath) {
-    //Item item = new Item() {
-    //@Override
-    //public int hashCode() {
-    //return super.hashCode();
-    //}
-    //}
-    //}
     public BufferedImage setup(String imagePath) {
         BufferedImage image = null;
         try {
