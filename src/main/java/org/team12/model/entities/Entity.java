@@ -17,11 +17,14 @@
 
 package org.team12.model.entities;
 
+import org.team12.states.EnemyStatus;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public abstract class Entity {
+    protected EnemyStatus enemyStatus;
     protected int HP;
     protected boolean state; //true=alive
     protected int xCoordinate;
@@ -29,6 +32,7 @@ public abstract class Entity {
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
     public Entity(int x, int y, int hp) {
+        this.enemyStatus = EnemyStatus.PEACEFUL;
         this.xCoordinate = x;
         this.yCoordinate = y;
         this.HP = hp;
