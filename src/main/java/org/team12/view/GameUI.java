@@ -30,6 +30,7 @@ public class GameUI extends JPanel implements Runnable{
     int originalTileSize = 16; // 16 x 16 pixel tile
     public int scale = 3; // scale everything up by a factor or 3
     public int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
+
     public int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
     public int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
     public int screenWidth = tileSize * maxScreenCol; // 786 pixels
@@ -39,17 +40,18 @@ public class GameUI extends JPanel implements Runnable{
     Thread gameThread; // Thread to start the game loop of 60 frames per second
 
     // Construct a player object
-    Player player = new Player(this, inputController);
+    public Player player = new Player(this, inputController);
 
     //Construct a map object
     Map map = new Map(this);
 
     int FPS = 60; // Used in the main game loop to run the game at 60 frames per second
 
-    // Set player's default position. Normally the player spawns in the top left at (0, 0). Moves the player more towards the center of the screen
-    int playerX = 100;
-    int playerY = 100;
-    int playerSpeed = 4; // moves 4 pixels per frame
+    // WORLD SETTINGS: Will change to specific map size
+    public final int maxWorldCol = 16;
+    public final int maxWorldRow = 12;
+    public final int worldWidth = tileSize * maxWorldCol;
+    public final int worldHeight = tileSize * maxWorldRow;
 
     // Constructor for a game UI
     public GameUI(){
@@ -59,10 +61,12 @@ public class GameUI extends JPanel implements Runnable{
         this.setBackground(Color.black);
         // Double buffer for better efficiency
         this.setDoubleBuffered(true);
+        // Makes the GameUI interactable with the keyboard
+        this.requestFocusInWindow(); // focuses everything in the window
+        this.setFocusable(true);
         // Creates an object to register user inputs
         this.addKeyListener(inputController);
-        // Makes the GameUI interactable with the keyboard
-        this.setFocusable(true);
+
     }
 
     // Starts a gameThread which is used to run the game loop

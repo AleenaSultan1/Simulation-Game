@@ -30,19 +30,26 @@ import java.util.Objects;
 public class Player extends Entity {
     GameUI gameUI;
     InputController inputController;
+    public final int screenX;
+    public final int screenY;
 
     public Player(GameUI gameUI, InputController inputController) {
         this.gameUI = gameUI;
         this.inputController = inputController;
+        // sets the player's position to the halfway point of the screen
+        // offset it to account for positioning error
+        screenX=gameUI.screenWidth/2 - (gameUI.tileSize/2);
+        screenY=gameUI.screenHeight/2 -(gameUI.tileSize/2);
         this.setDefaultValues();
         this.getPlayerImage();
 
     }
 
     public void setDefaultValues(){
-        // Set player's default position. Normally the player spawns in the top left at (0, 0). Moves the player more towards the center of the screen
-        x = 100;
-        y = 100;
+        // Set player's default position. Normally the player spawns in the top left at (0, 0).
+        // Moves the player more towards the center of the screen
+        worldX = gameUI.tileSize * 8; //sets the world spawn x coord
+        worldY = gameUI.tileSize * 6; // sets the world spawn y coord
         speed = 4; // moves 4 pixels per frame
         direction = "down";
     }
@@ -52,16 +59,16 @@ public class Player extends Entity {
                 inputController.leftPressed || inputController.rightPressed) {
             if(inputController.upPressed){
                 direction = "up";
-                y -= speed;
+                worldY-= speed;
             } else if (inputController.downPressed){
                 direction = "down";
-                y += speed;
+                worldY += speed;
             } else if (inputController.leftPressed){
                 direction = "left";
-                x -= speed;
+                worldX -= speed;
             } else if (inputController.rightPressed){
                 direction = "right";
-                x += speed;
+                worldX += speed;
             }
 
             // Used for player walking animation
@@ -92,16 +99,13 @@ public class Player extends Entity {
             left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_1.png"))); // This one works
             left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_2.png")));
 
-            // Debug check
-            if (up1 == null) {
-                System.err.println("Failed to load player sprites!");
-            }
         } catch(IOException e){
             e.printStackTrace();
         }
     }
 
     public void draw(Graphics2D g2) {
+        // makes the player a basic square the size of a normal tile
 //        g2.setColor(Color.white);
 //        g2.fillRect(x, y, gameUI.tileSize, gameUI.tileSize);
 
@@ -142,6 +146,6 @@ public class Player extends Entity {
                 }
                 break;
         }
-        g2.drawImage(image, x, y, gameUI.tileSize, gameUI.tileSize, null);
+        g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
     }
 }
