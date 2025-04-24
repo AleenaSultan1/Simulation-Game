@@ -29,8 +29,7 @@ public class RiddleChest extends Item {
     private int currentRiddleIndex = 0;
     private Scanner scanner = new Scanner(System.in);
 
-    public RiddleChest(ItemState status, double interactDistance) {
-        super(status, interactDistance);
+    public RiddleChest() {
         initializeRiddles();
     }
 
@@ -74,9 +73,7 @@ public class RiddleChest extends Item {
     }
 
     public void openMagicChest() {
-        System.out.println("\nThe magic chest creaks open...");
-        updateStatus(); // Inherited from Item class to change state to INTERACTABLE
-        System.out.println("The chest is now interactable!");
+        super.status = ItemState.UNINTERACTABLE;// Inherited from Item class to change state to INTERACTABLE
     }
 
     // Inner class to hold riddle questions and answers

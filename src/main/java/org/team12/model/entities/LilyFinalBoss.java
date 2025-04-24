@@ -18,4 +18,5 @@
 package org.team12.model.entities;
 
 public class LilyFinalBoss extends Entity {
+
 }
