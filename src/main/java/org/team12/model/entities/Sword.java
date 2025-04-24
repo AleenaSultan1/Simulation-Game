@@ -21,12 +21,10 @@ import org.team12.states.ItemState;
 
 public class Sword extends Item {
 
-    private int strength;
+    public int strength;
 
     public Sword () {
         this.strength = 5;
-        super.pickUp();
-
     }
 
 }

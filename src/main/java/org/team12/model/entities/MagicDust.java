@@ -20,17 +20,12 @@ package org.team12.model.entities;
 import org.team12.states.ItemState;
 
 public class MagicDust extends Item {
-    private LilyFinalBoss boss;
+
     public MagicDust() {
-        this.boss = new LilyFinalBoss();
     }
 
-    public boolean getCured() {
-        if (super.isCloseEnough()) {
-            boss.getCured();
-            return true;
-        }
-        return false;
+    public void getCured(LilyFinalBoss lilyFinalBoss) {
+            lilyFinalBoss.getCured();
     }
-    
+
 }

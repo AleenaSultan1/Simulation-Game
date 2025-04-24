@@ -27,22 +27,14 @@ public abstract class Item {
 
     protected Item() {
         this.status = ItemState.INTERACTABLE;
-        this.interactDistance = interactDistance;
-        this.playerDistance = Double.MAX_VALUE; // Initialize to large value
-    }
-
-    public boolean isCloseEnough() {
-        //TO DO
-        return playerDistance > interactDistance;
     }
 
     public void pickUp() {
-        if (isCloseEnough()) {
-            status = ItemState.UNINTERACTABLE;
+        status = ItemState.UNINTERACTABLE;
         }
-    }
 
     public ItemState getStatus() {
         return status;
     }
+
 }
