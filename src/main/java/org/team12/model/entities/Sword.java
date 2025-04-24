@@ -23,26 +23,11 @@ public class Sword extends Item {
 
     private int strength;
 
-    public Sword (ItemState status, double interactDistance) {
-        super(status, interactDistance);
+    public Sword () {
         this.strength = 5;
+        super.pickUp();
 
     }
-
-    public void attack(Player player) {
-        updateStatus();
-        calculatePlayerDistance(player);
-        if (enableAttack()) {
-            inflictDamage();
-        }
-    }
-
-    public void inflictDamage() {
-        EvilGoon.reduceHP();
-    }
-
-
-
 
 }
 
