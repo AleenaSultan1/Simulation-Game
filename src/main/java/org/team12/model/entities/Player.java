@@ -17,5 +17,5 @@
 
 package org.team12.model.entities;
 
-public class Player extends Entity {
+public class Player {
 }

@@ -27,8 +27,6 @@ public class Tile {
     private boolean isObstacle;
 
     public Tile(int x, int y) {
-        this.x = x;
-        this.y = y;
         this.item = null;
         this.enemy = null;
         this.isObstacle = false;

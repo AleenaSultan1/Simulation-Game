@@ -84,8 +84,8 @@ public class Map {
 
     public boolean movePlayer(Player player, int newX, int newY) {
         if (isInsideBounds(newX, newY)) {
-            player.setXCoordinate(newX);
-            player.setYCoordinate(newY);
+//            player.setXCoordinate(newX);
+//            player.setYCoordinate(newY);
             return true;
         }
         return false;

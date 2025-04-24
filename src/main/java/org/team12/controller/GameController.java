@@ -45,7 +45,7 @@ public class GameController {
 
 
     public GameController() {
-        lily = new LilyFinalBoss();
+        lily = new LilyFinalBoss(50, 10, 100, 20);
         sword = new Sword();
         magicDust = new MagicDust();
         riddleChest = new RiddleChest();
@@ -60,7 +60,7 @@ public class GameController {
 
         // Generate 5 random Goons in Lvl2
         for (int i = 0; i < numGoons; i++) {
-            goons[i] = new Enemy();
+            goons[i] = new Enemy(0, 0, 100, 20);
 
             int possibleX = lvlTwoDim.getKey() - lvlTwoDim.getValue();
             int possibleY = lvlHeight;
@@ -79,9 +79,6 @@ public class GameController {
         map.placeItem(riddleChest, 15, 15);
     }
 
-    public void startGame() {
-        map.placeObject(player);
-    }
 
     public void proceedNextLevel() {
 
@@ -99,7 +96,9 @@ public class GameController {
     }
 
     public boolean validateLevel2() {
-        if ()
+        for (Enemy goon : goons) {
+            if (goon.)
+        }
     }
 
 }

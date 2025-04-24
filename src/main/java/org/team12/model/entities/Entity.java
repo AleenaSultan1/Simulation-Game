@@ -39,10 +39,6 @@ public abstract class Entity {
     public abstract boolean move();
     public abstract boolean spawn();
 
-    public boolean survivalStatus() {
-        return this.state && this.HP > 0;
-    }
-
     public int getXCoordinate() {
         return xCoordinate;
     }

@@ -25,7 +25,7 @@ public class Enemy extends Entity {
     private EnemyStatus enemyState;
     private int hostilityArea; // the region where it can detect the player (might as well implement collision check)
 
-    public Enemy(int x, int y, int hp, int hostilityArea, GameUI gameUI) {
+    public Enemy(int x, int y, int hp, int hostilityArea) {
         super(x, y, hp);
         this.hostilityArea = hostilityArea;
         this.enemyState = EnemyStatus.PEACEFUL;
@@ -44,7 +44,7 @@ public class Enemy extends Entity {
     }
     @Override
     public boolean attack() {
-        if (!survivalStatus()) {
+        if (enemyState == EnemyStatus.DEAD) {
             return false;
         }
         System.out.println("Enemy attacked");
@@ -53,7 +53,7 @@ public class Enemy extends Entity {
 
     @Override
     public boolean move() {
-        if (!survivalStatus()) {
+        if (enemyState == EnemyStatus.DEAD) {
             return false;
         }
         System.out.println("Enemy moved");
@@ -76,13 +76,5 @@ public class Enemy extends Entity {
 
     public void setEnemyState (EnemyStatus newState) {
         this.enemyState = newState;
-    }
-
-    public int getHostilityArea() {
-        return hostilityArea;
-    }
-
-    public void setHostilityArea(int hostilityArea) {
-        this.hostilityArea = hostilityArea;
     }
 }

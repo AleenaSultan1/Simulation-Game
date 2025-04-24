@@ -17,5 +17,10 @@
 
 package org.team12.model.entities;
 
+import org.team12.view.GameUI;
+
 public class LilyFinalBoss extends Enemy {
+    public LilyFinalBoss(int x, int y, int hp, int hostilityArea) {
+        super(x, y, hp, hostilityArea);
+    }
 }
