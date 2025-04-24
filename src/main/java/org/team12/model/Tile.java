@@ -19,21 +19,29 @@ package org.team12.model;
 
 import org.team12.model.entities.*;
 
+import java.awt.image.BufferedImage;
+
 
 public class Tile {
+
+    //used to generate an image for a particular tile
+    BufferedImage image;
+    // Used for collision detection
+    private boolean isObstacle;
+
     private int x;
     private int y;
     private Item item;
     private Enemy enemy;
-    private boolean hasObstacle;
 
-    public Tile(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.item = null;
-        this.enemy = null;
-        this.hasObstacle = false;
-    }
+
+//    public Tile(int x, int y) {
+//        this.x = x;
+//        this.y = y;
+//        this.item = null;
+//        this.enemy = null;
+//        this.isObstacle = false;
+//    }
 
     public Item getItem() {
         return item;
@@ -52,11 +60,11 @@ public class Tile {
     }
 
     public boolean hasObstacle() {
-        return hasObstacle;
+        return isObstacle;
     }
 
     public void setObstacle(boolean hasObstacle) {
-        this.hasObstacle = hasObstacle;
+        this.isObstacle = hasObstacle;
     }
 }
 

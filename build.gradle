@@ -46,7 +46,7 @@ dependencies {
 
 application {
     mainModule.set("csci205_final_project")
-    mainClass.set("org.team12.Main")
+    mainClass.set("org.team12.controller.GameController")
 
     if (project.hasProperty("mainClass")) {
         mainClass.set(project.property("mainClass").toString())
@@ -71,3 +71,11 @@ def createJavaFXTask(String taskName, String description, String mainClassName) 
 createJavaFXTask('runDungeonGameApp',
         'Runs the CSCI 205 Final Project: Dungeon Game application',
         'org.team12.DungeonGameApp')
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
