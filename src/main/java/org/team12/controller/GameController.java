@@ -20,6 +20,7 @@ package org.team12.controller;
 import javafx.util.Pair;
 import org.team12.model.*;
 import org.team12.model.entities.*;
+import org.team12.states.EnemyStatus;
 
 import java.util.Random;
 
@@ -89,16 +90,18 @@ public class GameController {
      */
     public boolean validateLevel1() {
         // Check if player has all items and is in the correct position (door)
-        if (player.hasAllItems) {
-            return true;
-        }
-        return false;
+        return player.hasAllItems();
     }
 
     public boolean validateLevel2() {
         for (Enemy goon : goons) {
-            if (goon.)
+            if (goon.getState() != EnemyStatus.DEAD) {
+                return false;
+            }
         }
+        return true;
     }
+
+
 
 }
