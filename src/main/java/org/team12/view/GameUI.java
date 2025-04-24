@@ -19,10 +19,12 @@ package org.team12.view;
 
 import org.team12.controller.InputController;
 import org.team12.model.Map;
+import org.team12.model.entities.Entity;
 import org.team12.model.entities.Player;
 
 import javax.swing.JPanel;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GameUI extends JPanel implements Runnable{
 
@@ -39,8 +41,13 @@ public class GameUI extends JPanel implements Runnable{
     InputController inputController = new InputController(); // Constructs and handles user movement
     Thread gameThread; // Thread to start the game loop of 60 frames per second
 
+    // Display enemies using AssetSetter
+    public AssetSetter aSetter = new AssetSetter(this);
     // Construct a player object
     public Player player = new Player(this, inputController);
+    // Construct enemies
+    public Entity enemy[] = new Entity[20];
+    //ArrayList<Entity> entityList = new ArrayList<>();
 
     //Construct a map object
     Map map = new Map(this);
@@ -67,6 +74,10 @@ public class GameUI extends JPanel implements Runnable{
         // Creates an object to register user inputs
         this.addKeyListener(inputController);
 
+    }
+
+    public void setupGame() {
+        aSetter.setEnemy();
     }
 
     // Starts a gameThread which is used to run the game loop
@@ -124,8 +135,15 @@ public class GameUI extends JPanel implements Runnable{
 
     // At the moment: moves the player according to which key is pressed
     public void update(){
+        // player
         player.update();
 
+        // enemy
+        for (int i = 0; i < enemy.length; i++) {
+            if (enemy[i] != null) {
+                enemy[i].update();
+            }
+        }
     }
 
     // Paints the player as a white rectangle

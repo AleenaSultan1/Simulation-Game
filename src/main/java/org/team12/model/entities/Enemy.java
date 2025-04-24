@@ -17,14 +17,15 @@
 
 package org.team12.model.entities;
 
-import org.team12.controller.GameController;
+import org.team12.controller.InputController;
 import org.team12.view.GameUI;
 
 import java.util.Random;
 
 public class Enemy extends Entity {
     public Enemy(GameUI gameUI) {
-        super(gameUI);
+        //super(gameUI, inputController);
+        this.gameUI = gameUI;
         type = 1;
         name = "Green monster";
         speed = 1;

@@ -17,10 +17,13 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.InputController;
 import org.team12.view.GameUI;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public abstract class Entity {
     GameUI gameUI;
@@ -34,8 +37,8 @@ public abstract class Entity {
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn = false;
     public int actionLockCounter = 0;
-    String dialogues[] = new String[20]; // for the riddles
-    int dialogueIndex = 0;
+    //String dialogues[] = new String[20]; // for the riddles
+    //int dialogueIndex = 0;
     public BufferedImage image, image2, image3;
     public String name;
     public int type; // 0 = player, 1 = enemy
@@ -44,11 +47,12 @@ public abstract class Entity {
     public int maxLife;
     public int life;
 
-    public Entity(GameUI gameUI) {
-        this.gameUI = gameUI;
-    }
+    //public Entity(GameUI gameUI) {
+        //this.gameUI = gameUI;
+    //}
 
-    public void setAction() {}
+    public void setAction() {
+    }
 
     public void update() {
         setAction();
@@ -57,13 +61,13 @@ public abstract class Entity {
         //gameUI.cChecker.checkTile(this);
         //gameUI.cChecker.checkObject(this, false);
         //gameUI.cChecker.checkPlayer(this);
-        boolean contactPlayer = gameUI.cChecker.checkPlayer(this); //collision check
+        //boolean contactPlayer = gameUI.cChecker.checkPlayer(this); //collision check
 
-        if (this.type == 2 && contactPlayer == true) {
-            if (gameUI.player.invincible == false) {
-                // damage
-                gameUI.player.life -= 1;
-                gameUI.player.invincible = true;
+        //if (this.type == 2 && contactPlayer == true) {
+        //if (gameUI.player.invincible == false) {
+        // damage
+        //gameUI.player.life -= 1;
+        //gameUI.player.invincible = true;
 
         // move player of collision is false
         if (collisionOn == false) {
@@ -99,53 +103,64 @@ public abstract class Entity {
         int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
         int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
 
-        if (worldX + gameUI.titleSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldX - gameUI.titleSize < gameUI.player.worldX + gameUI.player.screenX &&
-                worldX + gameUI.titleSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldX - gameUI.titleSize < gameUI.player.worldX + gameUI.player.screenX &&) {
+        //if (worldX + gameUI.titleSize > gameUI.player.worldX - gameUI.player.screenX &&
+        //worldX - gameUI.titleSize < gameUI.player.worldX + gameUI.player.screenX &&
+        //worldX + gameUI.titleSize > gameUI.player.worldX - gameUI.player.screenX &&
+        //worldX - gameUI.titleSize < gameUI.player.worldX + gameUI.player.screenX &&) {
 
-            switch (direction) {
-                case "up":
-                    if (spriteNum == 1) {
-                        image = up1;
-                    }
-                    if (spriteNum == 2) {
-                        image = up2;
-                    }
-                case "down":
-                    if (spriteNum == 1) {
-                        image = down1;
-                    }
-                    if (spriteNum == 2) {
-                        image = down2;
-                    }
-                case "left":
-                    if (spriteNum == 1) {
-                        image = left1;
-                    }
-                    if (spriteNum == 2) {
-                        image = left2;
-                    }
-                case "right":
-                    if (spriteNum == 1) {
-                        image = right1;
-                    }
-                    if (spriteNum == 2) {
-                        image = right2;
-                    }
-                    break;
-            }
-
-            g2.drawImage(image, screenX, screenY, gameUI.titleSize, gameUI.titleSize, null);
+        switch (direction) {
+            case "up":
+                if (spriteNum == 1) {
+                    image = up1;
+                }
+                if (spriteNum == 2) {
+                    image = up2;
+                }
+            case "down":
+                if (spriteNum == 1) {
+                    image = down1;
+                }
+                if (spriteNum == 2) {
+                    image = down2;
+                }
+            case "left":
+                if (spriteNum == 1) {
+                    image = left1;
+                }
+                if (spriteNum == 2) {
+                    image = left2;
+                }
+            case "right":
+                if (spriteNum == 1) {
+                    image = right1;
+                }
+                if (spriteNum == 2) {
+                    image = right2;
+                }
+                break;
         }
+
+        //}    //g2.drawImage(image, screenX, screenY, gameUI.titleSize, gameUI.titleSize, null);
     }
 
+
     //public BufferedImage setUp(String imagePath) {
-        //Item item = new Item() {
-            //@Override
-            //public int hashCode() {
-                //return super.hashCode();
-            }
+    //Item item = new Item() {
+    //@Override
+    //public int hashCode() {
+    //return super.hashCode();
+    //}
+    //}
+    //}
+    public BufferedImage setup(String imagePath) {
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(getClass().getResource(imagePath + ".png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.err.println("Image not found: " + imagePath);
         }
+        return image;
     }
 }
