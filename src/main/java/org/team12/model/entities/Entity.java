@@ -105,8 +105,8 @@ public abstract class Entity {
 
         if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
             worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
-            worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-            worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
+            worldY + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+            worldY - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
 
             switch (direction) {
                 case "up":

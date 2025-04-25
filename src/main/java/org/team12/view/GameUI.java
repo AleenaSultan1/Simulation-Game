@@ -166,7 +166,6 @@ public class GameUI extends JPanel implements Runnable{
         // draw the player
         player.draw(g2);
 
-
         // dispose of the objects
         g2.dispose();
     }

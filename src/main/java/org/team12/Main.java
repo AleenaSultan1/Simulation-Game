@@ -32,10 +32,8 @@ public class Main {
         window.add(gameUI);
 
         window.pack();
-
         window.setLocationRelativeTo(null);
         window.setVisible(true);
-
 
         gameUI.startGameThread();
     }
