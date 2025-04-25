@@ -21,9 +21,10 @@ import org.team12.view.GameUI;
 import javax.swing.JFrame;
 
 public class GameController {
+    // Create a new game UI: This is the actual game
+    static GameUI gameUI = new GameUI();
 
-    public static void main(String[] args) {
-
+    public static void initializeWindow(){
         // Create a screen window to display the game
         JFrame window = new JFrame();
 
@@ -32,8 +33,6 @@ public class GameController {
         window.setResizable(false);
         window.setTitle("Dungeon Game");
 
-        // Create a new game UI: This is the actual game
-        GameUI gameUI = new GameUI();
         // Add it to the screen
         window.add(gameUI);
 
@@ -42,8 +41,21 @@ public class GameController {
         // More Formatting
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+    }
 
-        // Start the game loop
+    public static void initializeGame(){
+        // spawn objects and items into the map
+        gameUI.populateMap();
+        // start the main game loop
         gameUI.startGameThread();
+    }
+
+
+    public static void main(String[] args) {
+        // Formats the window from which the game will be run
+        initializeWindow();
+
+        // starts the main game loop and spawns in entities and items onto the map
+        initializeGame();
     }
 }

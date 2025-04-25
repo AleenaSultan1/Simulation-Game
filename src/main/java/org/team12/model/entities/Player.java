@@ -42,6 +42,12 @@ public class Player extends Entity {
         screenY=gameUI.screenHeight/2 -(gameUI.tileSize/2);
         this.setDefaultValues();
         this.getPlayerImage();
+        this.hitbox = new Rectangle();
+        // Make a smaller box than the sprite
+        hitbox.x = 8;
+        hitbox.y = 16;
+        hitbox.width= 32;
+        hitbox.height = 32;
 
     }
 
@@ -59,16 +65,32 @@ public class Player extends Entity {
                 inputController.leftPressed || inputController.rightPressed) {
             if(inputController.upPressed){
                 direction = "up";
-                worldY-= speed;
             } else if (inputController.downPressed){
                 direction = "down";
-                worldY += speed;
             } else if (inputController.leftPressed){
                 direction = "left";
-                worldX -= speed;
             } else if (inputController.rightPressed){
                 direction = "right";
-                worldX += speed;
+            }
+            collisionOn = false;
+            gameUI.cController.checkTile(this);
+
+            // CHECK TILE COLLISION
+            if(!collisionOn){
+                switch(direction){
+                    case "up":
+                        worldY-= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
             }
 
             // Used for player walking animation
