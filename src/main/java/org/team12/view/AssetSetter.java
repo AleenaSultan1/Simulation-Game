@@ -18,6 +18,7 @@
 package org.team12.view;
 
 import org.team12.model.entities.Enemy;
+import org.team12.model.entities.LilyFinalBoss;
 
 public class AssetSetter {
     GameUI gameUI;
@@ -34,5 +35,9 @@ public class AssetSetter {
         gameUI.enemy[1] = new Enemy(gameUI);
         gameUI.enemy[1].worldX = gameUI.tileSize*7;
         gameUI.enemy[1].worldY = gameUI.tileSize*5;
+
+        gameUI.enemy[2] = new LilyFinalBoss(gameUI);
+        gameUI.enemy[2].worldX = gameUI.tileSize*7;
+        gameUI.enemy[2].worldY = gameUI.tileSize*5;
     }
 }

@@ -20,9 +20,14 @@ package org.team12.model.entities;
 import org.team12.controller.InputController;
 import org.team12.view.GameUI;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class Enemy extends Entity {
+
+    GameUI gameUI;
+
     public Enemy(GameUI gameUI) {
         //super(gameUI, inputController);
         this.gameUI = gameUI;
@@ -50,7 +55,7 @@ public class Enemy extends Entity {
         right2 = setup("/enemy/green_slime_with_legs");
     }
 
-    public void setAction() {
+    public void update() {
         actionLockCounter++;
         if (actionLockCounter == 120) {
             Random random = new Random();
@@ -69,6 +74,52 @@ public class Enemy extends Entity {
                 direction = "right";
             }
             actionLockCounter = 0;
+        }
+    }
+
+    public void draw(Graphics2D g2) {
+        BufferedImage image = null;
+        int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
+        int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
+
+        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
+                worldY + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+                worldY - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
+
+            switch (direction) {
+                case "up":
+                    if (spriteNum == 1) {
+                        image = up1;
+                    }
+                    if (spriteNum == 2) {
+                        image = up2;
+                    }
+                case "down":
+                    if (spriteNum == 1) {
+                        image = down1;
+                    }
+                    if (spriteNum == 2) {
+                        image = down2;
+                    }
+                case "left":
+                    if (spriteNum == 1) {
+                        image = left1;
+                    }
+                    if (spriteNum == 2) {
+                        image = left2;
+                    }
+                case "right":
+                    if (spriteNum == 1) {
+                        image = right1;
+                    }
+                    if (spriteNum == 2) {
+                        image = right2;
+                    }
+                    break;
+            }
+
+            g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
         }
     }
 }

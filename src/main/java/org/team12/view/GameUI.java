@@ -48,6 +48,7 @@ public class GameUI extends JPanel implements Runnable{
     // Construct enemies
     public Entity enemy[] = new Entity[20];
     //ArrayList<Entity> entityList = new ArrayList<>();
+    public Entity lilyFinalBoss;
 
     //Construct a map object
     Map map = new Map(this);
@@ -144,6 +145,9 @@ public class GameUI extends JPanel implements Runnable{
                 enemy[i].update();
             }
         }
+
+        // lily
+        if ()
     }
 
     // Paints the player as a white rectangle
