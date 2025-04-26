@@ -17,5 +17,15 @@
 
 package org.team12.model.entities;
 
-public class MagicDust extends Item{
+import org.team12.states.ItemState;
+
+public class MagicDust extends Item {
+
+    public MagicDust() {
+    }
+
+    public void getCured(LilyFinalBoss lilyFinalBoss) {
+            lilyFinalBoss.getCured();
+    }
+
 }

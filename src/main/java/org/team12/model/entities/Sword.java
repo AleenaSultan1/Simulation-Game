@@ -17,5 +17,16 @@
 
 package org.team12.model.entities;
 
+import org.team12.states.ItemState;
+
 public class Sword extends Item {
+
+    public int strength;
+
+    public Sword () {
+        this.strength = 5;
+    }
+
 }
+
+

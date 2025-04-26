@@ -17,10 +17,24 @@
 
 package org.team12.model.entities;
 
-import org.team12.states.ItemStatus;
+import javafx.geometry.Point2D;
+import org.team12.states.ItemState;
 
 public abstract class Item {
-    private ItemStatus status;
+    protected ItemState status;
+    protected double interactDistance;
+    protected double playerDistance;
 
+    protected Item() {
+        this.status = ItemState.INTERACTABLE;
+    }
+
+    public void pickUp() {
+        status = ItemState.UNINTERACTABLE;
+        }
+
+    public ItemState getStatus() {
+        return status;
+    }
 
 }

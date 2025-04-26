@@ -21,12 +21,14 @@ import javafx.util.Pair;
 import org.team12.model.*;
 import org.team12.model.entities.*;
 import org.team12.states.EnemyStatus;
+import org.team12.view.GameUI;
 
 import java.util.Random;
 
 
 public class GameController {
     private Map map;
+    private GameUI gameUI;
 
     private Player player;
     private LilyFinalBoss lily;
@@ -57,7 +59,7 @@ public class GameController {
         player = new Player();
 
         // Make map with hardcoded dimensions
-        map = new Map(lvlHeight + 4, lvlHeight + 2);
+        map = new Map(gameUI);
 
         // Generate 5 random Goons in Lvl2
         for (int i = 0; i < numGoons; i++) {
@@ -81,9 +83,6 @@ public class GameController {
     }
 
 
-    public void proceedNextLevel() {
-
-    }
 
     /**
      * Validate player's access from Lvl.1 to Lvl.2
@@ -100,6 +99,10 @@ public class GameController {
             }
         }
         return true;
+    }
+
+    public boolean interact(Item item) {
+        player.
     }
 
 
