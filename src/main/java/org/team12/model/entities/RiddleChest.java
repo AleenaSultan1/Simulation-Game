@@ -56,8 +56,8 @@ public class RiddleChest extends Item {
             String userAnswer = scanner.nextLine().trim().toLowerCase();
             checkUserInput(userAnswer, currentRiddle.getAnswer());
         } else {
-            System.out.println("You've answered all the riddles!");
-            openMagicChest();
+            System.out.println("You opened the chest!");
+            chestSuccessfullyOpened();
         }
     }
 
@@ -72,8 +72,8 @@ public class RiddleChest extends Item {
         }
     }
 
-    public void openMagicChest() {
-        super.status = ItemState.UNINTERACTABLE;// Inherited from Item class to change state to INTERACTABLE
+    public void chestSuccessfullyOpened() {
+        super.itemState = ItemState.UNINTERACTABLE;// Inherited from Item class to change state to INTERACTABLE
     }
 
     // Inner class to hold riddle questions and answers

@@ -133,4 +133,9 @@ public class LilyFinalBoss extends Entity {
             super.currentStatus = newState;
         }
     }
-}
+
+    public void getCured() {
+            super.currentStatus = EnemyStatus.CURED;
+        }
+
+    }
