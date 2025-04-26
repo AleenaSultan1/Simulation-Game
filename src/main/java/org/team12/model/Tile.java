@@ -35,13 +35,13 @@ public class Tile {
     private Enemy enemy;
 
 
-//    public Tile(int x, int y) {
-//        this.x = x;
-//        this.y = y;
-//        this.item = null;
-//        this.enemy = null;
-//        this.isObstacle = false;
-//    }
+    public Tile(int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.item = null;
+        this.enemy = null;
+        this.isObstacle = false;
+    }
 
     public Item getItem() {
         return item;
