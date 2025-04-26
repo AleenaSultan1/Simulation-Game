@@ -17,6 +17,7 @@
 
 package org.team12.model.entities;
 
+import org.team12.states.EnemyStatus;
 import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
@@ -57,9 +58,11 @@ public class Entity {
     public int type; // 0 = player, 1 = enemy
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // for collision detection later
     public int solidAreaDefaultX, solidAreaDefaultY;
+    public EnemyStatus currentStatus;
 
     public Entity(GameUI gameUI){
         this.gameUI = gameUI;
+        this.currentStatus = EnemyStatus.PEACEFUL;
     }
 
     public void setAction() {

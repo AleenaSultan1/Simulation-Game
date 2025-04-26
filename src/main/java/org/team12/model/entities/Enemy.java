@@ -17,6 +17,7 @@
 
 package org.team12.model.entities;
 
+import org.team12.states.EnemyStatus;
 import org.team12.view.GameUI;
 
 import java.awt.*;
@@ -120,6 +121,12 @@ public class Enemy extends Entity {
             }
 
             g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
+        }
+    }
+
+    public void updateState(EnemyStatus newState) {
+        if (super.currentStatus.canTransitionTo(newState)) {
+            super.currentStatus = newState;
         }
     }
 }
