@@ -43,8 +43,8 @@ public class GameUI extends JPanel implements Runnable{
     Thread gameThread; // Thread to start the game loop of 60 frames per second
     int FPS = 60; // Used in the main game loop to run the game at 60 frames per second
 
-    //Construct a list of potential different objects (10 slots for objects)
-    public Item[] obj = new Item[10];
+    //Construct a list of potential different objects (30 slots for 30 distinct, unique objects)
+    public Item[] obj = new Item[30];
 
 
     // OBJECT CONSTRUCTORS
@@ -63,8 +63,8 @@ public class GameUI extends JPanel implements Runnable{
 
 
     // WORLD SETTINGS: Will change to specific map size
-    public final int maxWorldCol = 50;
-    public final int maxWorldRow = 12;
+    public final int maxWorldCol = 35;
+    public final int maxWorldRow = 27;
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
 
@@ -129,11 +129,11 @@ public class GameUI extends JPanel implements Runnable{
             }
 
             // Displays FPS
-            if(timer >= 1000000000){
-                System.out.println("FPS: " + drawCount);
-                drawCount = 0;
-                timer = 0;
-            }
+//            if(timer >= 1000000000){
+//                System.out.println("FPS: " + drawCount);
+//                drawCount = 0;
+//                timer = 0;
+//            }
         }
     }
 

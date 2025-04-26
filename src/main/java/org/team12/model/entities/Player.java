@@ -65,8 +65,8 @@ public class Player extends Entity {
     public void setDefaultValues(){
         // Set player's default position. Normally the player spawns in the top left at (0, 0).
         // Moves the player more towards the center of the screen
-        worldX = gameUI.tileSize * 8; //sets the world spawn x coord
-        worldY = gameUI.tileSize * 6; // sets the world spawn y coord
+        worldX = gameUI.tileSize * 18; //sets the world spawn x coord
+        worldY = gameUI.tileSize * 25; // sets the world spawn y coord
         speed = 4; // moves 4 pixels per frame
         direction = "down";
 

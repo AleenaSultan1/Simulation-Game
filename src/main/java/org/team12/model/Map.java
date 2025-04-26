@@ -64,8 +64,8 @@ public class Map {
         //load tile images
         getTileImage();
         //load map from files
-        loadMap("/map/dungeonMap.txt");
-        //loadMap("/map/map01.txt");
+        loadMap("/map/dungeonMapV2.txt");
+        //loadMap("/map/dungeonMap.txt");
     }
 
     public void loadMap(String file){
@@ -103,9 +103,10 @@ public class Map {
     // Gets the images for a tile
     public void getTileImage() {
         // sets up a floor
-        setup(0, "stoneFloor", false);
+        setup(0, "floor", false);
         // sets up a wall image that is not passable
-        setup(1, "wall", true);
+        setup(1, "wall2", true);
+        setup(2, "fakeWall2", false);
     }
 
     public void setup(int index, String imageName, boolean isObstacle){
@@ -162,12 +163,14 @@ public class Map {
 
     public void placeItems() {
         gameUI.obj[0] = new Sword(gameUI);
-        gameUI.obj[0].worldX = 3 * gameUI.tileSize;
-        gameUI.obj[0].worldY = 3 * gameUI.tileSize;
+        gameUI.obj[0].worldX = 27 * gameUI.tileSize;
+        gameUI.obj[0].worldY = 19 * gameUI.tileSize;
 
-        gameUI.obj[1] = new EvilPortal(gameUI);
-        gameUI.obj[1].worldX = 5* gameUI.tileSize;
-        gameUI.obj[1].worldY = 5* gameUI.tileSize;
+        gameUI.obj[1] = new Table(gameUI);
+        gameUI.obj[1].worldX = 3* gameUI.tileSize;
+        gameUI.obj[1].worldY = 3 * gameUI.tileSize;
+
+
     }
 
     public void placeEnemy(Enemy enemy, int x, int y) {

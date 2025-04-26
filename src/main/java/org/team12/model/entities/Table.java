@@ -23,13 +23,13 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Objects;
 
-public class EvilPortal extends Item{
+public class Table extends Item{
     GameUI gameUI;
 
-    public EvilPortal(GameUI gameUI) {
-        name = "EvilPortal";
+    public Table(GameUI gameUI) {
+        name = "Table";
         try{
-            image= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/evilPortal.png")));
+            image= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/table.png")));
             utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
         } catch (IOException e) {
             e.printStackTrace();
