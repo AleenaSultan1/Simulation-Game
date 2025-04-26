@@ -54,14 +54,13 @@ public class RiddleChest extends Item {
             System.out.print("Your answer: ");
 
             String userAnswer = scanner.nextLine().trim().toLowerCase();
-            checkUserInput(userAnswer, currentRiddle.getAnswer());
         } else {
             System.out.println("You've answered all the riddles!");
             openMagicChest();
         }
     }
 
-    private void checkUserInput(String userAnswer, String correctAnswer) {
+    public boolean checkUserInput(String userAnswer, String correctAnswer) {
         if (userAnswer.equalsIgnoreCase(correctAnswer)) {
             System.out.println("Correct! Well done!");
             currentRiddleIndex++;
@@ -70,6 +69,8 @@ public class RiddleChest extends Item {
             System.out.println("Incorrect! Try again.");
             presentRiddle(); // Present same riddle again
         }
+
+        return userAnswer.equalsIgnoreCase(correctAnswer);
     }
 
     public void openMagicChest() {
@@ -89,4 +90,5 @@ public class RiddleChest extends Item {
         public String getQuestion() { return question; }
         public String getAnswer() { return answer; }
     }
+
 }

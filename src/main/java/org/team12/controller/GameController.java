@@ -101,8 +101,9 @@ public class GameController {
         return true;
     }
 
-    public boolean interact(Item item) {
-        player.
+    public boolean interactWithChest(RiddleChest riddleChest) {
+        player.interact(riddleChest); // This should not update the chest's status
+        if (riddleChest.checkUserInput())
     }
 
 
