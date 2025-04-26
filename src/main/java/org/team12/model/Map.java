@@ -17,6 +17,7 @@
 
 package org.team12.model;
 
+import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
 import org.team12.view.GameUI;
 import javax.imageio.ImageIO;
@@ -32,9 +33,9 @@ import java.util.Objects;
 public class Map {
     GameUI gameUI;
     // Used for determining tile type
-    Tile[] tile;
+    public Tile[] tile;
     // Used for loading map data, stores all the map data from a txt file
-    int mapTileNum[][];
+    public int mapTileNum[][];
 
     private Tile[][] grid;
     private List<Item> itemsOnMap;
@@ -63,8 +64,8 @@ public class Map {
         //load tile images
         getTileImage();
         //load map from files
-        //loadMap("/map/dungeonMap.txt");
-        loadMap("/map/map01.txt");
+        loadMap("/map/dungeonMap.txt");
+        //loadMap("/map/map01.txt");
     }
 
     public void loadMap(String file){
@@ -101,13 +102,19 @@ public class Map {
 
     // Gets the images for a tile
     public void getTileImage() {
+        // sets up a floor
+        setup(0, "stoneFloor", false);
+        // sets up a wall image that is not passable
+        setup(1, "wall", true);
+    }
+
+    public void setup(int index, String imageName, boolean isObstacle){
+        UtilityTool utilTool = new UtilityTool();
         try{
-            // floor tile
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/floor.png")));
-            //wall tile
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/wall.png")));
+            tile[index] = new Tile();
+            tile[index].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/" + imageName + ".png")));
+            tile[index].image = utilTool.scaleImage(tile[index].image, gameUI.tileSize, gameUI.tileSize);
+            tile[index].isObstacle = isObstacle;
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -118,9 +125,7 @@ public class Map {
      * @param g2 java graphics class
      */
     public void draw(Graphics2D g2){
-        // adding individual tiles
-        //g2.drawImage(tile[0].image, 0, 0, gameUI.tileSize, gameUI.tileSize, null);
-        //g2.drawImage(tile[1].image, 48, 48, gameUI.tileSize, gameUI.tileSize, null);
+        // set initial variables to start at beginning of text file
         int worldCol = 0;
         int worldRow = 0;
         while (worldCol < gameUI.maxWorldCol && worldRow < gameUI.maxWorldRow){
@@ -133,20 +138,20 @@ public class Map {
             int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
             int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
 
-            //Render only the visible parts
+            // Rendering Efficiency: Render only the visible parts on the screen
             if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
                 worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
                 worldY + gameUI.tileSize > gameUI.player.worldY - gameUI.player.screenY &&
                 worldY - gameUI.tileSize < gameUI.player.worldY + gameUI.player.screenY){
                 // draw the appropriate sprite for the tile
-                g2.drawImage(tile[tileNum].image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
+                g2 .drawImage(tile[tileNum].image, screenX, screenY, null);
             }
 
 
             //increment columns
             worldCol++;
             // if we hit the end of the line
-            if (worldCol == gameUI.maxScreenCol){
+            if (worldCol == gameUI.maxWorldCol){
                 //reset our pointer to the beginning on the next worldRow
                 worldCol = 0;
                 worldRow++;
@@ -154,22 +159,28 @@ public class Map {
         }
     }
 
-//    private void generateMap() {
-//        for (int x = 0; x < width; x++) {
-//            for (int y = 0; y < height; y++) {
-//                grid[x][y] = new Tile(x, y);
-//            }
-//        }
-//    }
 
-    public void placeItem(Item item, int x, int y) {
-        grid[x][y].setItem(item);
-        itemsOnMap.add(item);
+    public void placeItems() {
+        gameUI.obj[0] = new Sword(gameUI);
+        gameUI.obj[0].worldX = 3 * gameUI.tileSize;
+        gameUI.obj[0].worldY = 3 * gameUI.tileSize;
+
+        gameUI.obj[1] = new EvilPortal(gameUI);
+        gameUI.obj[1].worldX = 5* gameUI.tileSize;
+        gameUI.obj[1].worldY = 5* gameUI.tileSize;
     }
 
     public void placeEnemy(Enemy enemy, int x, int y) {
         grid[x][y].setEnemy(enemy);
+        enemy.worldX = x * gameUI.tileSize;
+        enemy.worldY = y * gameUI.tileSize;
         enemiesOnMap.add(enemy);
+    }
+
+    public void placeLilyFinalBoss(LilyFinalBoss boss, int x, int y) {
+        grid[x][y].setLilyFinalBoss(boss);
+        boss.worldX = x * gameUI.tileSize;
+        boss.worldY = y * gameUI.tileSize;
     }
 
     public Item pickUpItem(int x, int y) {

@@ -27,12 +27,13 @@ public class Tile {
     //used to generate an image for a particular tile
     BufferedImage image;
     // Used for collision detection
-    private boolean isObstacle;
+    public boolean isObstacle;
 
     private int x;
     private int y;
     private Item item;
     private Enemy enemy;
+    private LilyFinalBoss lilyFinalBoss;
 
 
 //    public Tile(int x, int y) {
@@ -58,6 +59,12 @@ public class Tile {
     public void setEnemy(Enemy enemy) {
         this.enemy = enemy;
     }
+
+    public LilyFinalBoss getLilyFinalBoss() {
+        return lilyFinalBoss;
+    }
+
+    public void setLilyFinalBoss(LilyFinalBoss boss) {this.lilyFinalBoss = boss;}
 
     public boolean hasObstacle() {
         return isObstacle;

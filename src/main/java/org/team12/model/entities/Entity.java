@@ -17,7 +17,6 @@
 
 package org.team12.model.entities;
 
-import org.team12.controller.InputController;
 import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
@@ -25,31 +24,43 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public abstract class Entity {
+public class Entity {
+
     GameUI gameUI;
-    public int worldX, worldY; // world means the overall map view
+    // Global Coordinates for where an entity is in the world
+    public int worldX,worldY;
+    // How fast an entity moves (4 pixels)
     public int speed;
+
+    // Used for determining direction for animations
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public String direction;
+
+    // Variables to alternate sprites - Creating animations
     public int spriteCounter = 0;
-    public int spriteNum = 1;
-    public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // for collision detection later
-    public int solidAreaDefaultX, solidAreaDefaultY;
-    public boolean collisionOn = false;
+    public int spriteNum =1;
+
+    // Character Stats and Statuses
     public int actionLockCounter = 0;
+    public int maxLife;
+    public int life;
+
+    // Used for checking collisions/hitboxes
+    public Rectangle hitbox;
+    public int hitboxDefaultX, hitboxDefaultY;
+    public boolean collisionOn = false;
+
     //String dialogues[] = new String[20]; // for the riddles
     //int dialogueIndex = 0;
     public BufferedImage image, image2, image3;
     public String name;
     public int type; // 0 = player, 1 = enemy
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // for collision detection later
+    public int solidAreaDefaultX, solidAreaDefaultY;
 
-    // Player State (HP)
-    public int maxLife;
-    public int life;
-
-    //public Entity(GameUI gameUI) {
-        //this.gameUI = gameUI;
-    //}
+    public Entity(GameUI gameUI){
+        this.gameUI = gameUI;
+    }
 
     public void setAction() {
     }
@@ -104,9 +115,9 @@ public abstract class Entity {
         int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
 
         if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-            worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
-            worldY + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-            worldY - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
+                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
+                worldY + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+                worldY - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
 
             switch (direction) {
                 case "up":

@@ -27,6 +27,7 @@ public class LilyFinalBoss extends Entity {
     GameUI gameUI;
 
     public LilyFinalBoss(GameUI gameUI) {
+        super(gameUI);
         //super(gameUI, inputController);
         this.gameUI = gameUI;
         type = 1;

@@ -17,20 +17,19 @@
 
 package org.team12.view;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
-import org.team12.model.entities.Entity;
-import org.team12.model.entities.Player;
+import org.team12.model.entities.*;
 
 import javax.swing.JPanel;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class GameUI extends JPanel implements Runnable{
 
-    // SCREEN SETTINGS
-    int originalTileSize = 16; // 16 x 16 pixel tile
-    public int scale = 3; // scale everything up by a factor or 3
+    // SCREEN SETTINGS AND VARIABLES
+    private final int originalTileSize = 16; // 16 x 16 pixel tile
+    private final int scale = 3; // scale everything up by a factor or 3
     public int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
 
     public int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
@@ -38,25 +37,41 @@ public class GameUI extends JPanel implements Runnable{
     public int screenWidth = tileSize * maxScreenCol; // 786 pixels
     public int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
-    InputController inputController = new InputController(); // Constructs and handles user movement
+
+    // GAME LOOP VARIABLES
     Thread gameThread; // Thread to start the game loop of 60 frames per second
-
-    // Display enemies using AssetSetter
-    public AssetSetter aSetter = new AssetSetter(this);
-    // Construct a player object
-    public Player player = new Player(this, inputController);
-    // Construct enemies
-    public Entity enemy[] = new Entity[20];
-    //ArrayList<Entity> entityList = new ArrayList<>();
-    public Entity lilyFinalBoss;
-
-    //Construct a map object
-    Map map = new Map(this);
-
     int FPS = 60; // Used in the main game loop to run the game at 60 frames per second
 
+    //Construct a list of potential different objects (10 slots for objects)
+    public Item[] obj = new Item[10];
+
+
+    // OBJECT CONSTRUCTORS
+    // Constructs an inputController object to handle user input (movement, interaction, attacks)
+    InputController inputController = new InputController(); // Constructs and handles user movement
+
+    // Display enemies (evil goons) using AssetSetter
+    public AssetSetter assetSetter = new AssetSetter(this);
+
+    // Construct a player object: can move around, interact with the map, and attack enemies
+    public Player player = new Player(this, inputController);
+
+    // Construct enemies
+    public Entity enemy[] = new Entity[20];
+
+    // Construct Lily
+    public LilyFinalBoss lilyFinalBoss;
+
+    //Construct a map object: loads a map from a txt file, spawns in items and enemies
+    public Map map = new Map(this);
+
+    //Construct a collision controller which checks if entities are allowed to pass through certain tiles/objects
+    public CollisionController cController = new CollisionController(this);
+
+
+
     // WORLD SETTINGS: Will change to specific map size
-    public final int maxWorldCol = 16;
+    public final int maxWorldCol = 50;
     public final int maxWorldRow = 12;
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
@@ -77,10 +92,6 @@ public class GameUI extends JPanel implements Runnable{
 
     }
 
-    public void setupGame() {
-        aSetter.setEnemy();
-    }
-
     // Starts a gameThread which is used to run the game loop
     public void startGameThread() {
         gameThread = new Thread(this);
@@ -96,6 +107,7 @@ public class GameUI extends JPanel implements Runnable{
     @Override
     public void run() {
 
+        // Set variables to run the game at 60FPS
         double drawInterval = (double) 1000000000 / FPS; // 0.01666 seconds
         double delta = 0;
         long lastTime = System.nanoTime();
@@ -105,10 +117,9 @@ public class GameUI extends JPanel implements Runnable{
         long timer = 0;
         int drawCount = 0;
 
-        // implement GameLoop
+        // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
-            // DEBUG LINE
-            //System.out.println("Game loop is running");
+
 
             currentTime = System.nanoTime();
 
@@ -134,23 +145,35 @@ public class GameUI extends JPanel implements Runnable{
         }
     }
 
+    // Used to spawn in items, enemies, etc.
+    public void populateMap(){
+        map.placeItems();
+
+        // PLEASE COMMENT THESE LINES IF YOU CAN'T MOVE THE PLAYER!!!!
+        //map.placeEnemy((Enemy) enemy[0], 7, 5);
+        //map.placeEnemy((Enemy) enemy[1], 9, 7);
+
+        //map.placeLilyFinalBoss(lilyFinalBoss, 7, 5);
+    }
+
     // At the moment: moves the player according to which key is pressed
     public void update(){
-        // player
         player.update();
 
-        // enemy
         for (int i = 0; i < enemy.length; i++) {
             if (enemy[i] != null) {
                 enemy[i].update();
             }
         }
 
-        // lily
-        if ()
+        if (lilyFinalBoss != null) {
+            lilyFinalBoss.update();
+        }
+
     }
 
     // Paints the player as a white rectangle
+    // HIERARCHY MATTERS, map should always be first and player should always be last
     public void paintComponent(Graphics g){
         // inherit the paintComponent method
         super.paintComponent(g);
@@ -160,15 +183,29 @@ public class GameUI extends JPanel implements Runnable{
         // draw the map
         map.draw(g2);
 
-        // draw enemies
-        for (int i = 0; i < enemy.length; i++) {
-            if (enemy[i] != null) {
+        // draw the objects on the map
+        // Parse through our possible object list and draw the appropriate ones for each object
+        for (int i = 0; i < obj.length; i++){
+            if (obj[i] != null){
+                obj[i].draw(g2, this);
+            }
+        }
+
+        // draw enemies on the map
+        for (int i = 0; i < enemy.length; i++){
+            if (enemy[i] != null){
                 enemy[i].draw(g2);
             }
         }
 
+        // draw Lily on the map
+        if (lilyFinalBoss != null){
+            lilyFinalBoss.draw(g2);
+        }
+
         // draw the player
         player.draw(g2);
+
 
         // dispose of the objects
         g2.dispose();

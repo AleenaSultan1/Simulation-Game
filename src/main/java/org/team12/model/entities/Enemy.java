@@ -17,7 +17,6 @@
 
 package org.team12.model.entities;
 
-import org.team12.controller.InputController;
 import org.team12.view.GameUI;
 
 import java.awt.*;
@@ -30,6 +29,7 @@ public class Enemy extends Entity {
 
     public Enemy(GameUI gameUI) {
         //super(gameUI, inputController);
+        super(gameUI);
         this.gameUI = gameUI;
         type = 1;
         name = "Green monster";
@@ -45,14 +45,14 @@ public class Enemy extends Entity {
         getImage();
     }
     public void getImage() {
-        up1 = setup("/enemy/green_slime_original");
-        up2 = setup("/enemy/green_slime_with_legs");
-        down1 = setup("/enemy/green_slime_original");
-        down2 = setup("/enemy/green_slime_with_legs");
-        left1 = setup("/enemy/green_slime_original");
-        left2 = setup("/enemy/green_slime_with_legs");
-        right1 = setup("/enemy/green_slime_original");
-        right2 = setup("/enemy/green_slime_with_legs");
+        up1 = setup("/evilGoon/enemy_up_1");
+        up2 = setup("/evilGoon/enemy_up_2");
+        down1 = setup("/evilGoon/enemy_down_1");
+        down2 = setup("/evilGoon/enemy_down_2");
+        left1 = setup("/evilGoon/enemy_left_1");
+        left2 = setup("/evilGoon/enemy_left_2");
+        right1 = setup("/evilGoon/enemy_right_1");
+        right2 = setup("/evilGoon/enemy_right_1");
     }
 
     public void update() {

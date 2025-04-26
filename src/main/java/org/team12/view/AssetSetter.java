@@ -29,15 +29,17 @@ public class AssetSetter {
 
     public void setEnemy() {
         gameUI.enemy[0] = new Enemy(gameUI);
-        gameUI.enemy[0].worldX = gameUI.tileSize*9;
-        gameUI.enemy[0].worldY = gameUI.tileSize*7;
+        gameUI.enemy[0].worldX = gameUI.tileSize * 9;
+        gameUI.enemy[0].worldY = gameUI.tileSize * 7;
 
         gameUI.enemy[1] = new Enemy(gameUI);
-        gameUI.enemy[1].worldX = gameUI.tileSize*7;
-        gameUI.enemy[1].worldY = gameUI.tileSize*5;
+        gameUI.enemy[1].worldX = gameUI.tileSize * 7;
+        gameUI.enemy[1].worldY = gameUI.tileSize * 5;
+    }
 
-        gameUI.enemy[2] = new LilyFinalBoss(gameUI);
-        gameUI.enemy[2].worldX = gameUI.tileSize*7;
-        gameUI.enemy[2].worldY = gameUI.tileSize*5;
+    public void setLilyFinalBoss() {
+        gameUI.lilyFinalBoss = new LilyFinalBoss(gameUI);
+        gameUI.lilyFinalBoss.worldX = gameUI.tileSize*7;
+        gameUI.lilyFinalBoss.worldY = gameUI.tileSize*5;
     }
 }
