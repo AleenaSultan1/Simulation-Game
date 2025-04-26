@@ -17,71 +17,109 @@
 
 package org.team12.model.entities;
 
-import org.team12.states.EnemyStatus;
 import org.team12.view.GameUI;
 
-public class Enemy extends Entity {
-    private int hostilityArea; // the region where it can detect the player (might as well implement collision check)
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Random;
 
-    public Enemy(int x, int y, int hp, int hostilityArea, GameUI gameUI) {
-        super(x, y, hp);
-        this.hostilityArea = hostilityArea;
+public class Enemy extends Entity {
+
+    GameUI gameUI;
+
+    public Enemy(GameUI gameUI) {
+        //super(gameUI, inputController);
+        super(gameUI);
+        this.gameUI = gameUI;
+        type = 1;
+        name = "Green monster";
+        speed = 1;
+        maxLife = 4;
+        solidArea.x = 3;
+        solidArea.y = 18;
+        solidArea.width = 42;
+        solidArea.height = 30;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
+
         getImage();
     }
-
     public void getImage() {
-        up1 = setup("/enemy/green_slime_original");
-        up2 = setup("/enemy/green_slime_with_legs");
-        down1 = setup("/enemy/green_slime_original");
-        down2 = setup("/enemy/green_slime_with_legs");
-        left1 = setup("/enemy/green_slime_original");
-        left2 = setup("/enemy/green_slime_with_legs");
-        right1 = setup("/enemy/green_slime_original");
-        right2 = setup("/enemy/green_slime_with_legs");
-    }
-    @Override
-    public boolean attack() {
-        if (!survivalStatus()) {
-            return false;
-        }
-        System.out.println("Enemy attacked");
-        return true;
+        up1 = setup("/evilGoon/enemy_up_1");
+        up2 = setup("/evilGoon/enemy_up_2");
+        down1 = setup("/evilGoon/enemy_down_1");
+        down2 = setup("/evilGoon/enemy_down_2");
+        left1 = setup("/evilGoon/enemy_left_1");
+        left2 = setup("/evilGoon/enemy_left_2");
+        right1 = setup("/evilGoon/enemy_right_1");
+        right2 = setup("/evilGoon/enemy_right_1");
     }
 
-    @Override
-    public boolean move() {
-        if (!survivalStatus()) {
-            return false;
-        }
-        System.out.println("Enemy moved");
-        return true;
-    }
+    public void update() {
+        actionLockCounter++;
+        if (actionLockCounter == 120) {
+            Random random = new Random();
+            int i = random.nextInt(100) + 1;
 
-    @Override
-    public boolean spawn() {
-        System.out.println("Enemy has spawned at (" + xCoordinate + ", " + yCoordinate + ")");
-        return true;
-    }
-
-    public boolean isDead() {
-        return this.HP <= 0;
-    }
-
-    public EnemyStatus getState() {
-        return super.enemyStatus;
-    }
-
-    public void updateState(EnemyStatus newState) {
-        if (super.enemyStatus.canTransitionTo(newState)) {
-            super.enemyStatus = newState;
+            if (i <= 25) {
+                direction = "up";
+            }
+            if (i > 25 && i <= 50) {
+                direction = "down";
+            }
+            if (i > 50 && i <= 75) {
+                direction = "left";
+            }
+            if (i > 75 && i <= 100) {
+                direction = "right";
+            }
+            actionLockCounter = 0;
         }
     }
 
-    public int getHostilityArea() {
-        return hostilityArea;
-    }
+    public void draw(Graphics2D g2) {
+        BufferedImage image = null;
+        int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
+        int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
 
-    public void setHostilityArea(int hostilityArea) {
-        this.hostilityArea = hostilityArea;
+        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
+                worldY + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+                worldY - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
+
+            switch (direction) {
+                case "up":
+                    if (spriteNum == 1) {
+                        image = up1;
+                    }
+                    if (spriteNum == 2) {
+                        image = up2;
+                    }
+                case "down":
+                    if (spriteNum == 1) {
+                        image = down1;
+                    }
+                    if (spriteNum == 2) {
+                        image = down2;
+                    }
+                case "left":
+                    if (spriteNum == 1) {
+                        image = left1;
+                    }
+                    if (spriteNum == 2) {
+                        image = left2;
+                    }
+                case "right":
+                    if (spriteNum == 1) {
+                        image = right1;
+                    }
+                    if (spriteNum == 2) {
+                        image = right2;
+                    }
+                    break;
+            }
+
+            g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
+        }
     }
 }

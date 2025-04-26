@@ -17,24 +17,70 @@
 
 package org.team12.model.entities;
 
-import javafx.geometry.Point2D;
+import org.team12.controller.UtilityTool;
 import org.team12.states.ItemState;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import org.team12.view.GameUI;
+
 public abstract class Item {
-    protected ItemState status;
-    protected double interactDistance;
-    protected double playerDistance;
+    // Available images
+    public BufferedImage image, image2, image3;
+    // Used to determine interactions
+    public String name;
 
-    protected Item() {
-        this.status = ItemState.INTERACTABLE;
-    }
+    public boolean collision = false;
 
-    public void pickUp() {
-        status = ItemState.UNINTERACTABLE;
+    public int worldX, worldY;
+
+
+    // All items have a hitbox the size of a tile
+    public Rectangle hitbox = new Rectangle(0,0,48,48);
+    public int hitboxDefaultX = 0;
+    public int hitboxDefaultY = 0;
+
+
+    // Used to scale images on the GUI
+    UtilityTool utilTool = new UtilityTool();
+
+
+
+    public ItemState itemState;
+    public double interactDistance;
+    public double playerDistance;
+
+    // Used to draw the correct sprite for the item
+    public void draw (Graphics2D g2, GameUI gameUI) {
+
+        // This shows where on the screen do we draw
+        int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
+        int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
+
+        // Rendering Efficiency: Render only the visible parts on the screen
+        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
+                worldY + gameUI.tileSize > gameUI.player.worldY - gameUI.player.screenY &&
+                worldY - gameUI.tileSize < gameUI.player.worldY + gameUI.player.screenY){
+            // draw the appropriate sprite for the tile
+            g2 .drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
         }
-
-    public ItemState getStatus() {
-        return status;
     }
 
 }
+
+//
+//        protected Item() {
+//            this.status = ItemState.INTERACTABLE;
+//        }
+//
+//        public void pickUp() {
+//            status = ItemState.UNINTERACTABLE;
+//        }
+//
+//        public ItemState getStatus() {
+//            return status;
+//        }
+//
+//    }
+//}

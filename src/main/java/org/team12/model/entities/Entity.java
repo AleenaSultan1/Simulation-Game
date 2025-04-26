@@ -17,59 +17,148 @@
 
 package org.team12.model.entities;
 
-import org.team12.states.EnemyStatus;
+import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public abstract class Entity {
-    protected EnemyStatus enemyStatus;
-    protected int HP;
-    protected boolean state; //true=alive
-    protected int xCoordinate;
-    protected int yCoordinate;
+public class Entity {
+
+    GameUI gameUI;
+    // Global Coordinates for where an entity is in the world
+    public int worldX,worldY;
+    // How fast an entity moves (4 pixels)
+    public int speed;
+
+    // Used for determining direction for animations
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+    public String direction;
 
-    public Entity(int x, int y, int hp) {
-        this.enemyStatus = EnemyStatus.PEACEFUL;
-        this.xCoordinate = x;
-        this.yCoordinate = y;
-        this.HP = hp;
-        this.state = true; // alive by default
+    // Variables to alternate sprites - Creating animations
+    public int spriteCounter = 0;
+    public int spriteNum =1;
+
+    // Character Stats and Statuses
+    public int actionLockCounter = 0;
+    public int maxLife;
+    public int life;
+
+    // Used for checking collisions/hitboxes
+    public Rectangle hitbox;
+    public int hitboxDefaultX, hitboxDefaultY;
+    public boolean collisionOn = false;
+
+    //String dialogues[] = new String[20]; // for the riddles
+    //int dialogueIndex = 0;
+    public BufferedImage image, image2, image3;
+    public String name;
+    public int type; // 0 = player, 1 = enemy
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // for collision detection later
+    public int solidAreaDefaultX, solidAreaDefaultY;
+
+    public Entity(GameUI gameUI){
+        this.gameUI = gameUI;
     }
 
-    public abstract boolean attack();
-    public abstract boolean move();
-    public abstract boolean spawn();
-
-    public boolean survivalStatus() {
-        return this.state && this.HP > 0;
+    public void setAction() {
     }
 
-    public int getXCoordinate() {
-        return xCoordinate;
+    public void update() {
+        setAction();
+
+        collisionOn = false;
+        //gameUI.cChecker.checkTile(this);
+        //gameUI.cChecker.checkObject(this, false);
+        //gameUI.cChecker.checkPlayer(this);
+        //boolean contactPlayer = gameUI.cChecker.checkPlayer(this); //collision check
+
+        //if (this.type == 2 && contactPlayer == true) {
+        //if (gameUI.player.invincible == false) {
+        // damage
+        //gameUI.player.life -= 1;
+        //gameUI.player.invincible = true;
+
+        // move player of collision is false
+        if (collisionOn == false) {
+            switch (direction) {
+                case "up":
+                    worldY -= speed;
+                    break;
+                case "down":
+                    worldY += speed;
+                    break;
+                case "left":
+                    worldX -= speed;
+                    break;
+                case "right":
+                    worldX += speed;
+                    break;
+            }
+        }
+
+        spriteCounter++;
+        if (spriteCounter >= 12) {
+            if (spriteNum == 1) {
+                spriteCounter = 2;
+            } else if (spriteNum == 2) {
+                spriteCounter = 1;
+            }
+            spriteCounter = 0;
+        }
     }
 
-    public int getYCoordinate() {
-        return yCoordinate;
-    }
+    public void draw(Graphics2D g2) {
+        BufferedImage image = null;
+        int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
+        int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
 
-    public int getHP() {
-        return HP;
-    }
+        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
+                worldY + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+                worldY - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
 
-    public void takeDamage(int damage) {
-        this.HP -= damage;
-        if (this.HP <= 0) {
-            this.state = false;
+            switch (direction) {
+                case "up":
+                    if (spriteNum == 1) {
+                        image = up1;
+                    }
+                    if (spriteNum == 2) {
+                        image = up2;
+                    }
+                case "down":
+                    if (spriteNum == 1) {
+                        image = down1;
+                    }
+                    if (spriteNum == 2) {
+                        image = down2;
+                    }
+                case "left":
+                    if (spriteNum == 1) {
+                        image = left1;
+                    }
+                    if (spriteNum == 2) {
+                        image = left2;
+                    }
+                case "right":
+                    if (spriteNum == 1) {
+                        image = right1;
+                    }
+                    if (spriteNum == 2) {
+                        image = right2;
+                    }
+                    break;
+            }
+
+            g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
         }
     }
 
     public BufferedImage setup(String imagePath) {
         BufferedImage image = null;
         try {
-            image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+            image = ImageIO.read(getClass().getResource(imagePath + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {

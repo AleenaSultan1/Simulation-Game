@@ -17,23 +17,112 @@
 
 package org.team12.model.entities;
 
-import org.team12.states.EnemyStatus;
 import org.team12.view.GameUI;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Random;
+
 public class LilyFinalBoss extends Entity {
+    GameUI gameUI;
 
-    private int hostilityArea;
+    public LilyFinalBoss(GameUI gameUI) {
+        super(gameUI);
+        //super(gameUI, inputController);
+        this.gameUI = gameUI;
+        type = 1;
+        name = "Lily The Final Boss";
+        speed = 1;
+        //maxLife = 10;
+        //life = maxLife;
+        //attack = 8;
+        solidArea.x = 4;
+        solidArea.y = 4;
+        solidArea.width = 40;
+        solidArea.height = 44;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
+        //attackArea.width = 48;
+        //attackArea.height = 48;
 
-    public LilyFinalBoss(int x, int y, int hp, int hostilityArea, GameUI gameUI) {
-        super(x, y, hp);
-        this.hostilityArea = hostilityArea;
+        getImage();
+    }
+    public void getImage() {
+        up1 = setup("/Lily/lily_up_1");
+        up2 = setup("/Lily/lily_up_2");
+        down1 = setup("/Lily/lily_down_1");
+        down2 = setup("/Lily/lily_down_2");
+        left1 = setup("/Lily/lily_left_1");
+        left2 = setup("/Lily/lily_left_2");
+        right1 = setup("/Lily/lily_right_1");
+        right2 = setup("/Lily/lily_right_2");
     }
 
-    public void updateState(EnemyStatus newState) {
-        if (super.enemyStatus.canTransitionTo(newState)) {
-            super.enemyStatus = newState;
+    public void update() {
+        actionLockCounter++;
+        if (actionLockCounter == 120) {
+            Random random = new Random();
+            int i = random.nextInt(100) + 1;
+
+            if (i <= 25) {
+                direction = "up";
+            }
+            if (i > 25 && i <= 50) {
+                direction = "down";
+            }
+            if (i > 50 && i <= 75) {
+                direction = "left";
+            }
+            if (i > 75 && i <= 100) {
+                direction = "right";
+            }
+            actionLockCounter = 0;
+        }
+    }
+
+    public void draw(Graphics2D g2) {
+        BufferedImage image = null;
+        int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
+        int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
+
+        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
+                worldY + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
+                worldY - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
+
+            switch (direction) {
+                case "up":
+                    if (spriteNum == 1) {
+                        image = up1;
+                    }
+                    if (spriteNum == 2) {
+                        image = up2;
+                    }
+                case "down":
+                    if (spriteNum == 1) {
+                        image = down1;
+                    }
+                    if (spriteNum == 2) {
+                        image = down2;
+                    }
+                case "left":
+                    if (spriteNum == 1) {
+                        image = left1;
+                    }
+                    if (spriteNum == 2) {
+                        image = left2;
+                    }
+                case "right":
+                    if (spriteNum == 1) {
+                        image = right1;
+                    }
+                    if (spriteNum == 2) {
+                        image = right2;
+                    }
+                    break;
+            }
+
+            g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
         }
     }
 }
-
-

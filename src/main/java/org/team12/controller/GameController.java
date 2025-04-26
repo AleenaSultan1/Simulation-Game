@@ -17,87 +17,45 @@
 
 package org.team12.controller;
 
-import javafx.util.Pair;
-import org.team12.model.*;
-import org.team12.model.entities.*;
-
-import java.util.Random;
-
+import org.team12.view.GameUI;
+import javax.swing.JFrame;
 
 public class GameController {
-    private Map map;
+    // Create a new game UI: This is the actual game
+    static GameUI gameUI = new GameUI();
 
-    private Player player;
-    private LilyFinalBoss lily;
-    private Sword sword;
-    private MagicDust magicDust;
-    private RiddleChest riddleChest;
-    private StateManager stateManager;
+    public static void initializeWindow(){
+        // Create a screen window to display the game
+        JFrame window = new JFrame();
 
-    private int numGoons = 5;
-    private int lvlHeight = 20;
+        // Format basic screen settings
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setResizable(false);
+        window.setTitle("Dungeon Game");
 
-    private Enemy[] goons = new Enemy[numGoons];
+        // Add it to the screen
+        window.add(gameUI);
 
-    private Pair<Integer, Integer> lvlOneDim = new Pair<>(lvlHeight, 0);
-    private Pair<Integer, Integer> lvlTwoDim = new Pair<>(lvlHeight*2 + 1, lvlHeight + 1);
-    private Pair<Integer, Integer> lvlThreeDim = new Pair<>(lvlHeight*3 + 2, lvlHeight*2 + 2);
-
-
-    public GameController() {
-        lily = new LilyFinalBoss();
-        sword = new Sword();
-        magicDust = new MagicDust();
-        riddleChest = new RiddleChest();
-        stateManager = new StateManager();
+        // Automatically size the window
+        window.pack();
+        // More Formatting
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
     }
 
-    public void initializeGame() {
-        player = new Player();
-
-        // Make map with hardcoded dimensions
-        map = new Map(lvlHeight + 4, lvlHeight + 2);
-
-        // Generate 5 random Goons in Lvl2
-        for (int i = 0; i < numGoons; i++) {
-            goons[i] = new Enemy();
-
-            int possibleX = lvlTwoDim.getKey() - lvlTwoDim.getValue();
-            int possibleY = lvlHeight;
-
-            Random rand = new Random();
-            int x = rand.nextInt(lvlHeight) + lvlTwoDim.getValue();
-            int y = rand.nextInt(lvlHeight) + 1;
-            map.placeEnemy(goons[i], x, y);
-        }
-
-        // Place items
-        map.placeItem(magicDust, 10, 10);
-        map.placeItem(riddleChest, 15, 15);
-
+    public static void initializeGame(){
+        // spawn objects and items into the map
+        gameUI.populateMap();
+        // start the main game loop
+        gameUI.startGameThread();
     }
 
-    public void startGame() {
-        map.placeObject(player);
+
+    public static void main(String[] args) {
+        // Formats the window from which the game will be run
+        initializeWindow();
+
+        // starts the main game loop and spawns in entities and items onto the map
+        initializeGame();
     }
-
-    public void proceedNextLevel() {
-
-    }
-
-    /**
-     * Validate player's access from Lvl.1 to Lvl.2
-     */
-    public boolean validateLevel1() {
-        // Check if player has all items and is in the correct position (door)
-        if (player.hasAllItems) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean validateLevel2() {
-        //if ()
-    }
-
 }
