@@ -17,8 +17,10 @@
 
 package org.team12.view;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
+import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
 
 import javax.swing.JPanel;
@@ -26,43 +28,46 @@ import java.awt.*;
 
 public class GameUI extends JPanel implements Runnable{
 
-    // SCREEN SETTINGS
-    int originalTileSize = 16; // 16 x 16 pixel tile
-    public int scale = 3; // scale everything up by a factor or 3
+    // SCREEN SETTINGS AND VARIABLES
+    private final int originalTileSize = 16; // 16 x 16 pixel tile
+    private final int scale = 3; // scale everything up by a factor or 3
     public int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
+
     public int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
     public int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
     public int screenWidth = tileSize * maxScreenCol; // 786 pixels
     public int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
-    InputController inputController = new InputController(); // Constructs and handles user movement
-    Thread gameThread; // Thread to start the game loop of 60 frames per second
 
-    // Construct a player object
-    Player player = new Player(this, inputController);
-
-    //Construct a map object
-    Map map = new Map(this);
-
+    // GAME LOOP VARIABLES
+    private Thread gameThread; // Thread to start the game loop of 60 frames per second
     int FPS = 60; // Used in the main game loop to run the game at 60 frames per second
 
-    // Set player's default position. Normally the player spawns in the top left at (0, 0). Moves the player more towards the center of the screen
-    int playerX = 100;
-    int playerY = 100;
-    int playerSpeed = 4; // moves 4 pixels per frame
+    // WORLD SETTINGS: Will change to specific map size
+    public final int maxWorldCol = 50;
+    public final int maxWorldRow = 12;
+    public final int worldWidth = tileSize * maxWorldCol;
+    public final int worldHeight = tileSize * maxWorldRow;
+
+    private Map map;
+    private MapRenderer mapRenderer;
+    private InputController inputController;
 
     // Constructor for a game UI
     public GameUI(){
+        map = new Map("/map/dungeonMap.txt");
         // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         // Sets the background of the map: will need to load/generate a map
         this.setBackground(Color.black);
         // Double buffer for better efficiency
         this.setDoubleBuffered(true);
+        // Makes the GameUI interactable with the keyboard
+        this.requestFocusInWindow(); // focuses everything in the window
+        this.setFocusable(true);
         // Creates an object to register user inputs
         this.addKeyListener(inputController);
-        // Makes the GameUI interactable with the keyboard
-        this.setFocusable(true);
+
     }
 
     // Starts a gameThread which is used to run the game loop
@@ -80,6 +85,7 @@ public class GameUI extends JPanel implements Runnable{
     @Override
     public void run() {
 
+        // Set variables to run the game at 60FPS
         double drawInterval = (double) 1000000000 / FPS; // 0.01666 seconds
         double delta = 0;
         long lastTime = System.nanoTime();
@@ -89,10 +95,9 @@ public class GameUI extends JPanel implements Runnable{
         long timer = 0;
         int drawCount = 0;
 
-        // implement GameLoop
+        // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
-            // DEBUG LINE
-            //System.out.println("Game loop is running");
+
 
             currentTime = System.nanoTime();
 
@@ -118,6 +123,11 @@ public class GameUI extends JPanel implements Runnable{
         }
     }
 
+    // Used to spawn in items, enemies, etc.
+    public void populateMap(){
+//        map.placeItems();
+    }
+
     // At the moment: moves the player according to which key is pressed
     public void update(){
         player.update();
@@ -125,6 +135,7 @@ public class GameUI extends JPanel implements Runnable{
     }
 
     // Paints the player as a white rectangle
+    // HIERARCHY MATTERS, map should always be first and player should always be last
     public void paintComponent(Graphics g){
         // inherit the paintComponent method
         super.paintComponent(g);
@@ -132,11 +143,7 @@ public class GameUI extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D) g;
 
         // draw the map
-        map.draw(g2);
-
-        // draw the player
-        player.draw(g2);
-
+        mapRenderer.draw(g2);
 
         // dispose of the objects
         g2.dispose();

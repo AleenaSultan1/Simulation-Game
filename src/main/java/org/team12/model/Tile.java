@@ -27,7 +27,7 @@ public class Tile {
     //used to generate an image for a particular tile
     BufferedImage image;
     // Used for collision detection
-    private boolean isObstacle;
+    public boolean isObstacle;
 
     private int x;
     private int y;
@@ -35,13 +35,13 @@ public class Tile {
     private Enemy enemy;
 
 
-//    public Tile(int x, int y) {
-//        this.x = x;
-//        this.y = y;
-//        this.item = null;
-//        this.enemy = null;
-//        this.isObstacle = false;
-//    }
+    public Tile(int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.item = null;
+        this.enemy = null;
+        this.isObstacle = false;
+    }
 
     public Item getItem() {
         return item;

@@ -17,95 +17,82 @@
 
 package org.team12.model;
 
+import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
 import org.team12.view.GameUI;
 import javax.imageio.ImageIO;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Objects;
 
 public class Map {
-    GameUI gameUI;
-    Tile[] tile;
-
+    public Tile[] tile;
     private Tile[][] grid;
     private List<Item> itemsOnMap;
     private List<Enemy> enemiesOnMap;
+
     private int width;
     private int height;
 
-//    public Map(int width, int height, gameUI) {
-//        this.width = width;
-//        this.height = height;
-//        this.grid = new Tile[width][height];
-//        this.itemsOnMap = new ArrayList<>();
-//        this.enemiesOnMap = new ArrayList<>();
-//
-//
-//        generateMap();
-//    }
-
-    public Map(GameUI gameUI){
-        tile = new Tile[10];
-        this.gameUI = gameUI;
-
-        //load tile images
-        getTileImage();
+    public Map(String filepath) {
+        loadMap(filepath);
     }
+    private void loadMap(String filepath) {
+        try {
+            InputStream is = getClass().getResourceAsStream(filepath);
+            BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(is)));
 
-    // Gets the images for a tile
-    public void getTileImage() {
-        try{
-            // floor tile
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/floor.png")));
-            //wall tile
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/wall.png")));
-        } catch (IOException e){
+            // First, read all lines to determine dimensions
+            String line;
+            int rows = 0;
+            int cols = 0;
+            while ((line = br.readLine()) != null) {
+                if (rows == 0) {
+                    cols = line.split(" ").length;
+                }
+                rows++;
+            }
+            this.width = cols;
+            this.height = rows;
+
+            // Initialize grid
+            grid = new Tile[width][height];
+
+            // Reset reader to beginning
+            is = getClass().getResourceAsStream(filepath);
+            br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(is)));
+
+            int y = 0;
+            while ((line = br.readLine()) != null) {
+                String[] numbers = line.split(" ");
+                for (int x = 0; x < numbers.length; x++) {
+                    grid[x][y] = new Tile(x, y);
+                    int tileType = Integer.parseInt(numbers[x]);
+                    if (tileType == 1) {
+                        grid[x][y].setObstacle(true);
+                    }
+                    // tileType 0 means walkable floor
+                    // You can add more types later if you want
+                }
+                y++;
+            }
+
+            br.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Draws tiles onto the screen
-     * @param g2 java graphics class
-     */
-    public void draw(Graphics2D g2){
-        // adding individual tiles
-        //g2.drawImage(tile[0].image, 0, 0, gameUI.tileSize, gameUI.tileSize, null);
-        //g2.drawImage(tile[1].image, 48, 48, gameUI.tileSize, gameUI.tileSize, null);
-        int col = 0;
-        int row = 0;
-        int x = 0;
-        int y = 0;
-        while (col<gameUI.maxScreenCol && row<gameUI.maxScreenRow){
-            g2.drawImage(tile[0].image, x, y, gameUI.tileSize, gameUI.tileSize, null);
-            col++;
-            x+=gameUI.tileSize;
-            if (col==gameUI.maxScreenCol){
-                col = 0;
-                x=0;
-                row++;
-                y+= gameUI.tileSize;
-            }
-        }
-    }
-
-//    private void generateMap() {
-//        for (int x = 0; x < width; x++) {
-//            for (int y = 0; y < height; y++) {
-//                grid[x][y] = new Tile(x, y);
-//            }
-//        }
-//    }
 
     public void placeItem(Item item, int x, int y) {
         grid[x][y].setItem(item);
         itemsOnMap.add(item);
     }
+
 
     public void placeEnemy(Enemy enemy, int x, int y) {
         grid[x][y].setEnemy(enemy);
@@ -121,21 +108,27 @@ public class Map {
         return item;
     }
 
-//    public boolean movePlayer(Player player, int newX, int newY) {
-//        if (isInsideBounds(newX, newY)) {
-//            player.setXCoordinate(newX);
-//            player.setYCoordinate(newY);
-//            return true;
-//        }
-//        return false;
-//    }
+    public Tile getTile(int x, int y) {
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            return grid[x][y];
+        }
+        return null;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 
     private boolean isInsideBounds(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-//    public boolean isOccupied(int x, int y) {
-//        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();
-//    }
+    public boolean isOccupied(int x, int y) {
+        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();
+    }
 }
 
