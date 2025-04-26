@@ -12,29 +12,23 @@ import javax.swing.*;
 public class DungeonGameApp {
 
     public static void main(String[] args) {
-
-        // Create a screen window to display the game
+        // Create a window
         JFrame window = new JFrame();
-
-        // Format basic screen settings
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Dungeon Game");
 
-        // Create a new game UI: This is the actual game
+        // Create the GameUI (our main game panel)
         GameUI gameUI = new GameUI();
-        // Add it to the screen
         window.add(gameUI);
+        window.pack(); // fit window to GameUI's preferred size
 
-        // Automatically size the window
-        window.pack();
-        // More Formatting
+        // Center window and make it visible
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
         // Start the game loop
         gameUI.startGameThread();
     }
-
-
 }
+

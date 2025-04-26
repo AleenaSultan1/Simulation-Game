@@ -35,7 +35,6 @@ public class GameController {
     private Sword sword;
     private MagicDust magicDust;
     private RiddleChest riddleChest;
-    private StateManager stateManager;
 
     private int numGoons = 5;
     private int lvlHeight = 20;
@@ -52,14 +51,10 @@ public class GameController {
         sword = new Sword();
         magicDust = new MagicDust();
         riddleChest = new RiddleChest();
-        stateManager = new StateManager();
     }
 
     public void initializeGame() {
-        player = new Player();
-
-        // Make map with hardcoded dimensions
-        map = new Map(gameUI);
+//        player = new Player();
 
         // Generate 5 random Goons in Lvl2
         for (int i = 0; i < numGoons; i++) {
@@ -89,7 +84,8 @@ public class GameController {
      */
     public boolean validateLevel1() {
         // Check if player has all items and is in the correct position (door)
-        return player.hasAllItems();
+//        return player.hasAllItems();
+        return false;
     }
 
     public boolean validateLevel2() {
@@ -101,10 +97,10 @@ public class GameController {
         return true;
     }
 
-    public boolean interactWithChest(RiddleChest riddleChest) {
-        player.interact(riddleChest); // This should not update the chest's status
-        if (riddleChest.checkUserInput())
-    }
+//    public boolean interactWithChest(RiddleChest riddleChest) {
+//        player.interact(riddleChest); // This should not update the chest's status
+//        if (riddleChest.checkUserInput())
+//    }
 
 
 

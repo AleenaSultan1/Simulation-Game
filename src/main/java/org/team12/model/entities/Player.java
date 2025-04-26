@@ -42,8 +42,8 @@ public class Player extends Entity {
 
     public void setDefaultValues(){
         // Set player's default position. Normally the player spawns in the top left at (0, 0). Moves the player more towards the center of the screen
-        x = 100;
-        y = 100;
+        xCoordinate = 100;
+        yCoordinate = 100;
         speed = 4; // moves 4 pixels per frame
         direction = "down";
     }
@@ -53,16 +53,16 @@ public class Player extends Entity {
                 inputController.leftPressed || inputController.rightPressed) {
             if(inputController.upPressed){
                 direction = "up";
-                y -= speed;
+                yCoordinate -= speed;
             } else if (inputController.downPressed){
                 direction = "down";
-                y += speed;
+                yCoordinate += speed;
             } else if (inputController.leftPressed){
                 direction = "left";
-                x -= speed;
+                xCoordinate -= speed;
             } else if (inputController.rightPressed){
                 direction = "right";
-                x += speed;
+                xCoordinate += speed;
             }
 
             // Used for player walking animation
@@ -143,7 +143,7 @@ public class Player extends Entity {
                 }
                 break;
         }
-        g2.drawImage(image, x, y, gameUI.tileSize, gameUI.tileSize, null);
+        g2.drawImage(image, xCoordinate, yCoordinate, gameUI.tileSize, gameUI.tileSize, null);
     }
 
 }

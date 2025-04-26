@@ -42,29 +42,6 @@ public class Enemy extends Entity {
         right1 = setup("/enemy/green_slime_original");
         right2 = setup("/enemy/green_slime_with_legs");
     }
-    @Override
-    public boolean attack() {
-        if (enemyState == EnemyStatus.DEAD) {
-            return false;
-        }
-        System.out.println("Enemy attacked");
-        return true;
-    }
-
-    @Override
-    public boolean move() {
-        if (enemyState == EnemyStatus.DEAD) {
-            return false;
-        }
-        System.out.println("Enemy moved");
-        return true;
-    }
-
-    @Override
-    public boolean spawn() {
-        System.out.println("Enemy has spawned at (" + xCoordinate + ", " + yCoordinate + ")");
-        return true;
-    }
 
     public boolean isDead() {
         return this.HP <= 0;

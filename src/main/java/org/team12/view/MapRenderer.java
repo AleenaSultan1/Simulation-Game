@@ -19,6 +19,8 @@ package org.team12.view;
 
 import org.team12.model.Map;
 import org.team12.model.Tile;
+import org.team12.model.entities.Enemy;
+import org.team12.model.entities.Item;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -30,6 +32,8 @@ public class MapRenderer {
     private Map map;
     private BufferedImage floorImage;
     private BufferedImage wallImage;
+    private BufferedImage swordImage;
+    private BufferedImage enemyImage;
     private int tileSize;
 
     public MapRenderer(Map map, int tileSize) {
@@ -42,6 +46,8 @@ public class MapRenderer {
         try {
             floorImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/stoneFloor.png")));
             wallImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/wall.png")));
+            swordImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/items/sword.png")));
+            enemyImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/entities/chest1.png")));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -51,11 +57,23 @@ public class MapRenderer {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Tile tile = map.getTile(x, y);
-                if (tile != null) {
-                    BufferedImage img = tile.hasObstacle() ? wallImage : floorImage;
-                    g2.drawImage(img, x * tileSize, y * tileSize, tileSize, tileSize, null);
+                // 1. Draw the floor or wall
+                BufferedImage img = tile.hasObstacle() ? wallImage : floorImage;
+                g2.drawImage(img, x * tileSize, y * tileSize, tileSize, tileSize, null);
+
+                // 2. If there is an Item, draw the item
+                Item item = tile.getItem();
+                if (item != null) {
+                    g2.drawImage(swordImage, x * tileSize, y * tileSize, tileSize, tileSize, null);
+                }
+
+                // 3. If there is an Enemy, draw the enemy
+                Enemy enemy = tile.getEnemy();
+                if (enemy != null) {
+                    g2.drawImage(enemyImage, x * tileSize, y * tileSize, tileSize, tileSize, null);
                 }
             }
         }
+
     }
 }

@@ -20,7 +20,6 @@ package org.team12.model;
 import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
 import org.team12.view.GameUI;
-import javax.imageio.ImageIO;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class Map {
-    public Tile[] tile;
     private Tile[][] grid;
     private List<Item> itemsOnMap;
     private List<Enemy> enemiesOnMap;
@@ -89,23 +87,17 @@ public class Map {
     }
 
     public void placeItem(Item item, int x, int y) {
-        grid[x][y].setItem(item);
-        itemsOnMap.add(item);
+        Tile tile = getTile(x, y);
+        if (tile != null) {
+            tile.setItem(item);
+        }
     }
-
 
     public void placeEnemy(Enemy enemy, int x, int y) {
-        grid[x][y].setEnemy(enemy);
-        enemiesOnMap.add(enemy);
-    }
-
-    public Item pickUpItem(int x, int y) {
-        Item item = grid[x][y].getItem();
-        if (item != null) {
-            grid[x][y].setItem(null);
-            itemsOnMap.remove(item);
+        Tile tile = getTile(x, y);
+        if (tile != null) {
+            tile.setEnemy(enemy);
         }
-        return item;
     }
 
     public Tile getTile(int x, int y) {
@@ -128,7 +120,8 @@ public class Map {
     }
 
     public boolean isOccupied(int x, int y) {
-        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();
+//        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();
+        return false;
     }
 }
 

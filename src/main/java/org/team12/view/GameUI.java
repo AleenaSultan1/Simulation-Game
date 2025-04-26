@@ -17,11 +17,8 @@
 
 package org.team12.view;
 
-import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
-import org.team12.model.entities.Item;
-import org.team12.model.entities.Player;
 
 import javax.swing.JPanel;
 import java.awt.*;
@@ -56,6 +53,7 @@ public class GameUI extends JPanel implements Runnable{
     // Constructor for a game UI
     public GameUI(){
         map = new Map("/map/dungeonMap.txt");
+        mapRenderer = new MapRenderer(map, tileSize);
         // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         // Sets the background of the map: will need to load/generate a map
@@ -107,7 +105,6 @@ public class GameUI extends JPanel implements Runnable{
 
             if(delta>=1){
                 // update player position, will also be used to update enemy position and status of items
-                update();
                 // Makes a new frame for the Game UI with the updated changes
                 repaint();
                 delta--;
@@ -129,10 +126,10 @@ public class GameUI extends JPanel implements Runnable{
     }
 
     // At the moment: moves the player according to which key is pressed
-    public void update(){
-        player.update();
-
-    }
+//    public void update(){
+//        player.update();
+//
+//    }
 
     // Paints the player as a white rectangle
     // HIERARCHY MATTERS, map should always be first and player should always be last
