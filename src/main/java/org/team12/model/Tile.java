@@ -27,7 +27,7 @@ public class Tile {
     //used to generate an image for a particular tile
     BufferedImage image;
     // Used for collision detection
-    private boolean isObstacle;
+    public boolean isObstacle;
 
     private int x;
     private int y;

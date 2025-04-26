@@ -2,13 +2,13 @@
  * CSCI 205 - Software Engineering and Design
  * Spring 2025
  *
- * Name: Radley Le
- * Date: 4/18/25
- * Time: 3:35 PM
+ * Name: Sebastian Stewart
+ * Date: 4/25/25
+ * Time: 10:45 PM
  *
  * Project: csci205_final_project
  * Package: org.team12.model.entities
- * Class: Sword
+ * Class: EvilPortal
  *
  * Description:
  *
@@ -23,16 +23,17 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Sword extends Item {
+public class EvilPortal extends Item{
     GameUI gameUI;
 
-    public Sword(GameUI gameUI) {
-        name = "Sword";
+    public EvilPortal(GameUI gameUI) {
+        name = "EvilPortal";
         try{
-            image= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
+            image= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/evilPortal.png")));
             utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        collision = true;
     }
 }

@@ -17,15 +17,38 @@
 
 package org.team12.model.entities;
 
+import org.team12.view.GameUI;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Entity {
-    public int x,y;
+
+    GameUI gameUI;
+    // Global Coordinates for where an entity is in the world
+    public int worldX,worldY;
+    // How fast an entity moves (4 pixels)
     public int speed;
 
+    // Used for determining direction for animations
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public String direction;
 
+    // Variables to alternate sprites - Creating animations
     public int spriteCounter = 0;
     public int spriteNum =1;
+
+    // Character Stats and Statuses
+    public int actionLockCounter = 0;
+    public int maxLife;
+    public int life;
+
+    // Used for checking collisions/hitboxes
+    public Rectangle hitbox;
+    public int hitboxDefaultX, hitboxDefaultY;
+    public boolean collisionOn = false;
+
+    public Entity(GameUI gameUI){
+        this.gameUI = gameUI;
+    }
 }
