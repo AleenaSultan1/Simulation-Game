@@ -31,7 +31,8 @@ public class Player extends Entity {
     GameUI gameUI;
     InputController inputController;
 
-    public Player(GameUI gameUI, InputController inputController) {
+    public Player(GameUI gameUI, InputController inputController, int x, int y, int hp) {
+        super(x, y, hp);
         this.gameUI = gameUI;
         this.inputController = inputController;
         this.setDefaultValues();
@@ -144,4 +145,5 @@ public class Player extends Entity {
         }
         g2.drawImage(image, x, y, gameUI.tileSize, gameUI.tileSize, null);
     }
+
 }

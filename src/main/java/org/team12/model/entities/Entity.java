@@ -35,10 +35,6 @@ public abstract class Entity {
         this.state = true; // alive by default
     }
 
-    public abstract boolean attack();
-    public abstract boolean move();
-    public abstract boolean spawn();
-
     public int getXCoordinate() {
         return xCoordinate;
     }
