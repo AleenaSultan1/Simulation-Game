@@ -18,6 +18,7 @@
 package org.team12.model.entities;
 
 import org.team12.controller.InputController;
+import org.team12.controller.UtilityTool;
 import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
@@ -28,24 +29,34 @@ import java.util.Objects;
 
 
 public class Player extends Entity {
-    GameUI gameUI;
     InputController inputController;
     public final int screenX;
     public final int screenY;
+    public boolean hasSword = false;
+    int sword = 0;
+    public boolean canCure = false;
+
 
     public Player(GameUI gameUI, InputController inputController) {
+        super(gameUI);
         this.gameUI = gameUI;
         this.inputController = inputController;
         // sets the player's position to the halfway point of the screen
         // offset it to account for positioning error
         screenX=gameUI.screenWidth/2 - (gameUI.tileSize/2);
         screenY=gameUI.screenHeight/2 -(gameUI.tileSize/2);
+
+        // Get images for player and reset standard player stats
         this.setDefaultValues();
         this.getPlayerImage();
+
+        // Hit box parameters
         this.hitbox = new Rectangle();
         // Make a smaller box than the sprite
         hitbox.x = 8;
         hitbox.y = 16;
+        hitboxDefaultX = hitbox.x;
+        hitboxDefaultY = hitbox.y;
         hitbox.width= 32;
         hitbox.height = 32;
 
@@ -58,6 +69,11 @@ public class Player extends Entity {
         worldY = gameUI.tileSize * 6; // sets the world spawn y coord
         speed = 4; // moves 4 pixels per frame
         direction = "down";
+
+        // Set characters stats
+        maxLife = 6;
+        // Current Life
+        life = maxLife;
     }
 
     public void update(){
@@ -72,10 +88,16 @@ public class Player extends Entity {
             } else if (inputController.rightPressed){
                 direction = "right";
             }
-            collisionOn = false;
-            gameUI.cController.checkTile(this);
 
             // CHECK TILE COLLISION
+            collisionOn = false;
+            // check if the player is touching an impassable tile
+            gameUI.cController.checkTile(this);
+            // check if the player is touching an interactable item
+            int objIndex = gameUI.cController.checkObject(this, true);
+            pickUpObject(objIndex);
+
+            // if collision is false, player can move
             if(!collisionOn){
                 switch(direction){
                     case "up":
@@ -109,28 +131,50 @@ public class Player extends Entity {
 
     }
 
-    public void getPlayerImage(){
-
+    // Scales the player sprites to x3 their original size
+    public BufferedImage setup(String imageName){
+        UtilityTool utilTool = new UtilityTool();
+        BufferedImage image = null;
         try{
-            up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_1.png"))); // This one works
-            up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_2.png")));
-            down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_down_1.png")));
-            down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_down_2.png")));
-            right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_right_1.png")));
-            right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_right_2.png")));
-            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_1.png"))); // This one works
-            left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_2.png")));
-
-        } catch(IOException e){
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/" + imageName + ".png")));
+            image = utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
+        }catch (IOException e){
             e.printStackTrace();
+        }
+        return image;
+    }
+
+    // Picks up an object if the player is touching it
+    public void pickUpObject(int objIndex){
+
+        if (objIndex!=999){
+            String objectName = gameUI.obj[objIndex].name;
+
+            switch (objectName){
+                case "Sword":
+                    this.hasSword = true;
+                    gameUI.obj[objIndex] = null;
+                    System.out.println("Sword picked up");
+            }
+            // deletes the object we touched
+            //gameUI.obj[objIndex] = null;
         }
     }
 
-    public void draw(Graphics2D g2) {
-        // makes the player a basic square the size of a normal tile
-//        g2.setColor(Color.white);
-//        g2.fillRect(x, y, gameUI.tileSize, gameUI.tileSize);
+    // Gets the player's sprite from resources
+    public void getPlayerImage(){
+        up1 = setup("player_up_1");
+        up2 = setup("player_up_2");
+        down1 = setup("player_down_1");
+        down2 = setup("player_down_2");
+        right1 = setup("player_right_1");
+        right2 = setup("player_right_2");
+        left1 = setup("player_left_1");
+        left2 = setup("player_left_2");
 
+    }
+
+    public void draw(Graphics2D g2) {
 
         // Animation for walking
         BufferedImage image = null;

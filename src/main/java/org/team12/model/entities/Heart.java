@@ -28,10 +28,15 @@ public class Heart extends Item{
 
     public Heart(GameUI gameUI) {
         this.gameUI = gameUI;
-        name = "HEART";
+        name = "Heart";
         try{
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartFull.png")));
-            //uTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
+            image2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartHalf.png")));
+            image3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartEmpty.png")));
+            utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
+            utilTool.scaleImage(image2, gameUI.tileSize, gameUI.tileSize);
+            utilTool.scaleImage(image3, gameUI.tileSize, gameUI.tileSize);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

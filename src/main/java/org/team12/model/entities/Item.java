@@ -17,6 +17,7 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.UtilityTool;
 import org.team12.states.ItemState;
 
 import java.awt.*;
@@ -24,10 +25,24 @@ import java.awt.image.BufferedImage;
 import org.team12.view.GameUI;
 
 public abstract class Item {
-    public BufferedImage image;
+    // Available images
+    public BufferedImage image, image2, image3;
+    // Used to determine interactions
     public String name;
+
     public boolean collision = false;
+
     public int worldX, worldY;
+
+
+    // All items have a hitbox the size of a tile
+    public Rectangle hitbox = new Rectangle(0,0,48,48);
+    public int hitboxDefaultX = 0;
+    public int hitboxDefaultY = 0;
+
+
+    // Used to scale images on the GUI
+    UtilityTool utilTool = new UtilityTool();
 
 
 

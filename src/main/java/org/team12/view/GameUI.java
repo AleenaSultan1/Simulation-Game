@@ -111,8 +111,7 @@ public class GameUI extends JPanel implements Runnable{
 
         // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
-            // DEBUG LINE
-            //System.out.println("Game loop is running");
+
 
             currentTime = System.nanoTime();
 

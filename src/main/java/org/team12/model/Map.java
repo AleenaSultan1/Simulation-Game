@@ -161,9 +161,13 @@ public class Map {
 
 
     public void placeItems() {
-        gameUI.obj[0] = new Sword();
+        gameUI.obj[0] = new Sword(gameUI);
         gameUI.obj[0].worldX = 3 * gameUI.tileSize;
         gameUI.obj[0].worldY = 3 * gameUI.tileSize;
+
+        gameUI.obj[1] = new EvilPortal(gameUI);
+        gameUI.obj[1].worldX = 5* gameUI.tileSize;
+        gameUI.obj[1].worldY = 5* gameUI.tileSize;
     }
 
     public void placeEnemy(Enemy enemy, int x, int y) {
