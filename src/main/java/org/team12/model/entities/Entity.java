@@ -17,14 +17,14 @@
 
 package org.team12.model.entities;
 
-import org.team12.view.GameUI;
+import org.team12.controller.GameController;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Entity {
 
-    GameUI gameUI;
+    GameController gameController;
     // Global Coordinates for where an entity is in the world
     public int worldX,worldY;
     // How fast an entity moves (4 pixels)
@@ -48,7 +48,7 @@ public class Entity {
     public int hitboxDefaultX, hitboxDefaultY;
     public boolean collisionOn = false;
 
-    public Entity(GameUI gameUI){
-        this.gameUI = gameUI;
+    public Entity(GameController gameController){
+        this.gameController = gameController;
     }
 }

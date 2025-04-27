@@ -17,8 +17,10 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.GameController;
 import org.team12.controller.InputController;
 import org.team12.controller.UtilityTool;
+import org.team12.model.Map;
 import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
@@ -29,22 +31,25 @@ import java.util.Objects;
 
 
 public class Player extends Entity {
+    GameController gameController;
     InputController inputController;
+    GameUI gameUI;
+    Map map;
     public final int screenX;
     public final int screenY;
     public boolean hasSword = false;
-    int sword = 0;
+
     public boolean canCure = false;
 
 
-    public Player(GameUI gameUI, InputController inputController) {
-        super(gameUI);
-        this.gameUI = gameUI;
+    public Player(GameController gameController, InputController inputController) {
+        super(gameController);
+        this.gameController = gameController;
         this.inputController = inputController;
         // sets the player's position to the halfway point of the screen
         // offset it to account for positioning error
-        screenX=gameUI.screenWidth/2 - (gameUI.tileSize/2);
-        screenY=gameUI.screenHeight/2 -(gameUI.tileSize/2);
+        screenX= gameController.screenWidth/2 - (gameController.tileSize/2);
+        screenY= gameController.screenHeight/2 -(gameController.tileSize/2);
 
         // Get images for player and reset standard player stats
         this.setDefaultValues();
@@ -65,8 +70,8 @@ public class Player extends Entity {
     public void setDefaultValues(){
         // Set player's default position. Normally the player spawns in the top left at (0, 0).
         // Moves the player more towards the center of the screen
-        worldX = gameUI.tileSize * 18; //sets the world spawn x coord
-        worldY = gameUI.tileSize * 25; // sets the world spawn y coord
+        worldX = gameController.tileSize * 18; //sets the world spawn x coord
+        worldY = gameController.tileSize * 25; // sets the world spawn y coord
         speed = 4; // moves 4 pixels per frame
         direction = "down";
 
@@ -92,9 +97,9 @@ public class Player extends Entity {
             // CHECK TILE COLLISION
             collisionOn = false;
             // check if the player is touching an impassable tile
-            gameUI.cController.checkTile(this);
+            gameController.cController.checkTile(this);
             // check if the player is touching an interactable item
-            int objIndex = gameUI.cController.checkObject(this, true);
+            int objIndex = gameController.cController.checkObject(this, true);
             pickUpObject(objIndex);
 
             // if collision is false, player can move
@@ -137,7 +142,7 @@ public class Player extends Entity {
         BufferedImage image = null;
         try{
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/" + imageName + ".png")));
-            image = utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
+            image = utilTool.scaleImage(image, gameController.tileSize, gameController.tileSize);
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -148,12 +153,12 @@ public class Player extends Entity {
     public void pickUpObject(int objIndex){
 
         if (objIndex!=999){
-            String objectName = gameUI.obj[objIndex].name;
+            String objectName = gameController.map.obj[objIndex].name;
 
             switch (objectName){
                 case "Sword":
                     this.hasSword = true;
-                    gameUI.obj[objIndex] = null;
+                    gameController.map.obj[objIndex] = null;
                     System.out.println("Sword picked up");
             }
             // deletes the object we touched
@@ -212,6 +217,6 @@ public class Player extends Entity {
                 }
                 break;
         }
-        g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
+        g2.drawImage(image, screenX, screenY, gameController.tileSize, gameController.tileSize, null);
     }
 }

@@ -22,7 +22,7 @@ import org.team12.states.ItemState;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import org.team12.view.GameUI;
+import org.team12.controller.GameController;
 
 public abstract class Item {
     // Available images
@@ -51,19 +51,19 @@ public abstract class Item {
     public double playerDistance;
 
     // Used to draw the correct sprite for the item
-    public void draw (Graphics2D g2, GameUI gameUI) {
+    public void draw (Graphics2D g2, GameController gameController) {
 
         // This shows where on the screen do we draw
-        int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
-        int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
+        int screenX = worldX - gameController.player.worldX + gameController.player.screenX;
+        int screenY = worldY - gameController.player.worldY + gameController.player.screenY;
 
         // Rendering Efficiency: Render only the visible parts on the screen
-        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
-                worldY + gameUI.tileSize > gameUI.player.worldY - gameUI.player.screenY &&
-                worldY - gameUI.tileSize < gameUI.player.worldY + gameUI.player.screenY){
+        if (worldX + gameController.tileSize > gameController.player.worldX - gameController.player.screenX &&
+                worldX - gameController.tileSize < gameController.player.worldX + gameController.player.screenX &&
+                worldY + gameController.tileSize > gameController.player.worldY - gameController.player.screenY &&
+                worldY - gameController.tileSize < gameController.player.worldY + gameController.player.screenY){
             // draw the appropriate sprite for the tile
-            g2 .drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
+            g2 .drawImage(image, screenX, screenY, gameController.tileSize, gameController.tileSize, null);
         }
     }
 

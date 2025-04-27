@@ -17,6 +17,7 @@
 
 package org.team12.model;
 
+import org.team12.controller.GameController;
 import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
 import org.team12.view.GameUI;
@@ -32,10 +33,14 @@ import java.util.Objects;
 
 public class Map {
     GameUI gameUI;
+    GameController gameController;
     // Used for determining tile type
     public Tile[] tile;
     // Used for loading map data, stores all the map data from a txt file
     public int mapTileNum[][];
+
+    //Construct a list of potential different objects (30 slots for 30 distinct, unique objects)
+    public Item[] obj = new Item[30];
 
     private Tile[][] grid;
     private List<Item> itemsOnMap;
@@ -54,12 +59,12 @@ public class Map {
 //        generateMap();
 //    }
 
-    public Map(GameUI gameUI){
+    public Map(GameController gameController){
         // Sets the number of different possible tiles to 10
         tile = new Tile[10];
-        this.gameUI = gameUI;
+        this.gameController = gameController;
         // 2d array for the map txt
-        mapTileNum = new int[gameUI.maxWorldCol][gameUI.maxWorldRow];
+        mapTileNum = new int[gameController.maxWorldCol][gameController.maxWorldRow];
 
         //load tile images
         getTileImage();
@@ -79,17 +84,17 @@ public class Map {
             int row = 0;
 
             // while there is still room in the array
-            while (col<gameUI.maxWorldCol && row<gameUI.maxWorldRow){
+            while (col<gameController.maxWorldCol && row<gameController.maxWorldRow){
                 // read the line
                 String line = br.readLine();
-                while (col<gameUI.maxWorldCol){
+                while (col<gameController.maxWorldCol){
                     // split the values to place them into the array
                     String numbers [] = line.split(" ");
                     int num  = Integer.parseInt(numbers[col]);
                     mapTileNum[col][row] = num;
                     col++;
                 }
-                if(col == gameUI.maxWorldCol){
+                if(col == gameController.maxWorldCol){
                     col = 0;
                     row++;
                 }
@@ -114,7 +119,7 @@ public class Map {
         try{
             tile[index] = new Tile();
             tile[index].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/" + imageName + ".png")));
-            tile[index].image = utilTool.scaleImage(tile[index].image, gameUI.tileSize, gameUI.tileSize);
+            tile[index].image = utilTool.scaleImage(tile[index].image, gameController.tileSize, gameController.tileSize);
             tile[index].isObstacle = isObstacle;
         } catch (IOException e){
             e.printStackTrace();
@@ -129,21 +134,21 @@ public class Map {
         // set initial variables to start at beginning of text file
         int worldCol = 0;
         int worldRow = 0;
-        while (worldCol < gameUI.maxWorldCol && worldRow < gameUI.maxWorldRow){
+        while (worldCol < gameController.maxWorldCol && worldRow < gameController.maxWorldRow){
             int tileNum = mapTileNum[worldCol][worldRow];
 
             // Checks the tiles in relation to the world
-            int worldX = worldCol * gameUI.tileSize;
-            int worldY = worldRow * gameUI.tileSize;
+            int worldX = worldCol * gameController.tileSize;
+            int worldY = worldRow * gameController.tileSize;
             // This shows where on the screen do we draw
-            int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
-            int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
+            int screenX = worldX - gameController.player.worldX + gameController.player.screenX;
+            int screenY = worldY - gameController.player.worldY + gameController.player.screenY;
 
             // Rendering Efficiency: Render only the visible parts on the screen
-            if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
-                worldY + gameUI.tileSize > gameUI.player.worldY - gameUI.player.screenY &&
-                worldY - gameUI.tileSize < gameUI.player.worldY + gameUI.player.screenY){
+            if (worldX + gameController.tileSize > gameController.player.worldX - gameController.player.screenX &&
+                worldX - gameController.tileSize < gameController.player.worldX + gameController.player.screenX &&
+                worldY + gameController.tileSize > gameController.player.worldY - gameController.player.screenY &&
+                worldY - gameController.tileSize < gameController.player.worldY + gameController.player.screenY){
                 // draw the appropriate sprite for the tile
                 g2 .drawImage(tile[tileNum].image, screenX, screenY, null);
             }
@@ -152,7 +157,7 @@ public class Map {
             //increment columns
             worldCol++;
             // if we hit the end of the line
-            if (worldCol == gameUI.maxWorldCol){
+            if (worldCol == gameController.maxWorldCol){
                 //reset our pointer to the beginning on the next worldRow
                 worldCol = 0;
                 worldRow++;
@@ -162,13 +167,13 @@ public class Map {
 
 
     public void placeItems() {
-        gameUI.obj[0] = new Sword(gameUI);
-        gameUI.obj[0].worldX = 27 * gameUI.tileSize;
-        gameUI.obj[0].worldY = 19 * gameUI.tileSize;
+        obj[0] = new Sword(gameController);
+        obj[0].worldX = 27 * gameController.tileSize;
+        obj[0].worldY = 19 * gameController.tileSize;
 
-        gameUI.obj[1] = new Table(gameUI);
-        gameUI.obj[1].worldX = 3* gameUI.tileSize;
-        gameUI.obj[1].worldY = 3 * gameUI.tileSize;
+        obj[1] = new Table(gameController);
+        obj[1].worldX = 3* gameController.tileSize;
+        obj[1].worldY = 3 * gameController.tileSize;
 
 
     }
