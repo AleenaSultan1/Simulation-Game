@@ -49,7 +49,7 @@ public class MapRenderer {
         try {
             floorImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/stoneFloor.png")));
             wallImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/wall.png")));
-            swordImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/items/sword.png")));
+            swordImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
             enemyImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/entities/chest1.png")));
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,9 +74,11 @@ public class MapRenderer {
                         worldY - tileSize < player.worldY + player.screenY) {
 
                     Tile tile = map.getTile(x, y);
-                    // 1. Draw the wall
+                    // 1. Draw the wall and floor
                     if (tile.isObstacle) {
                         g2.drawImage(wallImage, screenX, screenY, tileSize, tileSize, null);
+                    } else {
+                        g2.drawImage(floorImage, screenX, screenY, tileSize, tileSize, null);
                     }
                     // 2. If there is an Item, draw the item
                     Item item = tile.getItem();
@@ -90,10 +92,6 @@ public class MapRenderer {
                         g2.drawImage(enemyImage, screenX, screenY, tileSize, tileSize, null);
                     }
 
-                    // Draw the floor last
-                    if (!tile.isObstacle) {
-                        g2.drawImage(floorImage, screenX, screenY, tileSize, tileSize, null);
-                    }
                 }
             }
         }
