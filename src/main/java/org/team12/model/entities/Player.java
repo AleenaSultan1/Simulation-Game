@@ -32,6 +32,9 @@ public class Player extends Entity {
     InputController inputController;
     public final int screenX;
     public final int screenY;
+    public boolean hasSword = false;
+    int sword = 0;
+    public boolean canCure = false;
 
 
     public Player(GameUI gameUI, InputController inputController, int hp) {
@@ -42,7 +45,6 @@ public class Player extends Entity {
         this.getPlayerImage();
         screenX = gameUI.screenWidth/2 - (gameUI.tileSize/2);
         screenY = gameUI.screenHeight/2 -(gameUI.tileSize/2);
-
 
     }
 
@@ -86,6 +88,24 @@ public class Player extends Entity {
 
 
     }
+
+    // Picks up an object if the player is touching it
+    public void pickUpObject(int objIndex){
+
+        if (objIndex!=999){
+            String objectName = gameUI.obj[objIndex].name;
+
+            switch (objectName){
+                case "Sword":
+                    this.hasSword = true;
+                    gameUI.obj[objIndex] = null;
+                    System.out.println("Sword picked up");
+            }
+            // deletes the object we touched
+            //gameUI.obj[objIndex] = null;
+        }
+    }
+
 
     public void getPlayerImage(){
 
