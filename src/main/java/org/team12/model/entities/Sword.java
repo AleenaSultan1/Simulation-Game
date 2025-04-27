@@ -24,15 +24,9 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Sword extends Item {
-    GameUI gameUI;
+    private int strength;
 
-    public Sword(GameUI gameUI) {
-        name = "Sword";
-        try{
-            image= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
-            utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Sword() {
+        strength = 5;
     }
 }

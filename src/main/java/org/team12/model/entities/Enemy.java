@@ -18,115 +18,82 @@
 package org.team12.model.entities;
 
 import org.team12.states.EnemyStatus;
-import org.team12.view.GameUI;
 
-import java.awt.*;
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 import java.util.Random;
 
 public class Enemy extends Entity {
+    private EnemyStatus enemyState;
+    private int hostilityArea; // the region where it can detect the player (might as well implement collision check)
+    private BufferedImage sprite;
 
-    GameUI gameUI;
-
-    public Enemy(GameUI gameUI) {
-        //super(gameUI, inputController);
-        super(gameUI);
-        this.gameUI = gameUI;
-        type = 1;
-        name = "Green monster";
-        speed = 1;
-        maxLife = 4;
-        solidArea.x = 3;
-        solidArea.y = 18;
-        solidArea.width = 42;
-        solidArea.height = 30;
-        solidAreaDefaultX = solidArea.x;
-        solidAreaDefaultY = solidArea.y;
-
-        getImage();
-    }
-    public void getImage() {
-        up1 = setup("/evilGoon/enemy_up_1");
-        up2 = setup("/evilGoon/enemy_up_2");
-        down1 = setup("/evilGoon/enemy_down_1");
-        down2 = setup("/evilGoon/enemy_down_2");
-        left1 = setup("/evilGoon/enemy_left_1");
-        left2 = setup("/evilGoon/enemy_left_2");
-        right1 = setup("/evilGoon/enemy_right_1");
-        right2 = setup("/evilGoon/enemy_right_1");
+    public Enemy(int hp, int hostilityArea) {
+        super(hp);
+        this.hostilityArea = hostilityArea;
+        this.enemyState = EnemyStatus.PEACEFUL;
+        this.speed = 2;
+        moveRandomly();
     }
 
-    public void update() {
-        actionLockCounter++;
-        if (actionLockCounter == 120) {
-            Random random = new Random();
-            int i = random.nextInt(100) + 1;
+    public boolean isDead() {
+        return this.HP <= 0;
+    }
 
-            if (i <= 25) {
+    public EnemyStatus getState() {
+        return enemyState;
+    }
+
+    public void setEnemyState (EnemyStatus newState) {
+        this.enemyState = newState;
+    }
+
+    public void setCoord(int x, int y) {
+        worldX = x;
+        worldY = y;
+    }
+
+    public void moveRandomly() {
+        Random rand = new Random();
+        int step = rand.nextInt(4);
+        try {
+        switch (step) {
+            case 0:
                 direction = "up";
-            }
-            if (i > 25 && i <= 50) {
+                worldY += speed;
+                sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_up_1")));
+                break;
+            case 1:
                 direction = "down";
-            }
-            if (i > 50 && i <= 75) {
+                worldY -= speed;
+                sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_down_1")));
+
+                break;
+            case 2:
                 direction = "left";
-            }
-            if (i > 75 && i <= 100) {
+                worldX -= speed;
+                sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_left_1")));
+
+                break;
+            case 3:
                 direction = "right";
-            }
-            actionLockCounter = 0;
+                worldX += speed;
+                sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_right_1")));
+                break;
+            default:
+                break;
         }
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+
     }
 
-    public void draw(Graphics2D g2) {
-        BufferedImage image = null;
-        int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
-        int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
-
-        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
-                worldY + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldY - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
-
-            switch (direction) {
-                case "up":
-                    if (spriteNum == 1) {
-                        image = up1;
-                    }
-                    if (spriteNum == 2) {
-                        image = up2;
-                    }
-                case "down":
-                    if (spriteNum == 1) {
-                        image = down1;
-                    }
-                    if (spriteNum == 2) {
-                        image = down2;
-                    }
-                case "left":
-                    if (spriteNum == 1) {
-                        image = left1;
-                    }
-                    if (spriteNum == 2) {
-                        image = left2;
-                    }
-                case "right":
-                    if (spriteNum == 1) {
-                        image = right1;
-                    }
-                    if (spriteNum == 2) {
-                        image = right2;
-                    }
-                    break;
-            }
-
-            g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
-        }
+    @Override
+    public BufferedImage getCurrentSprite() {
+        return sprite;
     }
 
-    public void updateState(EnemyStatus newState) {
-        if (super.currentStatus.canTransitionTo(newState)) {
-            super.currentStatus = newState;
-        }
-    }
 }

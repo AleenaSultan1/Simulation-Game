@@ -50,7 +50,6 @@ public class MapRenderer {
             floorImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/stoneFloor.png")));
             wallImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/wall.png")));
             swordImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
-            enemyImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/entities/chest1.png")));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,11 +62,11 @@ public class MapRenderer {
                 int worldX = x * tileSize;
                 int worldY = y * tileSize;
 
-// screenX/Y is where the tile appears relative to the player
+                // screenX/Y is where the tile appears relative to the player
                 int screenX = worldX - player.worldX + player.screenX;
                 int screenY = worldY - player.worldY + player.screenY;
 
-// Only draw tiles that are within the visible screen area
+                // Only draw tiles that are within the visible screen area
                 if (worldX + tileSize > player.worldX - player.screenX &&
                         worldX - tileSize < player.worldX + player.screenX &&
                         worldY + tileSize > player.worldY - player.screenY &&

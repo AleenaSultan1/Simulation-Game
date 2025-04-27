@@ -108,11 +108,8 @@ public class Player extends Entity {
         }
     }
 
-    public void draw(Graphics2D g2) {
-//        g2.setColor(Color.white);
-//        g2.fillRect(x, y, gameUI.tileSize, gameUI.tileSize);
-
-
+    @Override
+    public BufferedImage getCurrentSprite() {
         // Animation for walking
         BufferedImage image = null;
         switch(direction){
@@ -149,7 +146,7 @@ public class Player extends Entity {
                 }
                 break;
         }
-        g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
+        return image;
     }
 
 }
