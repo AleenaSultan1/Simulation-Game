@@ -17,8 +17,10 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.GameController;
 import org.team12.controller.InputController;
 import org.team12.controller.UtilityTool;
+import org.team12.model.Map;
 import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
@@ -29,22 +31,25 @@ import java.util.Objects;
 
 
 public class Player extends Entity {
+    GameController gameController;
     InputController inputController;
+    GameUI gameUI;
+    Map map;
     public final int screenX;
     public final int screenY;
     public boolean hasSword = false;
-    int sword = 0;
+
     public boolean canCure = false;
 
 
-    public Player(GameUI gameUI, InputController inputController) {
-        super(gameUI);
-        this.gameUI = gameUI;
+    public Player(GameController gameController, InputController inputController) {
+        super(gameController);
+        this.gameController = gameController;
         this.inputController = inputController;
         // sets the player's position to the halfway point of the screen
         // offset it to account for positioning error
-        screenX=gameUI.screenWidth/2 - (gameUI.tileSize/2);
-        screenY=gameUI.screenHeight/2 -(gameUI.tileSize/2);
+        screenX= gameController.screenWidth/2 - (gameController.tileSize/2);
+        screenY= gameController.screenHeight/2 -(gameController.tileSize/2);
 
         // Get images for player and reset standard player stats
         this.setDefaultValues();
@@ -65,8 +70,8 @@ public class Player extends Entity {
     public void setDefaultValues(){
         // Set player's default position. Normally the player spawns in the top left at (0, 0).
         // Moves the player more towards the center of the screen
-        worldX = gameUI.tileSize * 8; //sets the world spawn x coord
-        worldY = gameUI.tileSize * 6; // sets the world spawn y coord
+        worldX = gameController.tileSize * 18; //sets the world spawn x coord
+        worldY = gameController.tileSize * 25; // sets the world spawn y coord
         speed = 4; // moves 4 pixels per frame
         direction = "down";
 
@@ -92,9 +97,9 @@ public class Player extends Entity {
             // CHECK TILE COLLISION
             collisionOn = false;
             // check if the player is touching an impassable tile
-            gameUI.cController.checkTile(this);
+            gameController.cController.checkTile(this);
             // check if the player is touching an interactable item
-            int objIndex = gameUI.cController.checkObject(this, true);
+            int objIndex = gameController.cController.checkObject(this, true);
             pickUpObject(objIndex);
 
             // if collision is false, player can move
@@ -131,16 +136,29 @@ public class Player extends Entity {
 
     }
 
+    // Scales the player sprites to x3 their original size
+    public BufferedImage setup(String imageName){
+        UtilityTool utilTool = new UtilityTool();
+        BufferedImage image = null;
+        try{
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/" + imageName + ".png")));
+            image = utilTool.scaleImage(image, gameController.tileSize, gameController.tileSize);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return image;
+    }
+
     // Picks up an object if the player is touching it
     public void pickUpObject(int objIndex){
 
         if (objIndex!=999){
-            String objectName = gameUI.obj[objIndex].name;
+            String objectName = gameController.map.obj[objIndex].name;
 
             switch (objectName){
                 case "Sword":
                     this.hasSword = true;
-                    gameUI.obj[objIndex] = null;
+                    gameController.map.obj[objIndex] = null;
                     System.out.println("Sword picked up");
             }
             // deletes the object we touched
@@ -150,14 +168,14 @@ public class Player extends Entity {
 
     // Gets the player's sprite from resources
     public void getPlayerImage(){
-        up1 = setup("/player/player_up_1");
-        up2 = setup("/player/player_up_2");
-        down1 = setup("/player/player_down_1");
-        down2 = setup("/player/player_down_2");
-        right1 = setup("/player/player_right_1");
-        right2 = setup("/player/player_right_2");
-        left1 = setup("/player/player_left_1");
-        left2 = setup("/player/player_left_2");
+        up1 = setup("player_up_1");
+        up2 = setup("player_up_2");
+        down1 = setup("player_down_1");
+        down2 = setup("player_down_2");
+        right1 = setup("player_right_1");
+        right2 = setup("player_right_2");
+        left1 = setup("player_left_1");
+        left2 = setup("player_left_2");
 
     }
 
@@ -199,6 +217,6 @@ public class Player extends Entity {
                 }
                 break;
         }
-        g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
+        g2.drawImage(image, screenX, screenY, gameController.tileSize, gameController.tileSize, null);
     }
 }

@@ -17,18 +17,14 @@
 
 package org.team12.model.entities;
 
-import org.team12.controller.UtilityTool;
-import org.team12.view.GameUI;
+import org.team12.controller.GameController;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
 
 public class Entity {
 
-    GameUI gameUI;
+    GameController gameController;
     // Global Coordinates for where an entity is in the world
     public int worldX,worldY;
     // How fast an entity moves (4 pixels)
@@ -52,121 +48,7 @@ public class Entity {
     public int hitboxDefaultX, hitboxDefaultY;
     public boolean collisionOn = false;
 
-    //String dialogues[] = new String[20]; // for the riddles
-    //int dialogueIndex = 0;
-    public BufferedImage image, image2, image3;
-    public String name;
-    public int type; // 0 = player, 1 = enemy
-    public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // for collision detection later
-    public int solidAreaDefaultX, solidAreaDefaultY;
-
-    public Entity(GameUI gameUI){
-        this.gameUI = gameUI;
-    }
-
-    public void setAction() {
-    }
-
-    public void update() {
-        setAction();
-
-        collisionOn = false;
-        //gameUI.cChecker.checkTile(this);
-        //gameUI.cChecker.checkObject(this, false);
-        //gameUI.cChecker.checkPlayer(this);
-        //boolean contactPlayer = gameUI.cChecker.checkPlayer(this); //collision check
-
-        //if (this.type == 2 && contactPlayer == true) {
-        //if (gameUI.player.invincible == false) {
-        // damage
-        //gameUI.player.life -= 1;
-        //gameUI.player.invincible = true;
-
-        // move player of collision is false
-        if (collisionOn == false) {
-            switch (direction) {
-                case "up":
-                    worldY -= speed;
-                    break;
-                case "down":
-                    worldY += speed;
-                    break;
-                case "left":
-                    worldX -= speed;
-                    break;
-                case "right":
-                    worldX += speed;
-                    break;
-            }
-        }
-
-        spriteCounter++;
-        if (spriteCounter >= 12) {
-            if (spriteNum == 1) {
-                spriteCounter = 2;
-            } else if (spriteNum == 2) {
-                spriteCounter = 1;
-            }
-            spriteCounter = 0;
-        }
-    }
-
-    public void draw(Graphics2D g2) {
-        BufferedImage image = null;
-        int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
-        int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
-
-        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
-                worldY + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldY - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
-
-            switch (direction) {
-                case "up":
-                    if (spriteNum == 1) {
-                        image = up1;
-                    }
-                    if (spriteNum == 2) {
-                        image = up2;
-                    }
-                case "down":
-                    if (spriteNum == 1) {
-                        image = down1;
-                    }
-                    if (spriteNum == 2) {
-                        image = down2;
-                    }
-                case "left":
-                    if (spriteNum == 1) {
-                        image = left1;
-                    }
-                    if (spriteNum == 2) {
-                        image = left2;
-                    }
-                case "right":
-                    if (spriteNum == 1) {
-                        image = right1;
-                    }
-                    if (spriteNum == 2) {
-                        image = right2;
-                    }
-                    break;
-            }
-
-            g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
-        }
-    }
-
-    // Scales the sprites to x3 their original size
-    public BufferedImage setup(String imagePath){
-        UtilityTool utilTool = new UtilityTool();
-        BufferedImage image = null;
-        try{
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(imagePath + ".png")));
-            image = utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return image;
+    public Entity(GameController gameController){
+        this.gameController = gameController;
     }
 }

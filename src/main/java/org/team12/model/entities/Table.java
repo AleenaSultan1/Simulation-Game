@@ -17,20 +17,20 @@
 
 package org.team12.model.entities;
 
-import org.team12.view.GameUI;
+import org.team12.controller.GameController;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Objects;
 
-public class EvilPortal extends Item{
-    GameUI gameUI;
+public class Table extends Item{
+    GameController gameController;
 
-    public EvilPortal(GameUI gameUI) {
-        name = "EvilPortal";
+    public Table(GameController gameController) {
+        name = "Table";
         try{
-            image= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/evilPortal.png")));
-            utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
+            image= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/table.png")));
+            utilTool.scaleImage(image, gameController.tileSize, gameController.tileSize);
         } catch (IOException e) {
             e.printStackTrace();
         }

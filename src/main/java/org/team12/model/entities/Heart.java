@@ -17,25 +17,25 @@
 
 package org.team12.model.entities;
 
-import org.team12.view.GameUI;
+import org.team12.controller.GameController;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Objects;
 
 public class Heart extends Item{
-    GameUI gameUI;
+    GameController gameController;
 
-    public Heart(GameUI gameUI) {
-        this.gameUI = gameUI;
+    public Heart(GameController gameController) {
+        this.gameController = gameController;
         name = "Heart";
         try{
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartFull.png")));
             image2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartHalf.png")));
             image3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartEmpty.png")));
-            utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
-            utilTool.scaleImage(image2, gameUI.tileSize, gameUI.tileSize);
-            utilTool.scaleImage(image3, gameUI.tileSize, gameUI.tileSize);
+            utilTool.scaleImage(image, gameController.tileSize, gameController.tileSize);
+            utilTool.scaleImage(image2, gameController.tileSize, gameController.tileSize);
+            utilTool.scaleImage(image3, gameController.tileSize, gameController.tileSize);
 
         } catch (IOException e) {
             e.printStackTrace();
