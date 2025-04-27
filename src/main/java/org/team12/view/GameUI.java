@@ -17,10 +17,9 @@
 
 package org.team12.view;
 
-import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
-import org.team12.model.entities.*;
+import org.team12.model.entities.Player;
 
 import javax.swing.JPanel;
 import java.awt.*;
@@ -39,36 +38,8 @@ public class GameUI extends JPanel implements Runnable{
 
 
     // GAME LOOP VARIABLES
-    Thread gameThread; // Thread to start the game loop of 60 frames per second
+    private Thread gameThread; // Thread to start the game loop of 60 frames per second
     int FPS = 60; // Used in the main game loop to run the game at 60 frames per second
-
-    //Construct a list of potential different objects (10 slots for objects)
-    public Item[] obj = new Item[10];
-
-
-    // OBJECT CONSTRUCTORS
-    // Constructs an inputController object to handle user input (movement, interaction, attacks)
-    InputController inputController = new InputController(); // Constructs and handles user movement
-
-    // Display enemies (evil goons) using AssetSetter
-    public AssetSetter assetSetter = new AssetSetter(this);
-
-    // Construct a player object: can move around, interact with the map, and attack enemies
-    public Player player = new Player(this, inputController);
-
-    // Construct enemies
-    public Entity enemy[] = new Entity[20];
-
-    // Construct Lily
-    public LilyFinalBoss lilyFinalBoss;
-
-    //Construct a map object: loads a map from a txt file, spawns in items and enemies
-    public Map map = new Map(this);
-
-    //Construct a collision controller which checks if entities are allowed to pass through certain tiles/objects
-    public CollisionController cController = new CollisionController(this);
-
-
 
     // WORLD SETTINGS: Will change to specific map size
     public final int maxWorldCol = 50;
@@ -76,8 +47,18 @@ public class GameUI extends JPanel implements Runnable{
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
 
+    private Map map;
+    private MapRenderer mapRenderer;
+    private InputController inputController = new InputController();
+    public Player player;
+
+
+
     // Constructor for a game UI
     public GameUI(){
+        player = new Player(this, inputController, 20);
+        map = new Map("/map/dungeonMap.txt");
+        mapRenderer = new MapRenderer(player, map, tileSize);
         // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         // Sets the background of the map: will need to load/generate a map
@@ -129,11 +110,11 @@ public class GameUI extends JPanel implements Runnable{
 
             if(delta>=1){
                 // update player position, will also be used to update enemy position and status of items
-                update();
                 // Makes a new frame for the Game UI with the updated changes
                 repaint();
                 delta--;
                 drawCount++;
+                player.update();
             }
 
             // Displays FPS
@@ -145,32 +126,11 @@ public class GameUI extends JPanel implements Runnable{
         }
     }
 
-    // Used to spawn in items, enemies, etc.
-    public void populateMap(){
-        map.placeItems();
-
-        // PLEASE COMMENT THESE LINES IF YOU CAN'T MOVE THE PLAYER!!!!
-        //map.placeEnemy((Enemy) enemy[0], 7, 5);
-        //map.placeEnemy((Enemy) enemy[1], 9, 7);
-
-        //map.placeLilyFinalBoss(lilyFinalBoss, 7, 5);
-    }
-
     // At the moment: moves the player according to which key is pressed
-    public void update(){
-        player.update();
-
-        for (int i = 0; i < enemy.length; i++) {
-            if (enemy[i] != null) {
-                enemy[i].update();
-            }
-        }
-
-        if (lilyFinalBoss != null) {
-            lilyFinalBoss.update();
-        }
-
-    }
+//    public void update(){
+//        player.update();
+//
+//    }
 
     // Paints the player as a white rectangle
     // HIERARCHY MATTERS, map should always be first and player should always be last
@@ -181,31 +141,8 @@ public class GameUI extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D) g;
 
         // draw the map
-        map.draw(g2);
-
-        // draw the objects on the map
-        // Parse through our possible object list and draw the appropriate ones for each object
-        for (int i = 0; i < obj.length; i++){
-            if (obj[i] != null){
-                obj[i].draw(g2, this);
-            }
-        }
-
-        // draw enemies on the map
-        for (int i = 0; i < enemy.length; i++){
-            if (enemy[i] != null){
-                enemy[i].draw(g2);
-            }
-        }
-
-        // draw Lily on the map
-        if (lilyFinalBoss != null){
-            lilyFinalBoss.draw(g2);
-        }
-
-        // draw the player
+        mapRenderer.draw(g2);
         player.draw(g2);
-
 
         // dispose of the objects
         g2.dispose();

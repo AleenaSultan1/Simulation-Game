@@ -17,45 +17,65 @@
 
 package org.team12.controller;
 
+import javafx.util.Pair;
+import org.team12.model.*;
+import org.team12.model.entities.*;
+import org.team12.states.EnemyStatus;
 import org.team12.view.GameUI;
-import javax.swing.JFrame;
+
+import java.util.Random;
+
 
 public class GameController {
-    // Create a new game UI: This is the actual game
-    static GameUI gameUI = new GameUI();
+    private Map map;
+    private GameUI gameUI;
 
-    public static void initializeWindow(){
-        // Create a screen window to display the game
-        JFrame window = new JFrame();
+    private Player player;
+    private LilyFinalBoss lily;
+    private Sword sword;
+    private MagicDust magicDust;
+    private RiddleChest riddleChest;
 
-        // Format basic screen settings
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
-        window.setTitle("Dungeon Game");
+    private int numGoons = 5;
+    private int lvlHeight = 20;
 
-        // Add it to the screen
-        window.add(gameUI);
+    private Enemy[] goons = new Enemy[numGoons];
 
-        // Automatically size the window
-        window.pack();
-        // More Formatting
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
+    private Pair<Integer, Integer> lvlOneDim = new Pair<>(lvlHeight, 0);
+    private Pair<Integer, Integer> lvlTwoDim = new Pair<>(lvlHeight*2 + 1, lvlHeight + 1);
+    private Pair<Integer, Integer> lvlThreeDim = new Pair<>(lvlHeight*3 + 2, lvlHeight*2 + 2);
+
+
+    public GameController() {
+        lily = new LilyFinalBoss(50, 10, 100, 20);
+        sword = new Sword();
+        magicDust = new MagicDust();
+        riddleChest = new RiddleChest();
     }
 
-    public static void initializeGame(){
-        // spawn objects and items into the map
-        gameUI.populateMap();
-        // start the main game loop
-        gameUI.startGameThread();
+    /**
+     * Validate player's access from Lvl.1 to Lvl.2
+     */
+    public boolean validateLevel1() {
+        // Check if player has all items and is in the correct position (door)
+//        return player.hasAllItems();
+        return false;
     }
 
-
-    public static void main(String[] args) {
-        // Formats the window from which the game will be run
-        initializeWindow();
-
-        // starts the main game loop and spawns in entities and items onto the map
-        initializeGame();
+    public boolean validateLevel2() {
+        for (Enemy goon : goons) {
+            if (goon.getState() != EnemyStatus.DEAD) {
+                return false;
+            }
+        }
+        return true;
     }
+
+//    public boolean interactWithChest(RiddleChest riddleChest) {
+//        player.interact(riddleChest); // This should not update the chest's status
+//        if (riddleChest.checkUserInput())
+//    }
+
+
+
 }

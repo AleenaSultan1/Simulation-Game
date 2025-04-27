@@ -5,33 +5,30 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import org.team12.view.GameUI;
 
-public class DungeonGameApp extends Application {
+import javax.swing.*;
+
+public class DungeonGameApp {
 
     public static void main(String[] args) {
-        launch(args);
+        // Create a window
+        JFrame window = new JFrame();
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setResizable(false);
+        window.setTitle("Dungeon Game");
+
+        // Create the GameUI (our main game panel)
+        GameUI gameUI = new GameUI();
+        window.add(gameUI);
+        window.pack(); // fit window to GameUI's preferred size
+
+        // Center window and make it visible
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
+
+        // Start the game loop
+        gameUI.startGameThread();
     }
-
-    @Override
-    public void start(Stage primaryStage) {
-
-        // Grab some property values from System
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
-
-        // Create a Label from a String showing these properties
-        Label label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java "
-                + javaVersion + ".");
-
-        // Set up our Scene Graph. Use a StackPane layout manager to manage the scene
-        StackPane pane = new StackPane();
-        pane.getChildren().add(label);
-        Scene scene = new Scene(pane, 640, 480);
-
-        // Set the scene to render for the stage and show it!
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-
 }
+
