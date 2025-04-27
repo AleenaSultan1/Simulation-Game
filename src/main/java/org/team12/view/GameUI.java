@@ -18,83 +18,133 @@
 package org.team12.view;
 
 import org.team12.controller.InputController;
+import org.team12.model.Map;
+import org.team12.model.entities.Player;
 
 import javax.swing.JPanel;
 import java.awt.*;
 
 public class GameUI extends JPanel implements Runnable{
-    final int originalTileSize = 16;
-    final int scale = 3;
-    final int tileSize = originalTileSize * scale;
-    final int maxScreenCol = 16;
-    final int maxScreenRow = 12;
-    final int screenWidth = tileSize * maxScreenCol;
-    final int screenHeight = tileSize * maxScreenRow;
 
-    InputController inputController = new InputController();
-    Thread gameThread;
+    // SCREEN SETTINGS AND VARIABLES
+    private final int originalTileSize = 16; // 16 x 16 pixel tile
+    private final int scale = 3; // scale everything up by a factor or 3
+    public int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
 
-    int FPS = 60;
+    public int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
+    public int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
+    public int screenWidth = tileSize * maxScreenCol; // 786 pixels
+    public int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
-    // get player's default position
-    int playerX = 100;
-    int playerY = 100;
-    int playerSpeed = 4; // moves 4 pixels
 
+    // GAME LOOP VARIABLES
+    private Thread gameThread; // Thread to start the game loop of 60 frames per second
+    int FPS = 60; // Used in the main game loop to run the game at 60 frames per second
+
+    // WORLD SETTINGS: Will change to specific map size
+    public final int maxWorldCol = 50;
+    public final int maxWorldRow = 12;
+    public final int worldWidth = tileSize * maxWorldCol;
+    public final int worldHeight = tileSize * maxWorldRow;
+
+    private Map map;
+    private MapRenderer mapRenderer;
+    private InputController inputController = new InputController();
+    public Player player;
+
+
+
+    // Constructor for a game UI
     public GameUI(){
+        player = new Player(this, inputController, 20);
+        map = new Map("/map/dungeonMap.txt");
+        mapRenderer = new MapRenderer(player, map, tileSize);
+        // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        // Sets the background of the map: will need to load/generate a map
         this.setBackground(Color.black);
+        // Double buffer for better efficiency
         this.setDoubleBuffered(true);
-        this.addKeyListener(inputController);
+        // Makes the GameUI interactable with the keyboard
+        this.requestFocusInWindow(); // focuses everything in the window
         this.setFocusable(true);
+        // Creates an object to register user inputs
+        this.addKeyListener(inputController);
+
     }
 
+    // Starts a gameThread which is used to run the game loop
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    // Runs the actual GameUI/Game
+
+    /**
+     * Update information such as character position
+     * Draw the screen with the updated information
+     */
     @Override
     public void run() {
+
+        // Set variables to run the game at 60FPS
         double drawInterval = (double) 1000000000 / FPS; // 0.01666 seconds
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
 
-        // implement GameLoop
+        // Variables to display FPS every second
+        long timer = 0;
+        int drawCount = 0;
+
+        // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
+
 
             currentTime = System.nanoTime();
 
             delta += (currentTime - lastTime) / drawInterval;
+            timer += (currentTime - lastTime);
             lastTime = currentTime;
 
             if(delta>=1){
-                update();
+                // update player position, will also be used to update enemy position and status of items
+                // Makes a new frame for the Game UI with the updated changes
                 repaint();
                 delta--;
+                drawCount++;
+                player.update();
+            }
+
+            // Displays FPS
+            if(timer >= 1000000000){
+                System.out.println("FPS: " + drawCount);
+                drawCount = 0;
+                timer = 0;
             }
         }
     }
 
-    public void update(){
-        if(inputController.upPressed){
-            playerY -= playerSpeed;
-        } else if (inputController.downPressed){
-            playerY += playerSpeed;
-        } else if (inputController.leftPressed){
-            playerX -= playerSpeed;
-        } else if (inputController.rightPressed){
-            playerX += playerSpeed;
-        }
+    // At the moment: moves the player according to which key is pressed
+//    public void update(){
+//        player.update();
+//
+//    }
 
-    }
-
+    // Paints the player as a white rectangle
+    // HIERARCHY MATTERS, map should always be first and player should always be last
     public void paintComponent(Graphics g){
+        // inherit the paintComponent method
         super.paintComponent(g);
+        // create a new Graphics 2d Object
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.white);
-        g2.fillRect(playerX, playerY, tileSize, tileSize);
+
+        // draw the map
+        mapRenderer.draw(g2);
+        player.draw(g2);
+
+        // dispose of the objects
         g2.dispose();
     }
 }

@@ -18,37 +18,41 @@
 package org.team12.model.entities;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public abstract class Entity {
     protected int HP;
     protected boolean state; //true=alive
-    protected int xCoordinate;
-    protected int yCoordinate;
+    public int worldX;
+    public int worldY;
+    // Used for checking collisions/hitboxes
+    public Rectangle hitbox;
+    public int hitboxDefaultX, hitboxDefaultY;
+    public boolean collisionOn = false;
+    public int speed;
+    public String direction;
+
+    // Variables to alternate sprites - Creating animations
+    public int spriteCounter = 0;
+    public int spriteNum =1;
+
+
+
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
-    public Entity(int x, int y, int hp) {
-        this.xCoordinate = x;
-        this.yCoordinate = y;
+    public Entity(int hp) {
         this.HP = hp;
         this.state = true; // alive by default
     }
 
-    public abstract boolean attack();
-    public abstract boolean move();
-    public abstract boolean spawn();
-
-    public boolean survivalStatus() {
-        return this.state && this.HP > 0;
+    public int getworldX() {
+        return worldX;
     }
 
-    public int getXCoordinate() {
-        return xCoordinate;
-    }
-
-    public int getYCoordinate() {
-        return yCoordinate;
+    public int getworldY() {
+        return worldY;
     }
 
     public int getHP() {

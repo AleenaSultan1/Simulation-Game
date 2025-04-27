@@ -25,8 +25,8 @@ public class Enemy extends Entity {
     private EnemyStatus enemyState;
     private int hostilityArea; // the region where it can detect the player (might as well implement collision check)
 
-    public Enemy(int x, int y, int hp, int hostilityArea, GameUI gameUI) {
-        super(x, y, hp);
+    public Enemy(int hp, int hostilityArea) {
+        super(hp);
         this.hostilityArea = hostilityArea;
         this.enemyState = EnemyStatus.PEACEFUL;
         getImage();
@@ -42,29 +42,6 @@ public class Enemy extends Entity {
         right1 = setup("/enemy/green_slime_original");
         right2 = setup("/enemy/green_slime_with_legs");
     }
-    @Override
-    public boolean attack() {
-        if (!survivalStatus()) {
-            return false;
-        }
-        System.out.println("Enemy attacked");
-        return true;
-    }
-
-    @Override
-    public boolean move() {
-        if (!survivalStatus()) {
-            return false;
-        }
-        System.out.println("Enemy moved");
-        return true;
-    }
-
-    @Override
-    public boolean spawn() {
-        System.out.println("Enemy has spawned at (" + xCoordinate + ", " + yCoordinate + ")");
-        return true;
-    }
 
     public boolean isDead() {
         return this.HP <= 0;
@@ -76,13 +53,5 @@ public class Enemy extends Entity {
 
     public void setEnemyState (EnemyStatus newState) {
         this.enemyState = newState;
-    }
-
-    public int getHostilityArea() {
-        return hostilityArea;
-    }
-
-    public void setHostilityArea(int hostilityArea) {
-        this.hostilityArea = hostilityArea;
     }
 }

@@ -20,19 +20,21 @@ package org.team12.controller;
 import javafx.util.Pair;
 import org.team12.model.*;
 import org.team12.model.entities.*;
+import org.team12.states.EnemyStatus;
+import org.team12.view.GameUI;
 
 import java.util.Random;
 
 
 public class GameController {
     private Map map;
+    private GameUI gameUI;
 
     private Player player;
     private LilyFinalBoss lily;
     private Sword sword;
     private MagicDust magicDust;
     private RiddleChest riddleChest;
-    private StateManager stateManager;
 
     private int numGoons = 5;
     private int lvlHeight = 20;
@@ -45,44 +47,10 @@ public class GameController {
 
 
     public GameController() {
-        lily = new LilyFinalBoss();
+        lily = new LilyFinalBoss(50, 10, 100, 20);
         sword = new Sword();
         magicDust = new MagicDust();
         riddleChest = new RiddleChest();
-        stateManager = new StateManager();
-    }
-
-    public void initializeGame() {
-        player = new Player();
-
-        // Make map with hardcoded dimensions
-        map = new Map(lvlHeight + 4, lvlHeight + 2);
-
-        // Generate 5 random Goons in Lvl2
-        for (int i = 0; i < numGoons; i++) {
-            goons[i] = new Enemy();
-
-            int possibleX = lvlTwoDim.getKey() - lvlTwoDim.getValue();
-            int possibleY = lvlHeight;
-
-            Random rand = new Random();
-            int x = rand.nextInt(lvlHeight) + lvlTwoDim.getValue();
-            int y = rand.nextInt(lvlHeight) + 1;
-            map.placeEnemy(goons[i], x, y);
-        }
-
-        // Place items
-        map.placeItem(magicDust, 10, 10);
-        map.placeItem(riddleChest, 15, 15);
-
-    }
-
-    public void startGame() {
-        map.placeObject(player);
-    }
-
-    public void proceedNextLevel() {
-
     }
 
     /**
@@ -90,14 +58,24 @@ public class GameController {
      */
     public boolean validateLevel1() {
         // Check if player has all items and is in the correct position (door)
-        if (player.hasAllItems) {
-            return true;
-        }
+//        return player.hasAllItems();
         return false;
     }
 
     public boolean validateLevel2() {
-        //if ()
+        for (Enemy goon : goons) {
+            if (goon.getState() != EnemyStatus.DEAD) {
+                return false;
+            }
+        }
+        return true;
     }
+
+//    public boolean interactWithChest(RiddleChest riddleChest) {
+//        player.interact(riddleChest); // This should not update the chest's status
+//        if (riddleChest.checkUserInput())
+//    }
+
+
 
 }

@@ -17,5 +17,8 @@
 
 package org.team12.model.entities;
 
+import org.team12.view.GameUI;
+
 public class EvilGoon {
+
 }

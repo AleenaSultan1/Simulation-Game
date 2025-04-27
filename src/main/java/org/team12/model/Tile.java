@@ -2,9 +2,9 @@
  * CSCI 205 - Software Engineering and Design
  * Spring 2025
  *
- * Name: Khanh Cao
- * Date: 4/22/2025
- * Time: 12:00 AM
+ * Name: Sebastian Stewart
+ * Date: 4/22/25
+ * Time: 8:20 PM
  *
  * Project: csci205_final_project
  * Package: org.team12.model
@@ -19,12 +19,21 @@ package org.team12.model;
 
 import org.team12.model.entities.*;
 
+import java.awt.image.BufferedImage;
+
+
 public class Tile {
+
+    //used to generate an image for a particular tile
+    BufferedImage image;
+    // Used for collision detection
+    public boolean isObstacle;
+
     private int x;
     private int y;
     private Item item;
     private Enemy enemy;
-    private boolean isObstacle;
+
 
     public Tile(int x, int y) {
         this.x = x;
@@ -54,11 +63,8 @@ public class Tile {
         return isObstacle;
     }
 
-    public void setObstacle(boolean isObstacle) {
-        this.isObstacle = isObstacle;
-    }
-
-    public boolean isOccupied() {
-        return (item != null) | (enemy != null) | (isObstacle);
+    public void setObstacle(boolean hasObstacle) {
+        this.isObstacle = hasObstacle;
     }
 }
+
