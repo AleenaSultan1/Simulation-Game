@@ -18,8 +18,10 @@
 package org.team12.controller;
 
 import org.team12.model.Map;
+import org.team12.model.entities.Entity;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
+import org.team12.view.AssetSetter;
 import org.team12.view.GameUI;
 import javax.swing.JFrame;
 
@@ -56,6 +58,9 @@ public class GameController implements Runnable{
     public GameUI gameUI;
     public InputController inputController;
     public Player player;
+    public AssetSetter assetSetter;
+    public Entity enemy[] = new Entity[20];
+    public Entity lilyFinalBoss;
     public Map map;
     public CollisionController cController;
 
@@ -88,11 +93,24 @@ public class GameController implements Runnable{
     // Used to spawn in items, enemies, etc.
     public void populateMap(){
         map.placeItems();
+        //map.placeEnemy();
+        //map.placeLilyFinalBoss();
     }
 
     // At the moment: moves the player according to which key is pressed
     public void update(){
         player.update();
+
+        for (int i = 0; i < enemy.length; i++) {
+            if (enemy[i] != null) {
+                enemy[i].update();
+            }
+        }
+
+        if (lilyFinalBoss != null) {
+            lilyFinalBoss.update();
+        }
+
     }
 
     /**

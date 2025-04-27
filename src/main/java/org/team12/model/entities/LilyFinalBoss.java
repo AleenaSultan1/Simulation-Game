@@ -17,6 +17,7 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.GameController;
 import org.team12.view.GameUI;
 
 import java.awt.*;
@@ -24,13 +25,13 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class LilyFinalBoss extends Entity {
-    GameUI gameUI;
+    GameController gameController;
 
-    public LilyFinalBoss(GameUI gameUI) {
-        super(gameUI);
+    public LilyFinalBoss(GameController gameController) {
+        super(gameController);
         //super(gameUI, inputController);
-        this.gameUI = gameUI;
-        type = 1;
+        this.gameController = gameController;
+        //type = 1;
         name = "Lily The Final Boss";
         speed = 1;
         //maxLife = 10;
@@ -82,13 +83,13 @@ public class LilyFinalBoss extends Entity {
 
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
-        int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
-        int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
+        int screenX = worldX - gameController.player.worldX + gameController.player.screenX;
+        int screenY = worldY - gameController.player.worldY + gameController.player.screenY;
 
-        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
-                worldY + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldY - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX) {
+        if (worldX + gameController.tileSize > gameController.player.worldX - gameController.player.screenX &&
+                worldX - gameController.tileSize < gameController.player.worldX + gameController.player.screenX &&
+                worldY + gameController.tileSize > gameController.player.worldX - gameController.player.screenX &&
+                worldY - gameController.tileSize < gameController.player.worldX + gameController.player.screenX) {
 
             switch (direction) {
                 case "up":
@@ -122,7 +123,7 @@ public class LilyFinalBoss extends Entity {
                     break;
             }
 
-            g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
+            g2.drawImage(image, screenX, screenY, gameController.tileSize, gameController.tileSize, null);
         }
     }
 }

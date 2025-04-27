@@ -29,8 +29,9 @@ public class GameUI extends JPanel{
     private GameController gameController;
     private Map map;
 
-
-
+    private final int originalTileSize = 16; // 16 x 16 pixel tile
+    private final int scale = 3; // scale everything up by a factor or 3
+    public int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
 
     // Constructor for a game UI
     public GameUI(GameController gameController){

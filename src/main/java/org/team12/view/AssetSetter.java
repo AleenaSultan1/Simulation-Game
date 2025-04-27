@@ -17,29 +17,30 @@
 
 package org.team12.view;
 
+import org.team12.controller.GameController;
 import org.team12.model.entities.Enemy;
 import org.team12.model.entities.LilyFinalBoss;
 
 public class AssetSetter {
-    GameUI gameUI;
+    GameController gameController;
 
-    public AssetSetter(GameUI gameUI) {
-        this.gameUI = gameUI;
+    public AssetSetter(GameController gameController) {
+        this.gameController = gameController;
     }
 
     public void setEnemy() {
-        gameUI.enemy[0] = new Enemy(gameUI);
-        gameUI.enemy[0].worldX = gameUI.tileSize * 9;
-        gameUI.enemy[0].worldY = gameUI.tileSize * 7;
+        gameController.enemy[0] = new Enemy(gameController);
+        gameController.enemy[0].worldX = gameController.tileSize * 9;
+        gameController.enemy[0].worldY = gameController.tileSize * 7;
 
-        gameUI.enemy[1] = new Enemy(gameUI);
-        gameUI.enemy[1].worldX = gameUI.tileSize * 7;
-        gameUI.enemy[1].worldY = gameUI.tileSize * 5;
+        gameController.enemy[1] = new Enemy(gameController);
+        gameController.enemy[1].worldX = gameController.tileSize * 7;
+        gameController.enemy[1].worldY = gameController.tileSize * 5;
     }
 
     public void setLilyFinalBoss() {
-        gameUI.lilyFinalBoss = new LilyFinalBoss(gameUI);
-        gameUI.lilyFinalBoss.worldX = gameUI.tileSize*7;
-        gameUI.lilyFinalBoss.worldY = gameUI.tileSize*5;
+        gameController.lilyFinalBoss = new LilyFinalBoss(gameController);
+        gameController.lilyFinalBoss.worldX = gameController.tileSize*7;
+        gameController.lilyFinalBoss.worldY = gameController.tileSize*5;
     }
 }
