@@ -25,8 +25,8 @@ public class Enemy extends Entity {
     private EnemyStatus enemyState;
     private int hostilityArea; // the region where it can detect the player (might as well implement collision check)
 
-    public Enemy(int x, int y, int hp, int hostilityArea) {
-        super(x, y, hp);
+    public Enemy(int hp, int hostilityArea) {
+        super(hp);
         this.hostilityArea = hostilityArea;
         this.enemyState = EnemyStatus.PEACEFUL;
         getImage();

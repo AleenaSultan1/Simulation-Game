@@ -30,20 +30,26 @@ import java.util.Objects;
 public class Player extends Entity {
     GameUI gameUI;
     InputController inputController;
+    public final int screenX;
+    public final int screenY;
 
-    public Player(GameUI gameUI, InputController inputController, int x, int y, int hp) {
-        super(x, y, hp);
+
+    public Player(GameUI gameUI, InputController inputController, int hp) {
+        super(hp);
         this.gameUI = gameUI;
         this.inputController = inputController;
         this.setDefaultValues();
         this.getPlayerImage();
+        screenX = gameUI.screenWidth/2 - (gameUI.tileSize/2);
+        screenY = gameUI.screenHeight/2 -(gameUI.tileSize/2);
+
 
     }
 
     public void setDefaultValues(){
         // Set player's default position. Normally the player spawns in the top left at (0, 0). Moves the player more towards the center of the screen
-        xCoordinate = 100;
-        yCoordinate = 100;
+        worldX = 100;
+        worldY = 100;
         speed = 4; // moves 4 pixels per frame
         direction = "down";
     }
@@ -53,16 +59,16 @@ public class Player extends Entity {
                 inputController.leftPressed || inputController.rightPressed) {
             if(inputController.upPressed){
                 direction = "up";
-                yCoordinate -= speed;
+                worldY -= speed;
             } else if (inputController.downPressed){
                 direction = "down";
-                yCoordinate += speed;
+                worldY += speed;
             } else if (inputController.leftPressed){
                 direction = "left";
-                xCoordinate -= speed;
+                worldX -= speed;
             } else if (inputController.rightPressed){
                 direction = "right";
-                xCoordinate += speed;
+                worldX += speed;
             }
 
             // Used for player walking animation
@@ -143,7 +149,7 @@ public class Player extends Entity {
                 }
                 break;
         }
-        g2.drawImage(image, xCoordinate, yCoordinate, gameUI.tileSize, gameUI.tileSize, null);
+        g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
     }
 
 }

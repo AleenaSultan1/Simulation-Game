@@ -74,8 +74,14 @@ public class Map {
                     if (tileType == 1) {
                         grid[x][y].setObstacle(true);
                     }
-                    // tileType 0 means walkable floor
-                    // You can add more types later if you want
+
+                    if (tileType == 2) {
+                        grid[x][y].setEnemy(new Enemy(10, 2));
+                    }
+                    if (tileType == 3) {
+                        grid[x][y].setItem(new Sword());
+                    }
+
                 }
                 y++;
             }

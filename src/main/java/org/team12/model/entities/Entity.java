@@ -25,8 +25,8 @@ import java.io.IOException;
 public abstract class Entity {
     protected int HP;
     protected boolean state; //true=alive
-    public int xCoordinate;
-    public int yCoordinate;
+    public int worldX;
+    public int worldY;
     // Used for checking collisions/hitboxes
     public Rectangle hitbox;
     public int hitboxDefaultX, hitboxDefaultY;
@@ -42,19 +42,17 @@ public abstract class Entity {
 
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
-    public Entity(int x, int y, int hp) {
-        this.xCoordinate = x;
-        this.yCoordinate = y;
+    public Entity(int hp) {
         this.HP = hp;
         this.state = true; // alive by default
     }
 
-    public int getXCoordinate() {
-        return xCoordinate;
+    public int getworldX() {
+        return worldX;
     }
 
-    public int getYCoordinate() {
-        return yCoordinate;
+    public int getworldY() {
+        return worldY;
     }
 
     public int getHP() {

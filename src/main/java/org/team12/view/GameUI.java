@@ -19,6 +19,7 @@ package org.team12.view;
 
 import org.team12.controller.InputController;
 import org.team12.model.Map;
+import org.team12.model.entities.Player;
 
 import javax.swing.JPanel;
 import java.awt.*;
@@ -48,12 +49,16 @@ public class GameUI extends JPanel implements Runnable{
 
     private Map map;
     private MapRenderer mapRenderer;
-    private InputController inputController;
+    private InputController inputController = new InputController();
+    public Player player;
+
+
 
     // Constructor for a game UI
     public GameUI(){
+        player = new Player(this, inputController, 20);
         map = new Map("/map/dungeonMap.txt");
-        mapRenderer = new MapRenderer(map, tileSize);
+        mapRenderer = new MapRenderer(player, map, tileSize);
         // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         // Sets the background of the map: will need to load/generate a map
@@ -109,6 +114,7 @@ public class GameUI extends JPanel implements Runnable{
                 repaint();
                 delta--;
                 drawCount++;
+                player.update();
             }
 
             // Displays FPS
@@ -118,11 +124,6 @@ public class GameUI extends JPanel implements Runnable{
                 timer = 0;
             }
         }
-    }
-
-    // Used to spawn in items, enemies, etc.
-    public void populateMap(){
-//        map.placeItems();
     }
 
     // At the moment: moves the player according to which key is pressed
@@ -141,6 +142,7 @@ public class GameUI extends JPanel implements Runnable{
 
         // draw the map
         mapRenderer.draw(g2);
+        player.draw(g2);
 
         // dispose of the objects
         g2.dispose();
