@@ -53,32 +53,6 @@ public class GameController {
         riddleChest = new RiddleChest();
     }
 
-    public void initializeGame() {
-//        player = new Player();
-
-        // Generate 5 random Goons in Lvl2
-//        for (int i = 0; i < numGoons; i++) {
-//            goons[i] = new Enemy(0, 0, 100, 20);
-//
-//            int possibleX = lvlTwoDim.getKey() - lvlTwoDim.getValue();
-//            int possibleY = lvlHeight;
-//
-//            Random rand = new Random();
-//            int x = rand.nextInt(lvlHeight) + lvlTwoDim.getValue();
-//            int y = rand.nextInt(lvlHeight) + 1;
-//            map.placeEnemy(goons[i], x, y);
-//        }
-
-//        // Place Lily
-//        map.placeEnemy(lily, 50, 10);
-//
-//        // Place items
-//        map.placeItem(magicDust, 10, 10);
-//        map.placeItem(riddleChest, 15, 15);
-    }
-
-
-
     /**
      * Validate player's access from Lvl.1 to Lvl.2
      */

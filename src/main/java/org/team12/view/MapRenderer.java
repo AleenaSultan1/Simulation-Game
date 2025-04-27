@@ -74,20 +74,25 @@ public class MapRenderer {
                         worldY - tileSize < player.worldY + player.screenY) {
 
                     Tile tile = map.getTile(x, y);
-                    // 1. Draw the floor or wall
-                    BufferedImage img = tile.hasObstacle() ? wallImage : floorImage;
-                    g2.drawImage(img, x * tileSize, y * tileSize, tileSize, tileSize, null);
-
+                    // 1. Draw the wall
+                    if (tile.isObstacle) {
+                        g2.drawImage(wallImage, screenX, screenY, tileSize, tileSize, null);
+                    }
                     // 2. If there is an Item, draw the item
                     Item item = tile.getItem();
                     if (item != null) {
-                        g2.drawImage(swordImage, x * tileSize, y * tileSize, tileSize, tileSize, null);
+                        g2.drawImage(swordImage, screenX, screenY, tileSize, tileSize, null);
                     }
 
                     // 3. If there is an Enemy, draw the enemy
                     Enemy enemy = tile.getEnemy();
                     if (enemy != null) {
-                        g2.drawImage(enemyImage, x * tileSize, y * tileSize, tileSize, tileSize, null);
+                        g2.drawImage(enemyImage, screenX, screenY, tileSize, tileSize, null);
+                    }
+
+                    // Draw the floor last
+                    if (!tile.isObstacle) {
+                        g2.drawImage(floorImage, screenX, screenY, tileSize, tileSize, null);
                     }
                 }
             }

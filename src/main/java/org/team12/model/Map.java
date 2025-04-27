@@ -80,6 +80,7 @@ public class Map {
                     }
                     if (tileType == 3) {
                         grid[x][y].setItem(new Sword());
+                        grid[x][y].setObstacle(true);
                     }
 
                 }
