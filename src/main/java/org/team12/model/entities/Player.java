@@ -131,19 +131,6 @@ public class Player extends Entity {
 
     }
 
-    // Scales the player sprites to x3 their original size
-    public BufferedImage setup(String imageName){
-        UtilityTool utilTool = new UtilityTool();
-        BufferedImage image = null;
-        try{
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/" + imageName + ".png")));
-            image = utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return image;
-    }
-
     // Picks up an object if the player is touching it
     public void pickUpObject(int objIndex){
 
@@ -163,14 +150,14 @@ public class Player extends Entity {
 
     // Gets the player's sprite from resources
     public void getPlayerImage(){
-        up1 = setup("player_up_1");
-        up2 = setup("player_up_2");
-        down1 = setup("player_down_1");
-        down2 = setup("player_down_2");
-        right1 = setup("player_right_1");
-        right2 = setup("player_right_2");
-        left1 = setup("player_left_1");
-        left2 = setup("player_left_2");
+        up1 = setup("/player/player_up_1");
+        up2 = setup("/player/player_up_2");
+        down1 = setup("/player/player_down_1");
+        down2 = setup("/player/player_down_2");
+        right1 = setup("/player/player_right_1");
+        right2 = setup("/player/player_right_2");
+        left1 = setup("/player/player_left_1");
+        left2 = setup("/player/player_left_2");
 
     }
 

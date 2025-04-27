@@ -17,12 +17,14 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.UtilityTool;
 import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Entity {
 
@@ -155,14 +157,15 @@ public class Entity {
         }
     }
 
-    public BufferedImage setup(String imagePath) {
+    // Scales the sprites to x3 their original size
+    public BufferedImage setup(String imagePath){
+        UtilityTool utilTool = new UtilityTool();
         BufferedImage image = null;
-        try {
-            image = ImageIO.read(getClass().getResource(imagePath + ".png"));
-        } catch (IOException e) {
+        try{
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(imagePath + ".png")));
+            image = utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
+        }catch (IOException e){
             e.printStackTrace();
-        } catch (NullPointerException e) {
-            System.err.println("Image not found: " + imagePath);
         }
         return image;
     }
