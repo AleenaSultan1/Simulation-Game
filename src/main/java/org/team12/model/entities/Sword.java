@@ -17,22 +17,15 @@
 
 package org.team12.model.entities;
 
-import org.team12.view.GameUI;
-
-import javax.imageio.ImageIO;
-import java.io.IOException;
-import java.util.Objects;
-
 public class Sword extends Item {
-    GameUI gameUI;
-
-    public Sword(GameUI gameUI) {
-        name = "Sword";
-        try{
-            image= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
-            utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//
+//    public Sword(GameUI gameUI) {
+//        name = "Sword";
+//        try{
+//            image= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
+//            utilTool.scaleImage(image, gameUI.tileSize, gameUI.tileSize);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

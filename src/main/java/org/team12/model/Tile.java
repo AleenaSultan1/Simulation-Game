@@ -66,5 +66,9 @@ public class Tile {
     public void setObstacle(boolean hasObstacle) {
         this.isObstacle = hasObstacle;
     }
+
+    public boolean hasItem() {
+        return item != null;
+    }
 }
 

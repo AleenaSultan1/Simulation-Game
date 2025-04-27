@@ -17,65 +17,59 @@
 
 package org.team12.controller;
 
-import javafx.util.Pair;
-import org.team12.model.*;
-import org.team12.model.entities.*;
-import org.team12.states.EnemyStatus;
+import org.team12.model.Map;
+import org.team12.model.entities.Item;
+import org.team12.model.entities.Player;
 import org.team12.view.GameUI;
 
-import java.util.Random;
-
+import java.awt.*;
+import java.util.Iterator;
 
 public class GameController {
     private Map map;
-    private GameUI gameUI;
-
     private Player player;
-    private LilyFinalBoss lily;
-    private Sword sword;
-    private MagicDust magicDust;
-    private RiddleChest riddleChest;
+    private boolean isRunning;
 
-    private int numGoons = 5;
-    private int lvlHeight = 20;
-
-    private Enemy[] goons = new Enemy[numGoons];
-
-    private Pair<Integer, Integer> lvlOneDim = new Pair<>(lvlHeight, 0);
-    private Pair<Integer, Integer> lvlTwoDim = new Pair<>(lvlHeight*2 + 1, lvlHeight + 1);
-    private Pair<Integer, Integer> lvlThreeDim = new Pair<>(lvlHeight*3 + 2, lvlHeight*2 + 2);
-
-
-    public GameController() {
-        lily = new LilyFinalBoss(50, 10, 100, 20);
-        sword = new Sword();
-        magicDust = new MagicDust();
-        riddleChest = new RiddleChest();
+    public GameController(Map map, Player player, GameUI gameUI) {
+        this.map = map;
+        this.player = player;
+        this.isRunning = true;
     }
 
-    /**
-     * Validate player's access from Lvl.1 to Lvl.2
-     */
-    public boolean validateLevel1() {
-        // Check if player has all items and is in the correct position (door)
-//        return player.hasAllItems();
-        return false;
+    public void update() {
+        // Update player movement, logic
+        player.update();
+
+        // Update map (remove picked up items etc.)
+        map.updateItemsOnMap();
+
+        checkPlayerPickup();
     }
 
-    public boolean validateLevel2() {
-        for (Enemy goon : goons) {
-            if (goon.getState() != EnemyStatus.DEAD) {
-                return false;
+    public void stopGame() {
+        isRunning = false;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void checkPlayerPickup() {
+        Rectangle playerHitbox = new Rectangle(player.worldX, player.worldY, player.hitboxWidth, player.hitboxHeight);
+
+        Iterator<Item> iterator = map.itemsOnMap.iterator();
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            Rectangle itemHitbox = new Rectangle(item.getWorldX(), item.getWorldY(), GameUI.tileSize, GameUI.tileSize);
+
+            if (playerHitbox.intersects(itemHitbox)) {
+                // Player picked up the item!
+                // Example: maybe you update player inventory here?
+                //player.addToInventory(item);
+
+                // Remove item from map
+                iterator.remove();
             }
         }
-        return true;
     }
-
-//    public boolean interactWithChest(RiddleChest riddleChest) {
-//        player.interact(riddleChest); // This should not update the chest's status
-//        if (riddleChest.checkUserInput())
-//    }
-
-
-
 }

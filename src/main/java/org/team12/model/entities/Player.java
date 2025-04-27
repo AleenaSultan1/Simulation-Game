@@ -18,6 +18,7 @@
 package org.team12.model.entities;
 
 import org.team12.controller.InputController;
+import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
@@ -32,6 +33,8 @@ public class Player extends Entity {
     InputController inputController;
     public final int screenX;
     public final int screenY;
+    public int hitboxWidth = 32;  // usually tile size
+    public int hitboxHeight = 32;
 
 
     public Player(GameUI gameUI, InputController inputController, int hp) {
@@ -40,13 +43,13 @@ public class Player extends Entity {
         this.inputController = inputController;
         this.setDefaultValues();
         this.getPlayerImage();
-        screenX = gameUI.screenWidth/2 - (gameUI.tileSize/2);
-        screenY = gameUI.screenHeight/2 -(gameUI.tileSize/2);
+        screenX = gameUI.screenWidth / 2 - (gameUI.tileSize / 2);
+        screenY = gameUI.screenHeight / 2 - (gameUI.tileSize / 2);
 
 
     }
 
-    public void setDefaultValues(){
+    public void setDefaultValues() {
         // Set player's default position. Normally the player spawns in the top left at (0, 0). Moves the player more towards the center of the screen
         worldX = 100;
         worldY = 100;
@@ -54,30 +57,29 @@ public class Player extends Entity {
         direction = "down";
     }
 
-    public void update(){
-        if(inputController.upPressed || inputController.downPressed ||
+    public void update() {
+        if (inputController.upPressed || inputController.downPressed ||
                 inputController.leftPressed || inputController.rightPressed) {
-            if(inputController.upPressed){
+            if (inputController.upPressed) {
                 direction = "up";
                 worldY -= speed;
-            } else if (inputController.downPressed){
+            } else if (inputController.downPressed) {
                 direction = "down";
                 worldY += speed;
-            } else if (inputController.leftPressed){
+            } else if (inputController.leftPressed) {
                 direction = "left";
                 worldX -= speed;
-            } else if (inputController.rightPressed){
+            } else if (inputController.rightPressed) {
                 direction = "right";
                 worldX += speed;
             }
 
             // Used for player walking animation
-            spriteCounter ++;
-            if(spriteCounter > 12){
-                if(spriteNum == 1){
+            spriteCounter++;
+            if (spriteCounter > 12) {
+                if (spriteNum == 1) {
                     spriteNum = 2;
-                }
-                else if(spriteNum == 2){
+                } else if (spriteNum == 2) {
                     spriteNum = 1;
                 }
                 spriteCounter = 0;
@@ -87,9 +89,9 @@ public class Player extends Entity {
 
     }
 
-    public void getPlayerImage(){
+    public void getPlayerImage() {
 
-        try{
+        try {
             up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_1.png"))); // This one works
             up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_2.png")));
             down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_down_1.png")));
@@ -103,7 +105,7 @@ public class Player extends Entity {
             if (up1 == null) {
                 System.err.println("Failed to load player sprites!");
             }
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -115,25 +117,26 @@ public class Player extends Entity {
 
         // Animation for walking
         BufferedImage image = null;
-        switch(direction){
+        switch (direction) {
             case "up":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = up1;
                 }
-                if (spriteNum == 2){
+                if (spriteNum == 2) {
                     image = up2;
                 }
                 break;
             case "down":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = down1;
                 }
-                if (spriteNum == 2){
+                if (spriteNum == 2) {
                     image = down2;
-                };
+                }
+                ;
                 break;
             case "left":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = left1;
                 }
                 if (spriteNum == 2) {
@@ -141,15 +144,30 @@ public class Player extends Entity {
                 }
                 break;
             case "right":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = right1;
                 }
-                if (spriteNum == 2){
+                if (spriteNum == 2) {
                     image = right2;
                 }
                 break;
         }
         g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
+    }
+
+    public int getTileX() {
+        return worldX / gameUI.tileSize;
+    }
+
+    public int getTileY() {
+        return worldY / gameUI.tileSize;
+    }
+
+    public void pickUpItem(Item item) {
+        if (item != null && item.getItemState() == ItemState.INTERACTABLE) {
+            item.pickUp();
+        }
+
     }
 
 }

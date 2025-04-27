@@ -19,6 +19,7 @@ package org.team12.model;
 
 import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
+import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
 import java.awt.*;
@@ -26,16 +27,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Map {
     private Tile[][] grid;
-    private List<Item> itemsOnMap;
+    public List<Item> itemsOnMap;
     private List<Enemy> enemiesOnMap;
 
     private int width;
     private int height;
+
 
     public Map(String filepath) {
         loadMap(filepath);
@@ -76,10 +79,16 @@ public class Map {
                     }
 
                     if (tileType == 2) {
-                        grid[x][y].setEnemy(new Enemy(10, 2));
+                        //Enemy enemy = new Enemy(10, 2);
+                        //grid[x][y].setEnemy(enemy);
                     }
                     if (tileType == 3) {
-                        grid[x][y].setItem(new Sword());
+                        Item item = new Item();
+                        grid[x][y].setItem(item);
+                        itemsOnMap.add(item);
+                        itemsOnMap.getLast().setX(x * GameUI.tileSize);
+                        itemsOnMap.getLast().setY(y * GameUI.tileSize);
+
                     }
 
                 }
@@ -89,20 +98,6 @@ public class Map {
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public void placeItem(Item item, int x, int y) {
-        Tile tile = getTile(x, y);
-        if (tile != null) {
-            tile.setItem(item);
-        }
-    }
-
-    public void placeEnemy(Enemy enemy, int x, int y) {
-        Tile tile = getTile(x, y);
-        if (tile != null) {
-            tile.setEnemy(enemy);
         }
     }
 
@@ -129,5 +124,19 @@ public class Map {
 //        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();
         return false;
     }
+
+    public void updateItemsOnMap() {
+        for (int x =  0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Tile tile = grid[x][y];
+                if (tile.hasItem() && tile.getItem().getItemState() == ItemState.UNINTERACTABLE) {
+                    tile.setItem(null);
+
+                }
+            }
+        }
+    }
+
+
 }
 
