@@ -63,6 +63,8 @@ public class Item {
         itemState = ItemState.UNINTERACTABLE;
     }
 
+
+
     public ItemState getItemState() {
         return itemState;
     }
