@@ -47,7 +47,7 @@ public class GameUI extends JPanel implements Runnable{
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
 
-    private Map map;
+    public Map map;
     private MapRenderer mapRenderer;
     private InputController inputController = new InputController();
     public Player player;

@@ -18,6 +18,7 @@
 package org.team12.model.entities;
 
 import org.team12.controller.InputController;
+import org.team12.model.Tile;
 import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
@@ -89,21 +90,31 @@ public class Player extends Entity {
 
     }
 
-    // Picks up an object if the player is touching it
+    //Picks up an object if the player is touching it
     public void pickUpObject(int objIndex){
 
-        if (objIndex!=999){
-            String objectName = gameUI.obj[objIndex].name;
+        int playerCol = (worldX + hitbox.x) / gameUI.tileSize;
+        int playerRow = (worldY + hitbox.y) / gameUI.tileSize;
 
-            switch (objectName){
+        Tile currentTile = gameUI.map.getTile(playerCol, playerRow);
+
+        if (currentTile != null && currentTile.getItem() != null) {
+            Item item = currentTile.getItem();
+            String objectName = item.getName();
+
+            switch (objectName) {
                 case "Sword":
                     this.hasSword = true;
-                    gameUI.obj[objIndex] = null;
-                    System.out.println("Sword picked up");
+                    System.out.println("Sword picked up!");
+                    break;
+                case "MagicDust":
+                    System.out.println("MagicDust picked up!");
+                    break;
+                // Add more cases for different items
             }
-            // deletes the object we touched
-            //gameUI.obj[objIndex] = null;
-        }
+
+            // Remove the item from the tile after picking it up
+            currentTile.setItem(null);
     }
 
 

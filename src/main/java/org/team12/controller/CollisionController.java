@@ -17,8 +17,12 @@
 
 package org.team12.controller;
 
+import org.team12.model.Tile;
 import org.team12.model.entities.Entity;
+import org.team12.model.entities.Item;
 import org.team12.view.GameUI;
+
+import java.awt.*;
 
 public class CollisionController {
 
@@ -28,55 +32,51 @@ public class CollisionController {
         this.gameUI = gameUI;
     }
 
-    public void checkTile(Entity entity){
-        int entityLeftWorldX= entity.worldX + entity.hitbox.x;
-        int entityRightWorldX = entity.worldX+entity.hitbox.x+entity.hitbox.width;
+    public void checkTile(Entity entity) {
+        int entityLeftWorldX = entity.worldX + entity.hitbox.x;
+        int entityRightWorldX = entity.worldX + entity.hitbox.x + entity.hitbox.width;
         int entityTopWorldY = entity.worldY + entity.hitbox.y;
-        int entityBottomWorldY = entity.worldY + entity.hitbox.y+entity.hitbox.height;
+        int entityBottomWorldY = entity.worldY + entity.hitbox.y + entity.hitbox.height;
 
-        int entityLeftCol = entityLeftWorldX/gameUI.tileSize;
-        int entityRightCol = entityRightWorldX/gameUI.tileSize;
-        int entityTopRow = entityTopWorldY /gameUI.tileSize;
-        int entityBottomRow = entityBottomWorldY /gameUI.tileSize;
+        int entityLeftCol = entityLeftWorldX / gameUI.tileSize;
+        int entityRightCol = entityRightWorldX / gameUI.tileSize;
+        int entityTopRow = entityTopWorldY / gameUI.tileSize;
+        int entityBottomRow = entityBottomWorldY / gameUI.tileSize;
 
-        int tileNum1, tileNum2;
+        Tile tile1, tile2;
 
-        switch(entity.direction){
+        switch (entity.direction) {
             case "up":
-                entityTopRow = (entityTopWorldY-entity.speed)/gameUI.tileSize;
-                tileNum1 = gameUI.map.mapTileNum[entityLeftCol][entityTopRow];
-                tileNum2 = gameUI.map.mapTileNum[entityRightCol][entityTopRow];
-                if(gameUI.map.tile[tileNum1].isObstacle == true || gameUI.map.tile[tileNum2].isObstacle == true){
-                    entity.collisionOn = true;
-                }
+                entityTopRow = (entityTopWorldY - entity.speed) / gameUI.tileSize;
+                tile1 = gameUI.map.getTile(entityLeftCol, entityTopRow);
+                tile2 = gameUI.map.getTile(entityRightCol, entityTopRow);
                 break;
             case "down":
-                entityBottomRow = (entityBottomWorldY+entity.speed)/gameUI.tileSize;
-                tileNum1 = gameUI.map.mapTileNum[entityLeftCol][entityBottomRow];
-                tileNum2 = gameUI.map.mapTileNum[entityRightCol][entityBottomRow];
-                if(gameUI.map.tile[tileNum1].isObstacle == true || gameUI.map.tile[tileNum2].isObstacle == true){
-                    entity.collisionOn = true;
-                }
+                entityBottomRow = (entityBottomWorldY + entity.speed) / gameUI.tileSize;
+                tile1 = gameUI.map.getTile(entityLeftCol, entityBottomRow);
+                tile2 = gameUI.map.getTile(entityRightCol, entityBottomRow);
                 break;
             case "left":
-                entityLeftCol = (entityLeftWorldX-entity.speed)/gameUI.tileSize;
-                tileNum1 = gameUI.map.mapTileNum[entityLeftCol][entityTopRow];
-                tileNum2 = gameUI.map.mapTileNum[entityLeftCol][entityBottomRow];
-                if(gameUI.map.tile[tileNum1].isObstacle == true || gameUI.map.tile[tileNum2].isObstacle == true){
-                    entity.collisionOn = true;
-                }
+                entityLeftCol = (entityLeftWorldX - entity.speed) / gameUI.tileSize;
+                tile1 = gameUI.map.getTile(entityLeftCol, entityTopRow);
+                tile2 = gameUI.map.getTile(entityLeftCol, entityBottomRow);
                 break;
             case "right":
-                entityRightCol = (entityRightWorldX+entity.speed)/gameUI.tileSize;
-                tileNum1 = gameUI.map.mapTileNum[entityRightCol][entityTopRow];
-                tileNum2 = gameUI.map.mapTileNum[entityRightCol][entityBottomRow];
-                if(gameUI.map.tile[tileNum1].isObstacle == true || gameUI.map.tile[tileNum2].isObstacle == true){
-                    entity.collisionOn = true;
-                }
+                entityRightCol = (entityRightWorldX + entity.speed) / gameUI.tileSize;
+                tile1 = gameUI.map.getTile(entityRightCol, entityTopRow);
+                tile2 = gameUI.map.getTile(entityRightCol, entityBottomRow);
+                break;
+            default:
+                tile1 = null;
+                tile2 = null;
                 break;
         }
 
+        if ((tile1 != null && tile1.hasObstacle()) || (tile2 != null && tile2.hasObstacle())) {
+            entity.collisionOn = true;
+        }
     }
+
 
     /**
      * Check if the player is hitting any object. Returns the index of the object to process the reaction accordingly
@@ -84,94 +84,67 @@ public class CollisionController {
      * @param player returns true if the entity is Player
      * @return index for appropriate reaction
      */
-    public int checkObject(Entity entity, boolean player){
-
+    public int checkObject(Entity entity, boolean player) {
         int index = 999;
 
-        // Scan object array
-        for(int i = 0; i<gameUI.obj.length; i++){
-            if(gameUI.obj[i] != null){
-                // Get Entity's hitbox
-                entity.hitbox.x = entity.worldX+entity.hitbox.x;
-                entity.hitbox.y = entity.worldY+entity.hitbox.y;
+        // Prepare future hitbox
+        Rectangle entityFutureHitbox = new Rectangle(
+                entity.worldX + entity.hitbox.x,
+                entity.worldY + entity.hitbox.y,
+                entity.hitbox.width,
+                entity.hitbox.height
+        );
 
-                // Get the object's hitbox
-                gameUI.obj[i].hitbox.x = gameUI.obj[i].worldX + gameUI.obj[i].hitbox.x;
-                gameUI.obj[i].hitbox.y = gameUI.obj[i].worldY + gameUI.obj[i].hitbox.y;
+        // Move the hitbox according to the movement direction
+        switch (entity.direction) {
+            case "up":
+                entityFutureHitbox.y -= entity.speed;
+                break;
+            case "down":
+                entityFutureHitbox.y += entity.speed;
+                break;
+            case "left":
+                entityFutureHitbox.x -= entity.speed;
+                break;
+            case "right":
+                entityFutureHitbox.x += entity.speed;
+                break;
+        }
 
-                switch(entity.direction){
-                    case "up":
-                        entity.hitbox.y -= entity.speed;
-                        // If the two rectangles (hitboxes) are intersecting,
-                        if(entity.hitbox.intersects(gameUI.obj[i].hitbox)){
+        // Check surrounding tiles (up to 2 tiles touched by entity)
+        int entityLeftCol = entityFutureHitbox.x / gameUI.tileSize;
+        int entityRightCol = (entityFutureHitbox.x + entityFutureHitbox.width) / gameUI.tileSize;
+        int entityTopRow = entityFutureHitbox.y / gameUI.tileSize;
+        int entityBottomRow = (entityFutureHitbox.y + entityFutureHitbox.height) / gameUI.tileSize;
 
-                            // DEBUG PRINT
-                            System.out.println("UP");
+        Tile tile1 = gameUI.map.getTile(entityLeftCol, entityTopRow);
+        Tile tile2 = gameUI.map.getTile(entityRightCol, entityTopRow);
+        Tile tile3 = gameUI.map.getTile(entityLeftCol, entityBottomRow);
+        Tile tile4 = gameUI.map.getTile(entityRightCol, entityBottomRow);
 
-                            // if the item/object is solid, then the player can't pass through it
-                            if(gameUI.obj[i].collision){
-                                entity.collisionOn = true;
-                            }
-                            // if the player is touching it, set the index (get the right reaction)
-                            if (player){
-                                index = i;
-                            }
-                        }
-                        break;
-                    case "down":
-                        entity.hitbox.y += entity.speed;
-                        if(entity.hitbox.intersects(gameUI.obj[i].hitbox)){
-                            // If the two rectangles (hitboxes) are intersecting,
-                            if(entity.hitbox.intersects(gameUI.obj[i].hitbox)){
-                                // if the item/object is solid, then the player can't pass through it
-                                if(gameUI.obj[i].collision){
-                                    entity.collisionOn = true;
-                                }
-                                // if the player is touching it, set the index (get the right reaction)
-                                if (player){
-                                    index = i;
-                                }
-                            }
-                        }
-                        break;
-                    case "left":
-                        entity.hitbox.x -=entity.speed;
-                        if(entity.hitbox.intersects(gameUI.obj[i].hitbox)){
-                            // If the two rectangles (hitboxes) are intersecting,
-                            if(entity.hitbox.intersects(gameUI.obj[i].hitbox)){
-                                // if the item/object is solid, then the player can't pass through it
-                                if(gameUI.obj[i].collision){
-                                    entity.collisionOn = true;
-                                }
-                                // if the player is touching it, set the index (get the right reaction)
-                                if (player){
-                                    index = i;
-                                }
-                            }
-                        }
-                        break;
-                    case "right":
-                        entity.hitbox.x += entity.speed;
-                        if(entity.hitbox.intersects(gameUI.obj[i].hitbox)){
-                            // If the two rectangles (hitboxes) are intersecting,
-                            if(entity.hitbox.intersects(gameUI.obj[i].hitbox)){
-                                // if the item/object is solid, then the player can't pass through it
-                                if(gameUI.obj[i].collision){
-                                    entity.collisionOn = true;
-                                }
-                                // if the player is touching it, set the index (get the right reaction)
-                                if (player){
-                                    index = i;
-                                }
-                            }
-                        }
-                        break;
+        Tile[] tilesToCheck = {tile1, tile2, tile3, tile4};
+
+        for (Tile tile : tilesToCheck) {
+            if (tile != null && tile.getItem() != null) {
+                Item item = tile.getItem();
+
+                // Build item's full world hitbox
+                Rectangle itemHitbox = new Rectangle(
+                        item.worldX + item.hitbox.x,
+                        item.worldY + item.hitbox.y,
+                        item.hitbox.width,
+                        item.hitbox.height
+                );
+
+                // Check intersection between player's future hitbox and item hitbox
+                if (entityFutureHitbox.intersects(itemHitbox)) {
+                    if (item.isCollision()) {
+                        entity.collisionOn = true;
+                    }
+                    if (player) {
+                        index = 1; // signal that player is touching an item
+                    }
                 }
-                // return the rectangles (hitboxes) back to its original position
-                entity.hitbox.x = entity.hitboxDefaultX;
-                entity.hitbox.y = entity.hitboxDefaultY;
-                gameUI.obj[i].hitbox.x = gameUI.obj[i].hitboxDefaultX;
-                gameUI.obj[i].hitbox.y = gameUI.obj[i].hitboxDefaultY;
             }
         }
 
