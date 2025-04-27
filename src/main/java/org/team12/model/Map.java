@@ -106,7 +106,10 @@ public class Map {
     }
 
     public Tile getTile(int x, int y) {
-        return grid[x][y];
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            return grid[x][y];
+        }
+        return null;
     }
 
     public int getWidth() {

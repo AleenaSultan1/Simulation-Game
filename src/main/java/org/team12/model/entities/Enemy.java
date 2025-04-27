@@ -18,6 +18,7 @@
 package org.team12.model.entities;
 
 import org.team12.states.EnemyStatus;
+import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -34,8 +35,7 @@ public class Enemy extends Entity {
         super(hp);
         this.hostilityArea = hostilityArea;
         this.enemyState = EnemyStatus.PEACEFUL;
-        this.speed = 2;
-        moveRandomly();
+        this.speed = 4;
     }
 
     public boolean isDead() {
@@ -51,48 +51,58 @@ public class Enemy extends Entity {
     }
 
     public void setCoord(int x, int y) {
-        worldX = x;
-        worldY = y;
+        this.worldX = x * GameUI.tileSize;
+        this.worldY = y * GameUI.tileSize;
     }
 
     public void moveRandomly() {
         Random rand = new Random();
         int step = rand.nextInt(4);
-        try {
         switch (step) {
             case 0:
                 direction = "up";
                 worldY += speed;
-                sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_up_1")));
                 break;
             case 1:
                 direction = "down";
                 worldY -= speed;
-                sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_down_1")));
 
                 break;
             case 2:
                 direction = "left";
                 worldX -= speed;
-                sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_left_1")));
 
                 break;
             case 3:
                 direction = "right";
                 worldX += speed;
-                sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_right_1")));
                 break;
             default:
                 break;
-        }
-        } catch(IOException e){
-            e.printStackTrace();
         }
 
     }
 
     @Override
     public BufferedImage getCurrentSprite() {
+        try {
+            switch (direction) {
+                case "up":
+                    sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_up_1.png")));
+                    break;
+                case "down":
+                    sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_down_1.png")));
+                    break;
+                case "left":
+                    sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_left_1.png")));
+                    break;
+                case "right":
+                    sprite = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/evilGoon/enemy_right_1.png")));
+
+            }
+        } catch(IOException e){
+            e.printStackTrace();
+        }
         return sprite;
     }
 

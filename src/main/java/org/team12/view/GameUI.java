@@ -96,10 +96,13 @@ public class GameUI extends JPanel implements Runnable{
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
+        long moveCooldown = 10000;
 
         // Variables to display FPS every second
         long timer = 0;
         int drawCount = 0;
+        long lastMoveTime = System.currentTimeMillis();
+
 
         // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
@@ -111,6 +114,7 @@ public class GameUI extends JPanel implements Runnable{
             timer += (currentTime - lastTime);
             lastTime = currentTime;
 
+
             if(delta>=1){
                 // update player position, will also be used to update enemy position and status of items
                 // Makes a new frame for the Game UI with the updated changes
@@ -118,6 +122,13 @@ public class GameUI extends JPanel implements Runnable{
                 delta--;
                 drawCount++;
                 player.update();
+                if (currentTime - lastMoveTime > moveCooldown) {
+                    for (Enemy enemy : map.enemiesOnMap) {
+                        enemy.moveRandomly();
+                    }
+                    lastMoveTime = currentTime;
+                }
+
             }
 
             // Displays FPS

@@ -85,11 +85,6 @@ public class MapRenderer {
                         g2.drawImage(swordImage, screenX, screenY, tileSize, tileSize, null);
                     }
 
-                    // 3. If there is an Enemy, draw the enemy
-                    Enemy enemy = tile.getEnemy();
-                    if (enemy != null) {
-                        g2.drawImage(enemyImage, screenX, screenY, tileSize, tileSize, null);
-                    }
 
                 }
             }
