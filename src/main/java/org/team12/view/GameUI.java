@@ -20,6 +20,8 @@ package org.team12.view;
 
 import org.team12.controller.GameController;
 import org.team12.model.Map;
+import org.team12.model.entities.Enemy;
+import org.team12.model.entities.Player;
 
 import java.awt.*;
 import javax.swing.JPanel;
@@ -28,10 +30,14 @@ import javax.swing.JFrame;
 public class GameUI extends JPanel{
     private GameController gameController;
     private Map map;
+    private MapRenderer mapRenderer;
+    private EntityRenderer entityRenderer;
+    public Player player;
 
     private final int originalTileSize = 16; // 16 x 16 pixel tile
     private final int scale = 3; // scale everything up by a factor or 3
     public int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
+
 
     // Constructor for a game UI
     public GameUI(GameController gameController){
@@ -96,6 +102,12 @@ public class GameUI extends JPanel{
         // draw the player
         gameController.player.draw(g2);
 
+//        // draw the map
+//        mapRenderer.draw(g2);
+//        entityRenderer.drawEntity(g2, player, player);
+//        for (Enemy enemy : map.enemiesOnMap) {
+//            entityRenderer.drawEntity(g2, enemy, player);
+//        }
 
         // dispose of the objects
         g2.dispose();

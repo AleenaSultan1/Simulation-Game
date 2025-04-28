@@ -107,6 +107,10 @@ public class Entity {
         }
     }
 
+    public BufferedImage getCurrentSprite() {
+        return null;
+    }
+
     // Scales the sprites to x3 their original size
     public BufferedImage setup(String imagePath){
         UtilityTool utilTool = new UtilityTool();

@@ -44,7 +44,7 @@ public class Map {
 
     private Tile[][] grid;
     private List<Item> itemsOnMap;
-    private List<Enemy> enemiesOnMap;
+    public List<Enemy> enemiesOnMap;
     private int width;
     private int height;
 
@@ -216,5 +216,20 @@ public class Map {
 //    public boolean isOccupied(int x, int y) {
 //        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();
 //    }
+
+    public Tile getTile(int x, int y) {
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            return grid[x][y];
+        }
+        return null;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }
 
