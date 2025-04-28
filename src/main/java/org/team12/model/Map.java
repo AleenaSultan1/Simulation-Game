@@ -26,18 +26,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Map {
     private Tile[][] grid;
-    private List<Item> itemsOnMap;
-    private List<Enemy> enemiesOnMap;
+    public List<Item> itemsOnMap;
+    public List<Enemy> enemiesOnMap;
 
     private int width;
     private int height;
 
     public Map(String filepath) {
+        enemiesOnMap = new ArrayList<>();
+        itemsOnMap = new ArrayList<>();
         loadMap(filepath);
     }
     private void loadMap(String filepath) {
@@ -71,38 +74,34 @@ public class Map {
                 for (int x = 0; x < numbers.length; x++) {
                     grid[x][y] = new Tile(x, y);
                     int tileType = Integer.parseInt(numbers[x]);
-                    if (tileType == 1) {
-                        grid[x][y].setObstacle(true);
-                    }
-
-                    if (tileType == 2) {
-                        grid[x][y].setEnemy(new Enemy(10, 2));
-                    }
-                    if (tileType == 3) {
-                        grid[x][y].setItem(new Sword());
+                    // Wall
+                    switch (tileType) {
+                        case 1:
+                            grid[x][y].setObstacle(true);
+                            break;
+                    // Goon
+                        case 2:
+                            Enemy enemy = new Enemy(10, 2);
+                            enemiesOnMap.add(enemy);
+                            enemy.setCoord(x, y);
+                            grid[x][y].setEnemy(enemy);
+                            break;
+                    // Sword
+                        case 3:
+                            Sword sword = new Sword();
+                            itemsOnMap.add(sword);
+                            grid[x][y].setItem(sword);
+                            break;
+                        default:
+                            break;
                     }
 
                 }
                 y++;
             }
-
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public void placeItem(Item item, int x, int y) {
-        Tile tile = getTile(x, y);
-        if (tile != null) {
-            tile.setItem(item);
-        }
-    }
-
-    public void placeEnemy(Enemy enemy, int x, int y) {
-        Tile tile = getTile(x, y);
-        if (tile != null) {
-            tile.setEnemy(enemy);
         }
     }
 
@@ -125,9 +124,5 @@ public class Map {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-    public boolean isOccupied(int x, int y) {
-//        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();
-        return false;
-    }
 }
 

@@ -44,12 +44,12 @@ public class Player extends Entity {
         this.inputController = inputController;
         this.setDefaultValues();
         this.getPlayerImage();
-        screenX = gameUI.screenWidth/2 - (gameUI.tileSize/2);
-        screenY = gameUI.screenHeight/2 -(gameUI.tileSize/2);
+        screenX = gameUI.screenWidth / 2 - (gameUI.tileSize / 2);
+        screenY = gameUI.screenHeight / 2 - (gameUI.tileSize / 2);
 
     }
 
-    public void setDefaultValues(){
+    public void setDefaultValues() {
         // Set player's default position. Normally the player spawns in the top left at (0, 0). Moves the player more towards the center of the screen
         worldX = 100;
         worldY = 100;
@@ -57,30 +57,29 @@ public class Player extends Entity {
         direction = "down";
     }
 
-    public void update(){
-        if(inputController.upPressed || inputController.downPressed ||
+    public void update() {
+        if (inputController.upPressed || inputController.downPressed ||
                 inputController.leftPressed || inputController.rightPressed) {
-            if(inputController.upPressed){
+            if (inputController.upPressed) {
                 direction = "up";
                 worldY -= speed;
-            } else if (inputController.downPressed){
+            } else if (inputController.downPressed) {
                 direction = "down";
                 worldY += speed;
-            } else if (inputController.leftPressed){
+            } else if (inputController.leftPressed) {
                 direction = "left";
                 worldX -= speed;
-            } else if (inputController.rightPressed){
+            } else if (inputController.rightPressed) {
                 direction = "right";
                 worldX += speed;
             }
 
             // Used for player walking animation
-            spriteCounter ++;
-            if(spriteCounter > 12){
-                if(spriteNum == 1){
+            spriteCounter++;
+            if (spriteCounter > 12) {
+                if (spriteNum == 1) {
                     spriteNum = 2;
-                }
-                else if(spriteNum == 2){
+                } else if (spriteNum == 2) {
                     spriteNum = 1;
                 }
                 spriteCounter = 0;
@@ -91,7 +90,7 @@ public class Player extends Entity {
     }
 
     //Picks up an object if the player is touching it
-    public void pickUpObject(int objIndex){
+    public void pickUpObject(int objIndex) {
 
         int playerCol = (worldX + hitbox.x) / gameUI.tileSize;
         int playerRow = (worldY + hitbox.y) / gameUI.tileSize;
@@ -115,56 +114,44 @@ public class Player extends Entity {
 
             // Remove the item from the tile after picking it up
             currentTile.setItem(null);
-    }
-
-
-    public void getPlayerImage(){
-
-        try{
-            up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_1.png"))); // This one works
-            up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_2.png")));
-            down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_down_1.png")));
-            down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_down_2.png")));
-            right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_right_1.png")));
-            right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_right_2.png")));
-            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_1.png"))); // This one works
-            left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_2.png")));
-
-            // Debug check
-            if (up1 == null) {
-                System.err.println("Failed to load player sprites!");
-            }
-        } catch(IOException e){
-            e.printStackTrace();
         }
     }
 
-    public void draw(Graphics2D g2) {
-//        g2.setColor(Color.white);
-//        g2.fillRect(x, y, gameUI.tileSize, gameUI.tileSize);
+    public void getPlayerImage(){
+        up1 = setup("/player/player_up_1");
+        up2 = setup("/player/player_up_2");
+        down1 = setup("/player/player_down_1");
+        down2 = setup("/player/player_down_2");
+        right1 = setup("/player/player_right_1");
+        right2 = setup("/player/player_right_2");
+        left1 = setup("/player/player_left_1");
+        left2 = setup("/player/player_left_2");
+    }
 
-
+    @Override
+    public BufferedImage getCurrentSprite() {
         // Animation for walking
         BufferedImage image = null;
-        switch(direction){
+        switch (direction) {
             case "up":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = up1;
                 }
-                if (spriteNum == 2){
+                if (spriteNum == 2) {
                     image = up2;
                 }
                 break;
             case "down":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = down1;
                 }
-                if (spriteNum == 2){
+                if (spriteNum == 2) {
                     image = down2;
-                };
+                }
+                ;
                 break;
             case "left":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = left1;
                 }
                 if (spriteNum == 2) {
@@ -172,15 +159,14 @@ public class Player extends Entity {
                 }
                 break;
             case "right":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = right1;
                 }
-                if (spriteNum == 2){
+                if (spriteNum == 2) {
                     image = right2;
                 }
                 break;
         }
-        g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
+        return image;
     }
-
 }

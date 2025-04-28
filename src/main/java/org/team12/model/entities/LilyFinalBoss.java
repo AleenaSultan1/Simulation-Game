@@ -17,10 +17,22 @@
 
 package org.team12.model.entities;
 
+import org.team12.states.EnemyStatus;
 import org.team12.view.GameUI;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Random;
+
 public class LilyFinalBoss extends Enemy {
-    public LilyFinalBoss(int x, int y, int hp, int hostilityArea) {
+    GameUI gameUI;
+
+    public LilyFinalBoss(int hp, int hostilityArea) {
         super(hp, hostilityArea);
     }
-}
+
+    public void getCured() {
+            super.setEnemyState(EnemyStatus.CURED);
+        }
+
+    }

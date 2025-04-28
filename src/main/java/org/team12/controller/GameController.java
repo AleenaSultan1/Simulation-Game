@@ -47,7 +47,6 @@ public class GameController {
 
 
     public GameController() {
-        lily = new LilyFinalBoss(50, 10, 100, 20);
         sword = new Sword();
         magicDust = new MagicDust();
         riddleChest = new RiddleChest();

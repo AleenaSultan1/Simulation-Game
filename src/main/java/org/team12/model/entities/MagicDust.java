@@ -25,7 +25,7 @@ public class MagicDust extends Item {
     }
 
     public void getCured(LilyFinalBoss lilyFinalBoss) {
-//            lilyFinalBoss.getCured();
+        lilyFinalBoss.getCured();
     }
 
 }

@@ -17,5 +17,5 @@
 
 package org.team12.states;
 
-public class MapState {
+public enum MapState {
 }

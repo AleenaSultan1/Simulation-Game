@@ -17,5 +17,6 @@
 
 package org.team12.states;
 
-public class GameState {
+public enum GameState {
+
 }
