@@ -29,13 +29,13 @@ public class AssetSetter {
     }
 
     public void setEnemy() {
-        gameController.enemy[0] = new Enemy(gameController);
-        gameController.enemy[0].worldX = gameController.tileSize * 9;
-        gameController.enemy[0].worldY = gameController.tileSize * 7;
+        gameController.enemies[0] = new Enemy(gameController);
+        gameController.enemies[0].worldX = gameController.tileSize * 9;
+        gameController.enemies[0].worldY = gameController.tileSize * 7;
 
-        gameController.enemy[1] = new Enemy(gameController);
-        gameController.enemy[1].worldX = gameController.tileSize * 7;
-        gameController.enemy[1].worldY = gameController.tileSize * 5;
+        gameController.enemies[1] = new Enemy(gameController);
+        gameController.enemies[1].worldX = gameController.tileSize * 7;
+        gameController.enemies[1].worldY = gameController.tileSize * 5;
     }
 
     public void setLilyFinalBoss() {

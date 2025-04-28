@@ -18,6 +18,7 @@
 package org.team12.controller;
 
 import org.team12.model.Map;
+import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Entity;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
@@ -59,7 +60,7 @@ public class GameController implements Runnable{
     public InputController inputController;
     public Player player;
     public AssetSetter assetSetter;
-    public Entity enemy[] = new Entity[20];
+    public Entity[] enemies = new Entity[20];
     public Entity lilyFinalBoss;
     public Map map;
     public CollisionController cController;
@@ -74,6 +75,14 @@ public class GameController implements Runnable{
         // Initialize game objects
         map = new Map(this);
         player = new Player(this, inputController);
+
+//        enemies[0] = new Enemy(this);
+//        enemies[0].worldX = tileSize * 9;
+//        enemies[0].worldY = tileSize * 7;
+//
+//        enemies[1] = new Enemy(this);
+//        enemies[1].worldX = tileSize * 7;
+//        enemies[1].worldY = tileSize * 5;
 
         // Initialize UI
         gameUI = new GameUI(this);
@@ -101,9 +110,9 @@ public class GameController implements Runnable{
     public void update(){
         player.update();
 
-        for (int i = 0; i < enemy.length; i++) {
-            if (enemy[i] != null) {
-                enemy[i].update();
+        for (int i = 0; i < enemies.length; i++) {
+            if (enemies[i] != null) {
+                enemies[i].update();
             }
         }
 
@@ -157,8 +166,6 @@ public class GameController implements Runnable{
 //            }
         }
     }
-
-
 
     public static void main(String[] args) {// Run on the Event Dispatch Thread
         javax.swing.SwingUtilities.invokeLater(() -> {

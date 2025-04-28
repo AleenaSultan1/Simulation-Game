@@ -99,6 +99,12 @@ public class GameUI extends JPanel{
             }
         }
 
+        // Draw enemies
+//        entityRenderer.drawEntity(g2, player, player);
+//        for (Enemy enemy : map.enemiesOnMap) {
+//            entityRenderer.drawEntity(g2, enemy, player);
+//        }
+
         // draw the player
         gameController.player.draw(g2);
 
