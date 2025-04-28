@@ -2,9 +2,9 @@
  * CSCI 205 - Software Engineering and Design
  * Spring 2025
  *
- * Name: Sebastian Stewart
- * Date: 4/24/25
- * Time: 11:24 PM
+ * Name: Radley Le
+ * Date: 4/28/25
+ * Time: 1:25 AM
  *
  * Project: csci205_final_project
  * Package: org.team12.controller
@@ -17,140 +17,167 @@
 
 package org.team12.controller;
 
+import org.team12.view.GameUI;
 import org.team12.model.Tile;
 import org.team12.model.entities.Entity;
+import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Item;
-import org.team12.view.GameUI;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 public class CollisionController {
+    private final GameUI gameUI;
 
-    GameUI gameUI;
-    // Constructor for a collision controller
     public CollisionController(GameUI gameUI) {
         this.gameUI = gameUI;
     }
 
-    public void checkTile(Entity entity) {
-        int entityLeftWorldX = entity.worldX + entity.hitbox.x;
-        int entityRightWorldX = entity.worldX + entity.hitbox.x + entity.hitbox.width;
-        int entityTopWorldY = entity.worldY + entity.hitbox.y;
-        int entityBottomWorldY = entity.worldY + entity.hitbox.y + entity.hitbox.height;
+    /**
+     * Checks if moving entity will hit an obstacle tile. Sets collisionOn if so.
+     */
+    public void checkTile(Entity e) {
+        // Reset collision flag
+        e.collisionOn = false;
 
-        int entityLeftCol = entityLeftWorldX / gameUI.tileSize;
-        int entityRightCol = entityRightWorldX / gameUI.tileSize;
-        int entityTopRow = entityTopWorldY / gameUI.tileSize;
-        int entityBottomRow = entityBottomWorldY / gameUI.tileSize;
-
-        Tile tile1, tile2;
-
-        switch (entity.direction) {
-            case "up":
-                entityTopRow = (entityTopWorldY - entity.speed) / gameUI.tileSize;
-                tile1 = gameUI.map.getTile(entityLeftCol, entityTopRow);
-                tile2 = gameUI.map.getTile(entityRightCol, entityTopRow);
-                break;
-            case "down":
-                entityBottomRow = (entityBottomWorldY + entity.speed) / gameUI.tileSize;
-                tile1 = gameUI.map.getTile(entityLeftCol, entityBottomRow);
-                tile2 = gameUI.map.getTile(entityRightCol, entityBottomRow);
-                break;
-            case "left":
-                entityLeftCol = (entityLeftWorldX - entity.speed) / gameUI.tileSize;
-                tile1 = gameUI.map.getTile(entityLeftCol, entityTopRow);
-                tile2 = gameUI.map.getTile(entityLeftCol, entityBottomRow);
-                break;
-            case "right":
-                entityRightCol = (entityRightWorldX + entity.speed) / gameUI.tileSize;
-                tile1 = gameUI.map.getTile(entityRightCol, entityTopRow);
-                tile2 = gameUI.map.getTile(entityRightCol, entityBottomRow);
-                break;
-            default:
-                tile1 = null;
-                tile2 = null;
-                break;
+        // Current hitbox
+        Rectangle hb = new Rectangle(
+                e.worldX + e.hitbox.x,
+                e.worldY + e.hitbox.y,
+                e.hitbox.width,
+                e.hitbox.height
+        );
+        // Future hitbox
+        Rectangle futureHB = new Rectangle(hb);
+        switch (e.direction) {
+            case "up":    futureHB.y -= e.speed; break;
+            case "down":  futureHB.y += e.speed; break;
+            case "left":  futureHB.x -= e.speed; break;
+            case "right": futureHB.x += e.speed; break;
         }
 
-        if ((tile1 != null && tile1.hasObstacle()) || (tile2 != null && tile2.hasObstacle())) {
-            entity.collisionOn = true;
+        // Determine tile indices
+        int leftCol   = futureHB.x / GameUI.tileSize;
+        int rightCol  = (futureHB.x + futureHB.width - 1) / GameUI.tileSize;
+        int topRow    = futureHB.y / GameUI.tileSize;
+        int bottomRow = (futureHB.y + futureHB.height - 1) / GameUI.tileSize;
+
+        // Check each corner
+        Tile t1 = gameUI.map.getTile(leftCol,  topRow);
+        Tile t2 = gameUI.map.getTile(rightCol, topRow);
+        Tile t3 = gameUI.map.getTile(leftCol,  bottomRow);
+        Tile t4 = gameUI.map.getTile(rightCol, bottomRow);
+
+        if ((t1 != null && t1.hasObstacle()) ||
+                (t2 != null && t2.hasObstacle()) ||
+                (t3 != null && t3.hasObstacle()) ||
+                (t4 != null && t4.hasObstacle())) {
+            e.collisionOn = true;
         }
     }
-
 
     /**
-     * Check if the player is hitting any object. Returns the index of the object to process the reaction accordingly
-     * @param entity Enemy or Player object
-     * @param player returns true if the entity is Player
-     * @return index for appropriate reaction
+     * Checks collision between entity and any enemy. Returns collided enemy or null.
      */
-    public int checkObject(Entity entity, boolean player) {
-        int index = 999;
+    public Enemy checkEnemy(Entity e) {
+        // Reset flag
+        e.collisionOn = false;
 
-        // Prepare future hitbox
-        Rectangle entityFutureHitbox = new Rectangle(
-                entity.worldX + entity.hitbox.x,
-                entity.worldY + entity.hitbox.y,
-                entity.hitbox.width,
-                entity.hitbox.height
+        Rectangle hb = new Rectangle(
+                e.worldX + e.hitbox.x,
+                e.worldY + e.hitbox.y,
+                e.hitbox.width,
+                e.hitbox.height
         );
-
-        // Move the hitbox according to the movement direction
-        switch (entity.direction) {
-            case "up":
-                entityFutureHitbox.y -= entity.speed;
-                break;
-            case "down":
-                entityFutureHitbox.y += entity.speed;
-                break;
-            case "left":
-                entityFutureHitbox.x -= entity.speed;
-                break;
-            case "right":
-                entityFutureHitbox.x += entity.speed;
-                break;
+        Rectangle futureHB = new Rectangle(hb);
+        switch (e.direction) {
+            case "up":    futureHB.y -= e.speed; break;
+            case "down":  futureHB.y += e.speed; break;
+            case "left":  futureHB.x -= e.speed; break;
+            case "right": futureHB.x += e.speed; break;
         }
-
-        // Check surrounding tiles (up to 2 tiles touched by entity)
-        int entityLeftCol = entityFutureHitbox.x / gameUI.tileSize;
-        int entityRightCol = (entityFutureHitbox.x + entityFutureHitbox.width) / gameUI.tileSize;
-        int entityTopRow = entityFutureHitbox.y / gameUI.tileSize;
-        int entityBottomRow = (entityFutureHitbox.y + entityFutureHitbox.height) / gameUI.tileSize;
-
-        Tile tile1 = gameUI.map.getTile(entityLeftCol, entityTopRow);
-        Tile tile2 = gameUI.map.getTile(entityRightCol, entityTopRow);
-        Tile tile3 = gameUI.map.getTile(entityLeftCol, entityBottomRow);
-        Tile tile4 = gameUI.map.getTile(entityRightCol, entityBottomRow);
-
-        Tile[] tilesToCheck = {tile1, tile2, tile3, tile4};
-
-        for (Tile tile : tilesToCheck) {
-            if (tile != null && tile.getItem() != null) {
-                Item item = tile.getItem();
-
-                // Build item's full world hitbox
-                Rectangle itemHitbox = new Rectangle(
-                        item.worldX + item.hitbox.x,
-                        item.worldY + item.hitbox.y,
-                        item.hitbox.width,
-                        item.hitbox.height
-                );
-
-                // Check intersection between player's future hitbox and item hitbox
-                if (entityFutureHitbox.intersects(itemHitbox)) {
-                    if (item.isCollision()) {
-                        entity.collisionOn = true;
-                    }
-                    if (player) {
-                        index = 1; // signal that player is touching an item
-                    }
-                }
+        for (Enemy en : gameUI.map.enemiesOnMap) {
+            Rectangle ehb = new Rectangle(
+                    en.worldX + en.hitbox.x,
+                    en.worldY + en.hitbox.y,
+                    en.hitbox.width,
+                    en.hitbox.height
+            );
+            if (futureHB.intersects(ehb)) {
+                e.collisionOn = true;
+                return en;
             }
         }
+        return null;
+    }
 
-        return index;
+    /**
+     * Checks collision between entity and any item. Returns collided item or null.
+     */
+    public Item checkObject(Entity e) {
+        // Reset flag
+        e.collisionOn = false;
+
+        Rectangle hb = new Rectangle(
+                e.worldX + e.hitbox.x,
+                e.worldY + e.hitbox.y,
+                e.hitbox.width,
+                e.hitbox.height
+        );
+        Rectangle futureHB = new Rectangle(hb);
+        switch (e.direction) {
+            case "up":    futureHB.y -= e.speed; break;
+            case "down":  futureHB.y += e.speed; break;
+            case "left":  futureHB.x -= e.speed; break;
+            case "right": futureHB.x += e.speed; break;
+        }
+        for (Item it : gameUI.map.itemsOnMap) {
+            Rectangle ihb = new Rectangle(
+                    it.worldX + it.hitbox.x,
+                    it.worldY + it.hitbox.y,
+                    it.hitbox.width,
+                    it.hitbox.height
+            );
+            if (futureHB.intersects(ihb)) {
+                if (it.isCollision()) {
+                    e.collisionOn = true;
+                }
+                return it;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks collision between entity and the player. Returns true if collided.
+     */
+    public boolean checkPlayer(Entity e) {
+        // Reset flag
+        e.collisionOn = false;
+
+        Rectangle hb = new Rectangle(
+                e.worldX + e.hitbox.x,
+                e.worldY + e.hitbox.y,
+                e.hitbox.width,
+                e.hitbox.height
+        );
+        Rectangle futureHB = new Rectangle(hb);
+        switch (e.direction) {
+            case "up":    futureHB.y -= e.speed; break;
+            case "down":  futureHB.y += e.speed; break;
+            case "left":  futureHB.x -= e.speed; break;
+            case "right": futureHB.x += e.speed; break;
+        }
+        Entity p = gameUI.player;
+        Rectangle phb = new Rectangle(
+                p.worldX + p.hitbox.x,
+                p.worldY + p.hitbox.y,
+                p.hitbox.width,
+                p.hitbox.height
+        );
+        if (futureHB.intersects(phb)) {
+            e.collisionOn = true;
+            return true;
+        }
+        return false;
     }
 }
-
-
-

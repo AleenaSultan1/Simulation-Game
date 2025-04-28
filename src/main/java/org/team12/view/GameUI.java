@@ -17,6 +17,7 @@
 
 package org.team12.view;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
@@ -54,10 +55,11 @@ public class GameUI extends JPanel implements Runnable{
     private InputController inputController = new InputController();
     public Player player;
 
-
+    private CollisionController cController;
 
     // Constructor for a game UI
     public GameUI(){
+        cController = new CollisionController(this);
         player = new Player(this, inputController, 20);
         map = new Map("/map/dungeonMap.txt");
         mapRenderer = new MapRenderer(player, map, tileSize);
@@ -118,13 +120,25 @@ public class GameUI extends JPanel implements Runnable{
             if(delta>=1){
                 // update player position, will also be used to update enemy position and status of items
                 // Makes a new frame for the Game UI with the updated changes
+                player.collisionOn = false;
+                cController.checkTile(player);
+                cController.checkEnemy(player);
+                cController.checkObject(player);
+                if (!player.collisionOn) {
+                    player.update();
+                }
                 repaint();
                 delta--;
                 drawCount++;
                 player.update();
                 if (currentTime - lastMoveTime > moveCooldown) {
                     for (Enemy enemy : map.enemiesOnMap) {
-                        enemy.moveRandomly();
+                        enemy.collisionOn = false;
+                        cController.checkTile(enemy);
+                        cController.checkPlayer(enemy);
+                        if (!enemy.collisionOn) {
+                            enemy.moveRandomly();
+                        }
                     }
                     lastMoveTime = currentTime;
                 }

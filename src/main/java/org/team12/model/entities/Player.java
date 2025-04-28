@@ -20,12 +20,8 @@ package org.team12.model.entities;
 import org.team12.controller.InputController;
 import org.team12.model.Tile;
 import org.team12.view.GameUI;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
+
 
 
 public class Player extends Entity {

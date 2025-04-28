@@ -56,31 +56,24 @@ public class Enemy extends Entity {
     }
 
     public void moveRandomly() {
-        Random rand = new Random();
-        int step = rand.nextInt(4);
-        switch (step) {
-            case 0:
+        actionLockCounter++;
+        if (actionLockCounter == 15) {
+            Random random = new Random();
+            int i = random.nextInt(100) + 1;
+            if (i <= 25) {
                 direction = "up";
-                worldY += speed;
-                break;
-            case 1:
+            }
+            if (i > 25 && i <= 50) {
                 direction = "down";
-                worldY -= speed;
-
-                break;
-            case 2:
+            }
+            if (i > 50 && i <= 75) {
                 direction = "left";
-                worldX -= speed;
-
-                break;
-            case 3:
+            }
+            if (i > 75 && i <= 100) {
                 direction = "right";
-                worldX += speed;
-                break;
-            default:
-                break;
+            }
+            actionLockCounter = 0;
         }
-
     }
 
     @Override
