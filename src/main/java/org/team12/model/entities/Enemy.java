@@ -29,9 +29,10 @@ public class Enemy extends Entity {
 
     public Enemy(GameController gameController) {
         //super(gameUI, inputController);
-        super(new GameController());
+        super(gameController);
         this.gameController = gameController;
         //type = 1;
+        direction = "down";
         name = "Green monster";
         speed = 1;
         maxLife = 4;
@@ -55,7 +56,7 @@ public class Enemy extends Entity {
         right2 = setup("/evilGoon/enemy_right_1");
     }
 
-    public void update() {
+    public void setAction() {
         actionLockCounter++;
         if (actionLockCounter == 120) {
             Random random = new Random();
@@ -77,49 +78,4 @@ public class Enemy extends Entity {
         }
     }
 
-    public void draw(Graphics2D g2) {
-        BufferedImage image = null;
-        int screenX = worldX - gameController.player.worldX + gameController.player.screenX;
-        int screenY = worldY - gameController.player.worldY + gameController.player.screenY;
-
-        if (worldX + gameController.tileSize > gameController.player.worldX - gameController.player.screenX &&
-                worldX - gameController.tileSize < gameController.player.worldX + gameController.player.screenX &&
-                worldY + gameController.tileSize > gameController.player.worldX - gameController.player.screenX &&
-                worldY - gameController.tileSize < gameController.player.worldX + gameController.player.screenX) {
-
-            switch (direction) {
-                case "up":
-                    if (spriteNum == 1) {
-                        image = up1;
-                    }
-                    if (spriteNum == 2) {
-                        image = up2;
-                    }
-                case "down":
-                    if (spriteNum == 1) {
-                        image = down1;
-                    }
-                    if (spriteNum == 2) {
-                        image = down2;
-                    }
-                case "left":
-                    if (spriteNum == 1) {
-                        image = left1;
-                    }
-                    if (spriteNum == 2) {
-                        image = left2;
-                    }
-                case "right":
-                    if (spriteNum == 1) {
-                        image = right1;
-                    }
-                    if (spriteNum == 2) {
-                        image = right2;
-                    }
-                    break;
-            }
-
-            g2.drawImage(image, screenX, screenY, gameController.tileSize, gameController.tileSize, null);
-        }
-    }
 }

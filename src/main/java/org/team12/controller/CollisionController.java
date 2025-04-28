@@ -179,6 +179,124 @@ public class CollisionController {
         return index;
     }
 
+    public int checkEntity(Entity entity, Entity[] target) {
+        int index = 999;
+
+        // Scan object array
+        for(int i = 0; i<target.length; i++){
+            if(target[i] != null){
+                // Get Entity's hitbox
+                entity.hitbox.x = entity.worldX+entity.hitbox.x;
+                entity.hitbox.y = entity.worldY+entity.hitbox.y;
+
+                // Get the object's hitbox
+                target[i].hitbox.x = target[i].worldX + target[i].hitbox.x;
+                target[i].hitbox.y = target[i].worldY + target[i].hitbox.y;
+
+                switch(entity.direction){
+                    case "up":
+                        entity.hitbox.y -= entity.speed;
+                        // If the two rectangles (hitboxes) are intersecting,
+                        if(entity.hitbox.intersects(gameController.map.enemies[i].hitbox)){
+
+                            // DEBUG PRINT
+                            System.out.println("UP");
+                                entity.collisionOn = true;
+                        }
+                        break;
+                    case "down":
+                        entity.hitbox.y += entity.speed;
+                        if(entity.hitbox.intersects(target[i].hitbox)){
+                            // If the two rectangles (hitboxes) are intersecting,
+                            if(entity.hitbox.intersects(target[i].hitbox)){
+                                    entity.collisionOn = true;
+                            }
+                        }
+                        break;
+                    case "left":
+                        entity.hitbox.x -=entity.speed;
+                        if(entity.hitbox.intersects(target[i].hitbox)){
+                            // If the two rectangles (hitboxes) are intersecting,
+                            if(entity.hitbox.intersects(target[i].hitbox)){
+                                    entity.collisionOn = true;
+                            }
+                        }
+                        break;
+                    case "right":
+                        entity.hitbox.x += entity.speed;
+                        if(entity.hitbox.intersects(target[i].hitbox)){
+                            // If the two rectangles (hitboxes) are intersecting,
+                            if(entity.hitbox.intersects(target[i].hitbox)){
+                                    entity.collisionOn = true;
+                            }
+                        }
+                        break;
+                }
+                // return the rectangles (hitboxes) back to its original position
+                entity.hitbox.x = entity.hitboxDefaultX;
+                entity.hitbox.y = entity.hitboxDefaultY;
+                target[i].hitbox.x = target[i].hitboxDefaultX;
+                target[i].hitbox.y = target[i].hitboxDefaultY;
+            }
+        }
+
+        return index;
+    }
+
+    public void checkPlayer(Entity entity) {
+        entity.hitbox.x = entity.worldX+entity.hitbox.x;
+        entity.hitbox.y = entity.worldY+entity.hitbox.y;
+
+        // Get the object's hitbox
+        gameController.player.hitbox.x = gameController.player.worldX + gameController.player.hitbox.x;
+        gameController.player.hitbox.y = gameController.player.worldY + gameController.player.hitbox.y;
+
+        switch(entity.direction){
+            case "up":
+                entity.hitbox.y -= entity.speed;
+                // If the two rectangles (hitboxes) are intersecting,
+                if(entity.hitbox.intersects(gameController.player.hitbox)){
+
+                    // DEBUG PRINT
+                    System.out.println("UP");
+                    entity.collisionOn = true;
+                }
+                break;
+            case "down":
+                entity.hitbox.y += entity.speed;
+                if(entity.hitbox.intersects(gameController.player.hitbox)){
+                    // If the two rectangles (hitboxes) are intersecting,
+                    if(entity.hitbox.intersects(gameController.player.hitbox)){
+                        entity.collisionOn = true;
+                    }
+                }
+                break;
+            case "left":
+                entity.hitbox.x -=entity.speed;
+                if(entity.hitbox.intersects(gameController.player.hitbox)){
+                    // If the two rectangles (hitboxes) are intersecting,
+                    if(entity.hitbox.intersects(gameController.player.hitbox)){
+                        entity.collisionOn = true;
+                    }
+                }
+                break;
+            case "right":
+                entity.hitbox.x += entity.speed;
+                if(entity.hitbox.intersects(gameController.player.hitbox)){
+                    // If the two rectangles (hitboxes) are intersecting,
+                    if(entity.hitbox.intersects(gameController.player.hitbox)){
+                        entity.collisionOn = true;
+                    }
+                }
+                break;
+        }
+        // return the rectangles (hitboxes) back to its original position
+        entity.hitbox.x = entity.hitboxDefaultX;
+        entity.hitbox.y = entity.hitboxDefaultY;
+        gameController.player.hitbox.x = gameController.player.hitboxDefaultX;
+        gameController.player.hitbox.y = gameController.player.hitboxDefaultY;
+    }
+
     public void checkHitBoxIntersection(){
 
     }

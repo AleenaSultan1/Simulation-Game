@@ -18,13 +18,9 @@
 package org.team12.controller;
 
 import org.team12.model.Map;
-import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Entity;
-import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
-import org.team12.view.AssetSetter;
 import org.team12.view.GameUI;
-import javax.swing.JFrame;
 
 public class GameController implements Runnable{
 
@@ -59,8 +55,6 @@ public class GameController implements Runnable{
     public GameUI gameUI;
     public InputController inputController;
     public Player player;
-    public AssetSetter assetSetter;
-    public Entity[] enemies = new Entity[20];
     public Entity lilyFinalBoss;
     public Map map;
     public CollisionController cController;
@@ -76,21 +70,15 @@ public class GameController implements Runnable{
         map = new Map(this);
         player = new Player(this, inputController);
 
-//        enemies[0] = new Enemy(this);
-//        enemies[0].worldX = tileSize * 9;
-//        enemies[0].worldY = tileSize * 7;
-//
-//        enemies[1] = new Enemy(this);
-//        enemies[1].worldX = tileSize * 7;
-//        enemies[1].worldY = tileSize * 5;
-
         // Initialize UI
         gameUI = new GameUI(this);
         gameUI.initializeWindow();
 
     }
 
-
+//    public void setupGame() {
+//        assetSetter.setEnemy();
+//    }
 
     public void startGame() {
         populateMap();
@@ -102,7 +90,7 @@ public class GameController implements Runnable{
     // Used to spawn in items, enemies, etc.
     public void populateMap(){
         map.placeItems();
-        //map.placeEnemy();
+        map.placeEnemy();
         //map.placeLilyFinalBoss();
     }
 
@@ -110,15 +98,15 @@ public class GameController implements Runnable{
     public void update(){
         player.update();
 
-        for (int i = 0; i < enemies.length; i++) {
-            if (enemies[i] != null) {
-                enemies[i].update();
+        for (int i = 0; i < map.enemies.length; i++) {
+            if (map.enemies[i] != null) {
+                map.enemies[i].update();
             }
         }
 
-        if (lilyFinalBoss != null) {
-            lilyFinalBoss.update();
-        }
+//        if (lilyFinalBoss != null) {
+//            lilyFinalBoss.update();
+//        }
 
     }
 

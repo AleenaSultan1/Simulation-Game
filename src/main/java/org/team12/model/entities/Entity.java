@@ -63,47 +63,101 @@ public class Entity {
         this.gameController = gameController;
     }
 
+    public void setAction() {
+    }
+
     public void update() {
+        setAction();
+        collisionOn = false;
+        gameController.cController.checkTile(this);
+        gameController.cController.checkObject(this, false);
+        gameController.cController.checkPlayer(this);
+
+        // if collision is false, player can move
+        if(!collisionOn){
+            switch(direction){
+                case "up":
+                    worldY-= speed;
+                    break;
+                case "down":
+                    worldY += speed;
+                    break;
+                case "left":
+                    worldX -= speed;
+                    break;
+                case "right":
+                    worldX += speed;
+                    break;
+            }
+        }
+
+        // Used for player walking animation
+        spriteCounter ++;
+        if(spriteCounter > 12){
+            if(spriteNum == 1){
+                spriteNum = 2;
+            }
+            else if(spriteNum == 2){
+                spriteNum = 1;
+            }
+            spriteCounter = 0;
+        }
+    }
+
+    public void draw (Graphics2D g2, GameController gameController) {
+        BufferedImage image = null;
+
+        // This shows where on the screen do we draw
         int screenX = worldX - gameController.player.worldX + gameController.player.screenX;
         int screenY = worldY - gameController.player.worldY + gameController.player.screenY;
 
+        // Rendering Efficiency: Render only the visible parts on the screen
         if (worldX + gameController.tileSize > gameController.player.worldX - gameController.player.screenX &&
                 worldX - gameController.tileSize < gameController.player.worldX + gameController.player.screenX &&
-                worldY + gameController.tileSize > gameController.player.worldX - gameController.player.screenX &&
-                worldY - gameController.tileSize < gameController.player.worldX + gameController.player.screenX) {
+                worldY + gameController.tileSize > gameController.player.worldY - gameController.player.screenY &&
+                worldY - gameController.tileSize < gameController.player.worldY + gameController.player.screenY){
+
             switch (direction) {
                 case "up":
                     if (spriteNum == 1) {
                         image = up1;
+                        break;
                     }
                     if (spriteNum == 2) {
                         image = up2;
+                        break;
                     }
                 case "down":
                     if (spriteNum == 1) {
                         image = down1;
+                        break;
                     }
                     if (spriteNum == 2) {
                         image = down2;
+                        break;
                     }
                 case "left":
                     if (spriteNum == 1) {
                         image = left1;
+                        break;
                     }
                     if (spriteNum == 2) {
                         image = left2;
+                        break;
                     }
                 case "right":
                     if (spriteNum == 1) {
                         image = right1;
+                        break;
                     }
                     if (spriteNum == 2) {
                         image = right2;
+                        break;
                     }
-                    break;
+                break;
             }
-
-            //g2.drawImage(image, screenX, screenY, gameController.tileSize, gameController.tileSize, null);
+            // draw the appropriate sprite for the tile
+            g2 .drawImage(image, screenX, screenY, gameController.tileSize, gameController.tileSize, null);
         }
     }
 

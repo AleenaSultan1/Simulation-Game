@@ -101,6 +101,9 @@ public class Player extends Entity {
             // check if the player is touching an interactable item
             int objIndex = gameController.cController.checkObject(this, true);
             pickUpObject(objIndex);
+            // check enemy collision
+            int enemyIndex = gameController.cController.checkEntity(this, map.enemies);
+            interactEnemy(enemyIndex);
 
             // if collision is false, player can move
             if(!collisionOn){
@@ -150,6 +153,12 @@ public class Player extends Entity {
             }
             // deletes the object we touched
             //gameUI.obj[objIndex] = null;
+        }
+    }
+
+    public void interactEnemy (int enemyIndex) {
+        if (enemyIndex != 999) {
+            System.out.println("You're hitting an evil goon!");
         }
     }
 

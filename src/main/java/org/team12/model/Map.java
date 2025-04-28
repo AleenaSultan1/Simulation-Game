@@ -41,6 +41,7 @@ public class Map {
 
     //Construct a list of potential different objects (30 slots for 30 distinct, unique objects)
     public Item[] obj = new Item[30];
+    public Entity[] enemies = new Entity[30];
 
     private Tile[][] grid;
     private List<Item> itemsOnMap;
@@ -178,11 +179,15 @@ public class Map {
 
     }
 
-    public void placeEnemy(Enemy enemy, int x, int y) {
-        grid[x][y].setEnemy(enemy);
-        enemy.worldX = x * gameUI.tileSize;
-        enemy.worldY = y * gameUI.tileSize;
-        enemiesOnMap.add(enemy);
+    public void placeEnemy() {
+        // +- 8 compared with (18, 25) of the player
+        enemies[0] = new Enemy(gameController);
+        enemies[0].worldX = 20 * gameController.tileSize;
+        enemies[0].worldY = 24 * gameController.tileSize;
+
+        enemies[1] = new Enemy(gameController);
+        enemies[1].worldX = 23 * gameController.tileSize;
+        enemies[1].worldY = 27 * gameController.tileSize;
     }
 
     public void placeLilyFinalBoss(LilyFinalBoss boss, int x, int y) {

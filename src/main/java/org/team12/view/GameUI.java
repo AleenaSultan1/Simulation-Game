@@ -51,13 +51,11 @@ public class GameUI extends JPanel{
         this.requestFocusInWindow(); // focuses everything in the window
         this.setDoubleBuffered(true);
         this.setFocusable(true);
+        this.setFocusTraversalKeysEnabled(false); // let arrow keys through
         // Creates an object to register user inputs
         this.addKeyListener(gameController.inputController);
 
     }
-
-
-
 
     public void initializeWindow(){
         // Create a screen window to display the game
@@ -76,6 +74,7 @@ public class GameUI extends JPanel{
         // More Formatting
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+        this.requestFocusInWindow(); // remove this if game can't run
     }
 
 
@@ -99,11 +98,12 @@ public class GameUI extends JPanel{
             }
         }
 
-        // Draw enemies
-//        entityRenderer.drawEntity(g2, player, player);
-//        for (Enemy enemy : map.enemiesOnMap) {
-//            entityRenderer.drawEntity(g2, enemy, player);
-//        }
+        //draw enemies
+        for (int i = 0; i < gameController.map.enemies.length; i++){
+            if (gameController.map.enemies[i] != null){
+                gameController.map.enemies[i].draw(g2, gameController);
+            }
+        }
 
         // draw the player
         gameController.player.draw(g2);
