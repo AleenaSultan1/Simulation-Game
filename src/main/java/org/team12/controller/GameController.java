@@ -20,6 +20,8 @@ package org.team12.controller;
 import org.team12.model.Map;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
+import org.team12.model.entities.Sword;
+import org.team12.model.entities.Table;
 import org.team12.view.GameUI;
 import javax.swing.JFrame;
 
@@ -87,7 +89,17 @@ public class GameController implements Runnable{
 
     // Used to spawn in items, enemies, etc.
     public void populateMap(){
-        map.placeItems();
+        placeItems();
+    }
+
+    public void placeItems(){
+        map.obj[0] = new Sword(this);
+        map.obj[0].worldX = 27 * tileSize;
+        map.obj[0].worldY = 19 * tileSize;
+
+        map.obj[1] = new Table(this);
+        map.obj[1].worldX = 3* tileSize;
+        map.obj[1].worldY = 3 * tileSize;
     }
 
     // At the moment: moves the player according to which key is pressed

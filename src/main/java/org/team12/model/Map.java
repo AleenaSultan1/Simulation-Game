@@ -166,17 +166,6 @@ public class Map {
     }
 
 
-    public void placeItems() {
-        obj[0] = new Sword(gameController);
-        obj[0].worldX = 27 * gameController.tileSize;
-        obj[0].worldY = 19 * gameController.tileSize;
-
-        obj[1] = new Table(gameController);
-        obj[1].worldX = 3* gameController.tileSize;
-        obj[1].worldY = 3 * gameController.tileSize;
-
-
-    }
 
     public void placeEnemy(Enemy enemy, int x, int y) {
         grid[x][y].setEnemy(enemy);

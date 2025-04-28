@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Sword extends Item {
-    GameController gameController;
 
     public Sword(GameController gameController) {
         name = "Sword";
