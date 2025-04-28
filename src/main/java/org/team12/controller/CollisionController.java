@@ -27,6 +27,7 @@ public class CollisionController {
     // Constructor for a collision controller
     public CollisionController(GameController gameController) {
         this.gameController = gameController;
+        this.map = gameController.map;
     }
 
     public void checkTile(Entity entity){

@@ -97,7 +97,7 @@ public class Player extends Entity {
             int objIndex = gameController.cController.checkObject(this, true);
             pickUpObject(objIndex);
             // check enemy collision
-            int enemyIndex = gameController.cController.checkEntity(this, map.enemies);
+            int enemyIndex = gameController.cController.checkEntity(this, gameController.map.enemies);
             interactEnemy(enemyIndex);
 
             // if collision is false, player can move
