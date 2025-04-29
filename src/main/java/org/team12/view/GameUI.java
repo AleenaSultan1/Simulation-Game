@@ -92,8 +92,17 @@ public class GameUI extends JPanel{
             }
         }
 
+        for (int i = 0; i < gameController.map.monster.length; i++){
+            if (gameController.map.monster[i] != null){
+                gameController.map.monster[i].draw(g2);
+            }
+        }
+
         // draw the player
         gameController.player.draw(g2);
+
+        // Draw the Player Hud
+        gameController.pHud.draw(g2);
 
 
         // dispose of the objects

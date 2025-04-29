@@ -33,9 +33,9 @@ public class Heart extends Item{
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartFull.png")));
             image2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartHalf.png")));
             image3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartEmpty.png")));
-            utilTool.scaleImage(image, gameController.tileSize, gameController.tileSize);
-            utilTool.scaleImage(image2, gameController.tileSize, gameController.tileSize);
-            utilTool.scaleImage(image3, gameController.tileSize, gameController.tileSize);
+            image=utilTool.scaleImage(image, gameController.tileSize, gameController.tileSize);
+            image2= utilTool.scaleImage(image2, gameController.tileSize, gameController.tileSize);
+            image3 = utilTool.scaleImage(image3, gameController.tileSize, gameController.tileSize);
 
         } catch (IOException e) {
             e.printStackTrace();

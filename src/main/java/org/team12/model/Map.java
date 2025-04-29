@@ -41,12 +41,8 @@ public class Map {
 
     //Construct a list of potential different objects (30 slots for 30 distinct, unique objects)
     public Item[] obj = new Item[30];
-
-    private Tile[][] grid;
-    private List<Item> itemsOnMap;
-    private List<Enemy> enemiesOnMap;
-    private int width;
-    private int height;
+    // Number of monsters that we can display at a time
+    public Entity[] monster = new Entity[10];
 
 //    public Map(int width, int height, gameUI) {
 //        this.width = width;
@@ -167,32 +163,24 @@ public class Map {
 
 
 
-    public void placeEnemy(Enemy enemy, int x, int y) {
-        grid[x][y].setEnemy(enemy);
-        enemiesOnMap.add(enemy);
-    }
-
-    public Item pickUpItem(int x, int y) {
-        Item item = grid[x][y].getItem();
-        if (item != null) {
-            grid[x][y].setItem(null);
-            itemsOnMap.remove(item);
-        }
-        return item;
-    }
-
-//    public boolean movePlayer(Player player, int newX, int newY) {
-//        if (isInsideBounds(newX, newY)) {
-//            player.setXCoordinate(newX);
-//            player.setYCoordinate(newY);
-//            return true;
+//    public void placeEnemy(Enemy enemy, int x, int y) {
+//        grid[x][y].setEnemy(enemy);
+//        enemiesOnMap.add(enemy);
+//    }
+//
+//    public Item pickUpItem(int x, int y) {
+//        Item item = grid[x][y].getItem();
+//        if (item != null) {
+//            grid[x][y].setItem(null);
+//            itemsOnMap.remove(item);
 //        }
-//        return false;
+//        return item;
 //    }
 
-    private boolean isInsideBounds(int x, int y) {
-        return x >= 0 && x < width && y >= 0 && y < height;
-    }
+//
+//    private boolean isInsideBounds(int x, int y) {
+//        return x >= 0 && x < width && y >= 0 && y < height;
+//    }
 
 //    public boolean isOccupied(int x, int y) {
 //        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();

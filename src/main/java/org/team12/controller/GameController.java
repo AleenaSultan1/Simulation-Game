@@ -18,20 +18,15 @@
 package org.team12.controller;
 
 import org.team12.model.Map;
-import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
-import org.team12.model.entities.Sword;
-import org.team12.model.entities.Table;
+import org.team12.view.PlayerHud;
 import org.team12.view.GameUI;
-import javax.swing.JFrame;
 
 public class GameController implements Runnable{
 
 
     // GAME SETTINGS
     private static final int FPS = 60; // Used in the main game loop to run the game at 60 frames per second
-
-
 
 
     // MAP SETTINGS
@@ -54,12 +49,14 @@ public class GameController implements Runnable{
     // GAME LOOP VARIABLES
     Thread gameThread; // Thread to start the game loop of 60 frames per second
 
-    // Game objects
+    // GAME OBJECTS
     public GameUI gameUI;
     public InputController inputController;
     public Player player;
     public Map map;
     public CollisionController cController;
+    public PlayerHud pHud = new PlayerHud (this);
+    public AssetController assetController = new AssetController(this);
 
 
 
@@ -67,6 +64,7 @@ public class GameController implements Runnable{
         // Initialize Objects
         inputController = new InputController();
         cController = new CollisionController(this);
+        assetController = new AssetController(this);
 
         // Initialize game objects
         map = new Map(this);
@@ -89,22 +87,21 @@ public class GameController implements Runnable{
 
     // Used to spawn in items, enemies, etc.
     public void populateMap(){
-        placeItems();
+        assetController.setObjects();
+        assetController.setMonsters();
     }
 
-    public void placeItems(){
-        map.obj[0] = new Sword(this);
-        map.obj[0].worldX = 27 * tileSize;
-        map.obj[0].worldY = 19 * tileSize;
-
-        map.obj[1] = new Table(this);
-        map.obj[1].worldX = 3* tileSize;
-        map.obj[1].worldY = 3 * tileSize;
-    }
 
     // At the moment: moves the player according to which key is pressed
     public void update(){
         player.update();
+
+        // for every enemy on the map
+        for (int i = 0; i < map.monster.length; i++){
+            if (map.monster[i] != null){
+                map.monster[i].update();
+            }
+        }
     }
 
     /**
