@@ -56,6 +56,7 @@ public class Enemy extends Entity {
         right2 = setup("/evilGoon/enemy_right_1");
     }
 
+    @Override
     public void setAction() {
         actionLockCounter++;
         if (actionLockCounter == 120) {

@@ -33,6 +33,7 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
     public boolean hasSword = false;
+    public boolean hasKey = false;
 
     public boolean canCure = false;
 
@@ -145,6 +146,12 @@ public class Player extends Entity {
                     this.hasSword = true;
                     gameController.map.obj[objIndex] = null;
                     System.out.println("Sword picked up");
+                    break;
+                case "Key":
+                    this.hasKey = true;
+                    gameController.map.obj[objIndex] = null;
+                    System.out.println("Key picked up");
+                    break;
             }
             // deletes the object we touched
             //gameUI.obj[objIndex] = null;

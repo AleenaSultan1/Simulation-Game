@@ -20,7 +20,6 @@ package org.team12.view;
 
 import org.team12.controller.GameController;
 import org.team12.model.Map;
-import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Player;
 
 import java.awt.*;

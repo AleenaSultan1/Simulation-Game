@@ -197,39 +197,30 @@ public class CollisionController {
                 switch(entity.direction){
                     case "up":
                         entity.hitbox.y -= entity.speed;
-                        // If the two rectangles (hitboxes) are intersecting,
-                        if(entity.hitbox.intersects(gameController.map.enemies[i].hitbox)){
-
-                            // DEBUG PRINT
-                            System.out.println("UP");
-                                entity.collisionOn = true;
+                        if(entity.hitbox.intersects(target[i].hitbox)){
+                            entity.collisionOn = true;
+                            index = i; // Set index to the current target
                         }
                         break;
                     case "down":
                         entity.hitbox.y += entity.speed;
                         if(entity.hitbox.intersects(target[i].hitbox)){
-                            // If the two rectangles (hitboxes) are intersecting,
-                            if(entity.hitbox.intersects(target[i].hitbox)){
-                                    entity.collisionOn = true;
-                            }
+                            entity.collisionOn = true;
+                            index = i; // Set index to the current target
                         }
                         break;
                     case "left":
                         entity.hitbox.x -=entity.speed;
                         if(entity.hitbox.intersects(target[i].hitbox)){
-                            // If the two rectangles (hitboxes) are intersecting,
-                            if(entity.hitbox.intersects(target[i].hitbox)){
-                                    entity.collisionOn = true;
-                            }
+                            entity.collisionOn = true;
+                            index = i; // Set index to the current target
                         }
                         break;
                     case "right":
                         entity.hitbox.x += entity.speed;
                         if(entity.hitbox.intersects(target[i].hitbox)){
-                            // If the two rectangles (hitboxes) are intersecting,
-                            if(entity.hitbox.intersects(target[i].hitbox)){
-                                    entity.collisionOn = true;
-                            }
+                            entity.collisionOn = true;
+                            index = i; // Set index to the current target
                         }
                         break;
                 }

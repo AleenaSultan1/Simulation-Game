@@ -173,21 +173,31 @@ public class Map {
         obj[0].worldY = 19 * gameController.tileSize;
 
         obj[1] = new Table(gameController);
-        obj[1].worldX = 3* gameController.tileSize;
+        obj[1].worldX = 3 * gameController.tileSize;
         obj[1].worldY = 3 * gameController.tileSize;
 
+        obj[2] = new Key(gameController);
+        obj[2].worldX = 27 * gameController.tileSize;
+        obj[2].worldY = 19 * gameController.tileSize;
 
+        obj[3] = new Chest(gameController);
+        obj[3].worldX = 25 * gameController.tileSize;
+        obj[3].worldY = 10 * gameController.tileSize;
     }
 
     public void placeEnemy() {
         // +- 8 compared with (18, 25) of the player
         enemies[0] = new Enemy(gameController);
-        enemies[0].worldX = 20 * gameController.tileSize;
-        enemies[0].worldY = 24 * gameController.tileSize;
+        enemies[0].worldX = 10 * gameController.tileSize;
+        enemies[0].worldY = 15 * gameController.tileSize;
 
         enemies[1] = new Enemy(gameController);
-        enemies[1].worldX = 23 * gameController.tileSize;
-        enemies[1].worldY = 27 * gameController.tileSize;
+        enemies[1].worldX = 26 * gameController.tileSize;
+        enemies[1].worldY = 16 * gameController.tileSize;
+
+        enemies[2] = new Enemy(gameController);
+        enemies[2].worldX = 15 * gameController.tileSize;
+        enemies[2].worldY = 17 * gameController.tileSize;
     }
 
     public void placeLilyFinalBoss(LilyFinalBoss boss, int x, int y) {
