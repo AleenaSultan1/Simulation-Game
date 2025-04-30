@@ -48,7 +48,7 @@ public class AssetController {
         gameController.map.monster[0].worldY = 20 * gameController.tileSize;
         gameController.map.monster[1] = new EvilGoon(gameController);
         gameController.map.monster[1].worldX = 21 * gameController.tileSize;
-        gameController.map.monster[1].worldY = 21 * gameController.tileSize;
+        gameController.map.monster[1].worldY = 22 * gameController.tileSize;
     }
 }
 

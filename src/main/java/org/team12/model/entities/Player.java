@@ -29,8 +29,6 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity {
     GameController gameController;
     InputController inputController;
-    GameUI gameUI;
-    Map map;
     public final int screenX;
     public final int screenY;
     public boolean hasSword = false;
@@ -94,9 +92,15 @@ public class Player extends Entity {
             collisionOn = false;
             // check if the player is touching an impassable tile
             gameController.cController.checkTile(this);
-            // check if the player is touching an interactable item
+
+            // Check Item Collision
             int objIndex = gameController.cController.checkObject(this, true);
             pickUpObject(objIndex);
+
+            //Check Enemy Collision
+            int monsterIndex = gameController.cController.checkEntity(this, gameController.map.monster);
+            interact(monsterIndex);
+
 
             // if collision is false, player can move
             if(!collisionOn){
@@ -116,6 +120,7 @@ public class Player extends Entity {
                 }
             }
 
+
             // Used for player walking animation
             spriteCounter ++;
             if(spriteCounter > 12){
@@ -131,6 +136,11 @@ public class Player extends Entity {
 
 
     }
+    public void interact(int i){
+        if (i!=999){
+            System.out.println("hitting monster");
+        }
+    }
 
 
 
@@ -145,10 +155,7 @@ public class Player extends Entity {
                     this.hasSword = true;
                     gameController.map.obj[objIndex] = null;
                     gameController.pHud.showMessage ("You picked up the sword!");
-                    //System.out.println("Sword picked up");
             }
-            // deletes the object we touched
-            //gameUI.obj[objIndex] = null;
         }
     }
 

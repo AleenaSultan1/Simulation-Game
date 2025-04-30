@@ -60,9 +60,17 @@ public class Entity {
 
     // Method to be inherited
     public void update(){
+        // If any subclasses have this, set their actino (enemy ai), player does not do anything
         setAction();
+
         collisionOn = false;
+
         gameController.cController.checkTile(this);
+        gameController.cController.checkObject(this, false);
+
+        // checks if any entity (player or monster) is touching one another
+        //gameController.cController.checkEntity(this, gameController.map.monster);
+        gameController.cController.checkPlayer(this);
 
         // if collision is false, player can move
         if(!collisionOn){

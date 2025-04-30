@@ -95,7 +95,6 @@ public class CollisionController {
                 // Get Entity's hitbox
                 entity.hitbox.x = entity.worldX+entity.hitbox.x;
                 entity.hitbox.y = entity.worldY+entity.hitbox.y;
-
                 // Get the object's hitbox
                 gameController.map.obj[i].hitbox.x = gameController.map.obj[i].worldX + gameController.map.obj[i].hitbox.x;
                 gameController.map.obj[i].hitbox.y = gameController.map.obj[i].worldY + gameController.map.obj[i].hitbox.y;
@@ -103,71 +102,29 @@ public class CollisionController {
                 switch(entity.direction){
                     case "up":
                         entity.hitbox.y -= entity.speed;
-                        // If the two rectangles (hitboxes) are intersecting,
-                        if(entity.hitbox.intersects(gameController.map.obj[i].hitbox)){
-
-                            // DEBUG PRINT
-                            System.out.println("UP");
-
-                            // if the item/object is solid, then the player can't pass through it
-                            if(gameController.map.obj[i].collision){
-                                entity.collisionOn = true;
-                            }
-                            // if the player is touching it, set the index (get the right reaction)
-                            if (player){
-                                index = i;
-                            }
-                        }
                         break;
                     case "down":
                         entity.hitbox.y += entity.speed;
-                        if(entity.hitbox.intersects(gameController.map.obj[i].hitbox)){
-                            // If the two rectangles (hitboxes) are intersecting,
-                            if(entity.hitbox.intersects(gameController.map.obj[i].hitbox)){
-                                // if the item/object is solid, then the player can't pass through it
-                                if(gameController.map.obj[i].collision){
-                                    entity.collisionOn = true;
-                                }
-                                // if the player is touching it, set the index (get the right reaction)
-                                if (player){
-                                    index = i;
-                                }
-                            }
-                        }
                         break;
                     case "left":
                         entity.hitbox.x -=entity.speed;
-                        if(entity.hitbox.intersects(gameController.map.obj[i].hitbox)){
-                            // If the two rectangles (hitboxes) are intersecting,
-                            if(entity.hitbox.intersects(gameController.map.obj[i].hitbox)){
-                                // if the item/object is solid, then the player can't pass through it
-                                if(gameController.map.obj[i].collision){
-                                    entity.collisionOn = true;
-                                }
-                                // if the player is touching it, set the index (get the right reaction)
-                                if (player){
-                                    index = i;
-                                }
-                            }
-                        }
                         break;
                     case "right":
                         entity.hitbox.x += entity.speed;
-                        if(entity.hitbox.intersects(gameController.map.obj[i].hitbox)){
-                            // If the two rectangles (hitboxes) are intersecting,
-                            if(entity.hitbox.intersects(gameController.map.obj[i].hitbox)){
-                                // if the item/object is solid, then the player can't pass through it
-                                if(gameController.map.obj[i].collision){
-                                    entity.collisionOn = true;
-                                }
-                                // if the player is touching it, set the index (get the right reaction)
-                                if (player){
-                                    index = i;
-                                }
-                            }
-                        }
                         break;
                 }
+
+                if(entity.hitbox.intersects(gameController.map.obj[i].hitbox)){
+                    // if the item/object is solid, then the player can't pass through it
+                    if(gameController.map.obj[i].collision){
+                        entity.collisionOn = true;
+                    }
+                    // if the player is touching it, set the index (get the right reaction)
+                    if (player){
+                        index = i;
+                    }
+                }
+
                 // return the rectangles (hitboxes) back to its original position
                 entity.hitbox.x = entity.hitboxDefaultX;
                 entity.hitbox.y = entity.hitboxDefaultY;
@@ -179,9 +136,105 @@ public class CollisionController {
         return index;
     }
 
-    public void checkHitBoxIntersection(){
+    // Check Enemy collision
+    public int checkEntity(Entity entity, Entity[] target){
+        int index = 999;
 
+        // Scan object array
+        for(int i = 0; i< target.length; i++){
+            if(target[i] != null && target[i] != entity) {
+                if(target[i] != null) {
+                    // Get Entity's hitbox
+                    entity.hitbox.x = entity.worldX + entity.hitbox.x;
+                    entity.hitbox.y = entity.worldY + entity.hitbox.y;
+                    // Get the object's hitbox
+                    target[i].hitbox.x = target[i].worldX + target[i].hitbox.x;
+                    target[i].hitbox.y = target[i].worldY + target[i].hitbox.y;
+
+                    switch (entity.direction) {
+                        case "up":
+                            entity.hitbox.y -= entity.speed;
+                            break;
+                        case "down":
+                            entity.hitbox.y += entity.speed;
+                            break;
+                        case "left":
+                            entity.hitbox.x -= entity.speed;
+                            break;
+                        case "right":
+                            entity.hitbox.x += entity.speed;
+                            break;
+                    }
+                    if (entity.hitbox.intersects(target[i].hitbox)) {
+                        if(target[i] != entity) {
+                            entity.collisionOn = true;
+                            index = i;
+                        }
+                    }
+
+                    // return the rectangles (hitboxes) back to its original position
+                    entity.hitbox.x = entity.hitboxDefaultX;
+                    entity.hitbox.y = entity.hitboxDefaultY;
+                    target[i].hitbox.x = target[i].hitboxDefaultX;
+                    target[i].hitbox.y = target[i].hitboxDefaultY;
+                }
+
+            }
+        }
+
+        return index;
+    }
+
+    public void checkPlayer(Entity entity){
+        // Get Entity's hitbox
+        entity.hitbox.x = entity.worldX+entity.hitbox.x;
+        entity.hitbox.y = entity.worldY+entity.hitbox.y;
+
+        // Get the object's hitbox
+        gameController.player.hitbox.x = gameController.player.worldX + gameController.player.hitbox.x;
+        gameController.player.hitbox.y = gameController.player.worldY + gameController.player.hitbox.y;
+
+        switch(entity.direction){
+            case "up":
+                entity.hitbox.y -= entity.speed;
+                if(entity.hitbox.intersects(gameController.player.hitbox)){
+                    entity.collisionOn = true;
+                }
+                break;
+            case "down":
+                entity.hitbox.y += entity.speed;
+                if(entity.hitbox.intersects(gameController.player.hitbox)){
+                    if(entity.hitbox.intersects(gameController.player.hitbox)){
+                        entity.collisionOn = true;
+                    }
+                }
+                break;
+            case "left":
+                entity.hitbox.x -=entity.speed;
+                if(entity.hitbox.intersects(gameController.player.hitbox)){
+                    // If the two rectangles (hitboxes) are intersecting,
+                    if(entity.hitbox.intersects(gameController.player.hitbox)){
+                        entity.collisionOn = true;
+                    }
+                }
+                break;
+            case "right":
+                entity.hitbox.x += entity.speed;
+                if(entity.hitbox.intersects(gameController.player.hitbox)){
+                    // If the two rectangles (hitboxes) are intersecting,
+                    if(entity.hitbox.intersects(gameController.player.hitbox)){
+                        entity.collisionOn = true;
+                    }
+                }
+                break;
+        }
+        // return the rectangles (hitboxes) back to its original position
+        entity.hitbox.x = entity.hitboxDefaultX;
+        entity.hitbox.y = entity.hitboxDefaultY;
+        gameController.player.hitbox.x = gameController.player.hitboxDefaultX;
+        gameController.player.hitbox.y = gameController.player.hitboxDefaultY;
     }
 }
+
 
 

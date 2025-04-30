@@ -117,9 +117,6 @@ public class GameController implements Runnable{
         long lastTime = System.nanoTime();
         long currentTime;
 
-        // Variables to display FPS every second
-        long timer = 0;
-        int drawCount = 0;
 
         // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
@@ -128,7 +125,7 @@ public class GameController implements Runnable{
             currentTime = System.nanoTime();
 
             delta += (currentTime - lastTime) / drawInterval;
-            timer += (currentTime - lastTime);
+            //timer += (currentTime - lastTime);
             lastTime = currentTime;
 
             if(delta>=1){
@@ -137,15 +134,8 @@ public class GameController implements Runnable{
                 // Makes a new frame for the Game UI with the updated changes
                 gameUI.repaint();
                 delta--;
-                drawCount++;
+                //drawCount++;
             }
-
-            // Displays FPS
-//            if(timer >= 1000000000){
-//                System.out.println("FPS: " + drawCount);
-//                drawCount = 0;
-//                timer = 0;
-//            }
         }
     }
 

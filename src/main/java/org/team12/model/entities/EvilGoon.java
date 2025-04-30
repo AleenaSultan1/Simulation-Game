@@ -58,6 +58,7 @@ public class EvilGoon extends Entity{
         // the enemy will do something every 1/2 seconds
         if (actionLockCounter == 30) {
             Random random = new Random();
+            // to avoid 0
             int i = random.nextInt(100) + 1;
 
             if (i <= 25) {
