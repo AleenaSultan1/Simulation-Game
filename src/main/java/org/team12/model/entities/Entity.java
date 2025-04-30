@@ -17,6 +17,8 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.CollisionController;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;

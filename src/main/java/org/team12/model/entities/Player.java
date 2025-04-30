@@ -17,10 +17,10 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -36,17 +36,24 @@ public class Player extends Entity {
     private final int screenY;
     private int hitboxWidth = 32;  // usually tile size
     private int hitboxHeight = 32;
+    private CollisionController collisionController;
 
-
-
-    public Player(InputController inputController, int hp) {
+    public Player(InputController inputController, CollisionController collisionController, int hp) {
         super(hp);
         this.inventory = new ArrayList<>();
         this.inputController = inputController;
+        this.collisionController = collisionController;
         this.setDefaultValues();
         this.getPlayerImage();
         screenX = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
         screenY = GameUI.getScreenHeight() / 2 - (GameUI.getTileSize() / 2);
+        hitbox = new Rectangle();
+        hitboxDefaultX = 8; // Could be adjusted
+        hitboxDefaultY = 8;
+        hitbox.x = hitboxDefaultX;
+        hitbox.y = hitboxDefaultY;
+        hitbox.width = GameUI.getTileSize() - 16;
+        hitbox.height = GameUI.getTileSize() - 16;
 
 
     }
@@ -60,20 +67,27 @@ public class Player extends Entity {
     }
 
     public void update() {
+        int dx = 0;
+        int dy = 0;
         if (inputController.upPressed || inputController.downPressed ||
                 inputController.leftPressed || inputController.rightPressed) {
             if (inputController.upPressed) {
                 direction = "up";
-                worldY -= speed;
+                dy -= speed;
             } else if (inputController.downPressed) {
                 direction = "down";
-                worldY += speed;
+                dy += speed;
             } else if (inputController.leftPressed) {
                 direction = "left";
-                worldX -= speed;
+                dx -= speed;
             } else if (inputController.rightPressed) {
                 direction = "right";
-                worldX += speed;
+                dx += speed;
+            }
+
+            if (collisionController.canMoveTo(this, dx, dy)) {
+                worldX += dx;
+                worldY += dy;
             }
 
             // Used for player walking animation

@@ -17,8 +17,8 @@
 
 
 package org.team12.view;
-
 import org.team12.controller.GameController;
+import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
@@ -39,7 +39,6 @@ public class GameUI extends JPanel implements Runnable{
     private static int screenWidth = tileSize * maxScreenCol; // 786 pixels
     private static int screenHeight = tileSize * maxScreenRow; // 576 pixels
     private GameController gameController;
-
 
     public static int getTileSize() {
         return tileSize;
@@ -76,14 +75,16 @@ public class GameUI extends JPanel implements Runnable{
     private MapRenderer mapRenderer;
     private EntityRenderer entityRenderer;
     private InputController inputController = new InputController();
+    private CollisionController collisionController;
     public Player player;
 
 
 
     // Constructor for a game UI
     public GameUI(){
-        player = new Player(inputController, 20);
         map = new Map("/map/dungeonMap.txt");
+        collisionController = new CollisionController(map);
+        player = new Player(inputController, collisionController, 20);
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize);
         // Set the size of the UI to the size of the screen

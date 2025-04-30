@@ -18,20 +18,27 @@
 package org.team12.controller;
 
 import org.team12.model.Map;
-import org.team12.model.entities.Item;
-import org.team12.model.entities.Player;
-import org.team12.model.entities.RiddleChest;
+import org.team12.model.entities.*;
 import org.team12.view.GameUI;
-
 import java.awt.*;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 
 public class GameController {
-    private Map map;
     private Player player;
+    private Map map;
     private boolean isRunning;
+    private LilyFinalBoss lily;
+    private Sword sword;
+    private MagicDust magicDust;
+    private RiddleChest riddleChest;
+    private final List<Item> items;
 
     public GameController(Map map, Player player) {
+        items = map.getItemsOnMap();
         this.map = map;
         this.player = player;
         this.isRunning = true;
@@ -40,6 +47,7 @@ public class GameController {
     public void update() {
         // Update player movement, logic
         //player.update();
+        player.update();
         checkPlayerPickup();
     }
 
@@ -57,14 +65,23 @@ public class GameController {
         for (Item item : map.getItemsOnMap()) {
             Rectangle itemHitbox = new Rectangle(item.getWorldX(), item.getWorldY(), GameUI.getTileSize(), GameUI.getTileSize());
 
-            if (playerHitbox.intersects(itemHitbox)) {
-                // Player picked up the item!
-                //item.pickUp();
-                player.pickUpItem(item);
-                //player.addToInventory(item);
-                player.getInventory().add(item);
-                // Remove item from map
-                map.removeItemsOnMap();
+            Iterator<Item> iterator = map.getItemsOnMap().iterator();
+            while (iterator.hasNext()) {
+                Item item = iterator.next();
+                Rectangle itemHitbox = new Rectangle(item.getWorldX(), item.getWorldY(), GameUI.getTileSize(), GameUI.getTileSize());
+
+                if (playerHitbox.intersects(itemHitbox)) {
+                    //Player picked up the item!
+                    item.pickUp();
+                    player.pickUpItem(item);
+                    //player.addToInventory(item);
+                    player.getInventory().add(item);
+                    // Remove item from map
+
+                    map.removeItemsOnMap();
+
+                }
+                iterator.remove();
 
             }
         }
