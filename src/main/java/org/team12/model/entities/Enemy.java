@@ -33,9 +33,9 @@ public class Enemy extends Entity {
 
     public Enemy(int hp, int hostilityArea) {
         super(hp);
-        this.hostilityArea = GameUI.getTileSize() * 5;
+        this.hostilityArea = hostilityArea;
         this.enemyState = EnemyStatus.PEACEFUL;
-        this.speed = 0.05;
+        this.speed = 10;
     }
 
     public boolean isDead() {
@@ -55,60 +55,34 @@ public class Enemy extends Entity {
         this.worldY = y * GameUI.getTileSize();
     }
 
-    public void enemyAttack(Player player) {
-        setEnemyState(EnemyStatus.HOSTILE);
-        moveToPlayer(player);
-    }
-
     public void moveRandomly() {
-        Random rand = new Random();
-        int step = rand.nextInt(4);
-        switch (step) {
-            case 0:
-                direction = "up";
-                worldY += speed;
-                break;
-            case 1:
-                direction = "down";
-                worldY -= speed;
+        actionLockCounter++;
+        if (actionLockCounter == 10) {
+            Random rand = new Random();
+            int step = rand.nextInt(4);
+            switch (step) {
+                case 0:
+                    direction = "up";
+                    worldY += speed;
+                    break;
+                case 1:
+                    direction = "down";
+                    worldY -= speed;
 
-                break;
-            case 2:
-                direction = "left";
-                worldX -= speed;
+                    break;
+                case 2:
+                    direction = "left";
+                    worldX -= speed;
 
-                break;
-            case 3:
-                direction = "right";
-                worldX += speed;
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    public void moveToPlayer(Player player) {
-        int dx = player.worldX - this.worldX;
-        int dy = player.worldY - this.worldY;
-
-        // Move in the direction of greatest distance first
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (dx > 0) {
-                direction = "right";
-                worldX += speed;
-            } else {
-                direction = "left";
-                worldX -= speed;
+                    break;
+                case 3:
+                    direction = "right";
+                    worldX += speed;
+                    break;
+                default:
+                    break;
             }
-        } else {
-            if (dy > 0) {
-                direction = "down";
-                worldY -= speed;
-            } else {
-                direction = "up";
-                worldY += speed;
-            }
+            actionLockCounter = 0;
         }
     }
 
@@ -133,10 +107,6 @@ public class Enemy extends Entity {
             e.printStackTrace();
         }
         return sprite;
-    }
-
-    public int getHostilityArea() {
-        return hostilityArea;
     }
 
 }

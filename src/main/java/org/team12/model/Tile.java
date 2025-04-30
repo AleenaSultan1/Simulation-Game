@@ -33,6 +33,7 @@ public class Tile {
     private int y;
     private Item item;
     private Enemy enemy;
+    private LilyFinalBoss lilyFinalBoss;
 
 
     public Tile(int x, int y) {
@@ -59,6 +60,14 @@ public class Tile {
         this.enemy = enemy;
     }
 
+    public LilyFinalBoss getLilyFinalBoss() {
+        return lilyFinalBoss;
+    }
+
+    public void setLilyFinalBoss(LilyFinalBoss lilyFinalBoss) {
+        this.lilyFinalBoss = lilyFinalBoss;
+    }
+
     public boolean hasObstacle() {
         return isObstacle;
     }
@@ -67,13 +76,12 @@ public class Tile {
         this.isObstacle = hasObstacle;
     }
 
-    public boolean hasItem() {
-        return item != null;
-    }
-
     public boolean isOccupied() {
         return (item != null | enemy != null | !isObstacle);
     }
 
+    public boolean hasItem() {
+        return item != null;
+    }
 }
 

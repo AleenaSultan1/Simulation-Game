@@ -38,6 +38,7 @@ public class Map {
 
     private int width;
     private int height;
+    private LilyFinalBoss lilyFinalBoss;
 
 
     public Map(String filepath) {
@@ -96,7 +97,7 @@ public class Map {
                             itemsOnMap.getLast().setX(x * GameUI.getTileSize());
                             itemsOnMap.getLast().setY(y * GameUI.getTileSize());
                             break;
-
+                        // Riddle chest
                         case 4:
                             RiddleChest riddleChest = new RiddleChest();
                             itemsOnMap.add(riddleChest);
@@ -104,13 +105,21 @@ public class Map {
                             itemsOnMap.getLast().setX(x * GameUI.getTileSize());
                             itemsOnMap.getLast().setY(y * GameUI.getTileSize());
                             break;
-
+                        // Magic dust
                         case 5:
                             MagicDust magicDust = new MagicDust();
                             itemsOnMap.add(magicDust);
                             grid[x][y].setItem(magicDust);
                             itemsOnMap.getLast().setX(x * GameUI.getTileSize());
                             itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            break;
+                        // Lily Final Boss
+                        case 6:
+                            LilyFinalBoss lilyFinalBoss = new LilyFinalBoss(10, 2);
+                            enemiesOnMap.add(lilyFinalBoss);
+                            lilyFinalBoss.setCoord(x, y);
+                            grid[x][y].setLilyFinalBoss(lilyFinalBoss);
+                            this.lilyFinalBoss = lilyFinalBoss;
                             break;
 
                         default:
@@ -152,6 +161,10 @@ public class Map {
 
     public List<Enemy> getEnemiesOnMap () {
         return enemiesOnMap;
+    }
+
+    public LilyFinalBoss getLilyFinalBoss () {
+        return lilyFinalBoss;
     }
 
 
