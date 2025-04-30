@@ -15,9 +15,11 @@
  * ****************************************
  */
 
+
 package org.team12.view;
 
 import org.team12.controller.CollisionController;
+import org.team12.controller.GameController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
@@ -37,6 +39,7 @@ public class GameUI extends JPanel implements Runnable{
     private static int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
     private static int screenWidth = tileSize * maxScreenCol; // 786 pixels
     private static int screenHeight = tileSize * maxScreenRow; // 576 pixels
+    private GameController gameController;
 
 
     public static int getTileSize() {
@@ -97,6 +100,7 @@ public class GameUI extends JPanel implements Runnable{
         this.setFocusable(true);
         // Creates an object to register user inputs
         this.addKeyListener(inputController);
+        gameController = new GameController(map, player);
 
     }
 
@@ -127,10 +131,8 @@ public class GameUI extends JPanel implements Runnable{
         int drawCount = 0;
         long lastMoveTime = System.currentTimeMillis();
 
-
         // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
-
 
             currentTime = System.nanoTime();
 
@@ -145,6 +147,7 @@ public class GameUI extends JPanel implements Runnable{
                 repaint();
                 delta--;
                 drawCount++;
+                gameController.update();
                 player.update();
                 if (currentTime - lastMoveTime > moveCooldown) {
                     for (Enemy enemy : map.getEnemiesOnMap()) {

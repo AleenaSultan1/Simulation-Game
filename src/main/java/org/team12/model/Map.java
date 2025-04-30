@@ -81,25 +81,41 @@ public class Map {
                         case 1:
                             grid[x][y].setObstacle(true);
                             break;
-                    // Goon
+                        // Goon
                         case 2:
                             Enemy enemy = new Enemy(10, 2);
                             enemiesOnMap.add(enemy);
                             enemy.setCoord(x, y);
                             grid[x][y].setEnemy(enemy);
                             break;
-                    // Sword
+                        // Sword
                         case 3:
                             Sword sword = new Sword();
                             itemsOnMap.add(sword);
                             grid[x][y].setItem(sword);
                             itemsOnMap.getLast().setX(x * GameUI.getTileSize());
                             itemsOnMap.getLast().setY(y * GameUI.getTileSize());
-
                             break;
+
+                        case 4:
+                            RiddleChest riddleChest = new RiddleChest();
+                            itemsOnMap.add(riddleChest);
+                            grid[x][y].setItem(riddleChest);
+                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
+                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            break;
+
+                        case 5:
+                            MagicDust magicDust = new MagicDust();
+                            itemsOnMap.add(magicDust);
+                            grid[x][y].setItem(magicDust);
+                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
+                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            break;
+
                         default:
                             break;
- }
+                    }
 
                 }
                 y++;
@@ -110,45 +126,44 @@ public class Map {
         }
     }
 
-    public Tile getTile(int x, int y) {
-        if (x >= 0 && x < width && y >= 0 && y < height) {
-            return grid[x][y];
+
+    public Tile getTile ( int x, int y){
+            if (x >= 0 && x < width && y >= 0 && y < height) {
+                return grid[x][y];
+            }
+            return null;
         }
-        return null;
-    }
 
-    public int getWidth() {
-        return width;
-    }
+        public int getWidth () {
+            return width;
+        }
 
-    public int getHeight() {
-        return height;
-    }
+        public int getHeight () {
+            return height;
+        }
 
-    public boolean isInsideBounds(int x, int y) {
-        return x >= 0 && x < width && y >= 0 && y < height;
-    }
+        public boolean isInsideBounds ( int x, int y){
+            return x >= 0 && x < width && y >= 0 && y < height;
+        }
 
-    public List<Item> getItemsOnMap() {
-        return itemsOnMap;
-    }
+        public List<Item> getItemsOnMap () {
+            return itemsOnMap;
+        }
 
-    public List<Enemy> getEnemiesOnMap() {
-        return enemiesOnMap;
-    }
+        public List<Enemy> getEnemiesOnMap () {
+            return enemiesOnMap;
+        }
 
-    public void updateItemsOnMap() {
-        for (int x =  0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                Tile tile = grid[x][y];
-                if (tile.hasItem() && tile.getItem().getItemState() == ItemState.UNINTERACTABLE) {
-                    tile.setItem(null);
 
+        public void removeItemsOnMap() {
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    Tile tile = grid[x][y];
+                    if (tile.hasItem() && tile.getItem().getItemState() == ItemState.UNINTERACTABLE) {
+                        tile.setItem(null);
+
+                    }
                 }
             }
         }
     }
-
-
-}
-

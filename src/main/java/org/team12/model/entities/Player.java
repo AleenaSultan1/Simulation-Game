@@ -21,31 +21,32 @@ import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 
 public class Player extends Entity {
+    private ArrayList<Item> inventory;
     InputController inputController;
-    public final int screenX;
-    public final int screenY;
+    private final int screenX;
+    private final int screenY;
+    private int hitboxWidth = 32;  // usually tile size
+    private int hitboxHeight = 32;
     private CollisionController collisionController;
-    public int hitboxWidth = 32;  // usually tile size
-    public int hitboxHeight = 32;
-
 
     public Player(InputController inputController, CollisionController collisionController, int hp) {
         super(hp);
+        this.inventory = new ArrayList<>();
         this.inputController = inputController;
         this.collisionController = collisionController;
         this.setDefaultValues();
         this.getPlayerImage();
         screenX = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
-        screenY = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
+        screenY = GameUI.getScreenHeight() / 2 - (GameUI.getTileSize() / 2);
         hitbox = new Rectangle();
         hitboxDefaultX = 8; // Could be adjusted
         hitboxDefaultY = 8;
@@ -53,6 +54,7 @@ public class Player extends Entity {
         hitbox.y = hitboxDefaultY;
         hitbox.width = GameUI.getTileSize() - 16;
         hitbox.height = GameUI.getTileSize() - 16;
+
 
     }
 
@@ -174,11 +176,30 @@ public class Player extends Entity {
         return worldY / GameUI.getTileSize();
     }
 
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
+    }
+
+    public int getHitboxWidth() {
+        return hitboxWidth;
+    }
+
+    public int getHitboxHeight() {
+        return hitboxHeight;
+    }
+
     public void pickUpItem(Item item) {
-        if (item != null && item.getItemState() == ItemState.INTERACTABLE) {
+        if (item != null && item.getItemState() == ItemState.INTERACTABLE && inputController.interactionKeyPressed) {
             item.pickUp();
         }
 
     }
 
+    public ArrayList<Item> getInventory() {
+        return inventory;
+    }
 }
