@@ -131,7 +131,6 @@ public class GameUI extends JPanel implements Runnable{
 
         // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
-            gameController.update();
 
             currentTime = System.nanoTime();
 
@@ -147,6 +146,7 @@ public class GameUI extends JPanel implements Runnable{
                 delta--;
                 drawCount++;
                 player.update();
+                gameController.update();
                 if (currentTime - lastMoveTime > moveCooldown) {
                     for (Enemy enemy : map.getEnemiesOnMap()) {
                         enemy.moveRandomly();

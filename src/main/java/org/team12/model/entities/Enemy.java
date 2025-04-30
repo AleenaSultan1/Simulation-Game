@@ -33,9 +33,9 @@ public class Enemy extends Entity {
 
     public Enemy(int hp, int hostilityArea) {
         super(hp);
-        this.hostilityArea = hostilityArea;
+        this.hostilityArea = GameUI.getTileSize() * 5;
         this.enemyState = EnemyStatus.PEACEFUL;
-        this.speed = 4;
+        this.speed = 0.05;
     }
 
     public boolean isDead() {
@@ -53,6 +53,11 @@ public class Enemy extends Entity {
     public void setCoord(int x, int y) {
         this.worldX = x * GameUI.getTileSize();
         this.worldY = y * GameUI.getTileSize();
+    }
+
+    public void enemyAttack(Player player) {
+        setEnemyState(EnemyStatus.HOSTILE);
+        moveToPlayer(player);
     }
 
     public void moveRandomly() {
@@ -83,6 +88,30 @@ public class Enemy extends Entity {
 
     }
 
+    public void moveToPlayer(Player player) {
+        int dx = player.worldX - this.worldX;
+        int dy = player.worldY - this.worldY;
+
+        // Move in the direction of greatest distance first
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > 0) {
+                direction = "right";
+                worldX += speed;
+            } else {
+                direction = "left";
+                worldX -= speed;
+            }
+        } else {
+            if (dy > 0) {
+                direction = "down";
+                worldY -= speed;
+            } else {
+                direction = "up";
+                worldY += speed;
+            }
+        }
+    }
+
     @Override
     public BufferedImage getCurrentSprite() {
         try {
@@ -104,6 +133,10 @@ public class Enemy extends Entity {
             e.printStackTrace();
         }
         return sprite;
+    }
+
+    public int getHostilityArea() {
+        return hostilityArea;
     }
 
 }

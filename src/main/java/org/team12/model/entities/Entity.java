@@ -33,7 +33,7 @@ public abstract class Entity {
     public Rectangle hitbox;
     public int hitboxDefaultX, hitboxDefaultY;
     public boolean collisionOn = false;
-    public int speed;
+    public double speed;
     public String direction;
 
     // Variables to alternate sprites - Creating animations

@@ -18,37 +18,36 @@
 package org.team12.controller;
 
 import org.team12.model.Map;
-import org.team12.model.entities.*;
+import org.team12.model.entities.Enemy;
+import org.team12.model.entities.Item;
+import org.team12.model.entities.Player;
+import org.team12.model.entities.RiddleChest;
+import org.team12.states.ItemState;
 import org.team12.view.GameUI;
-import java.awt.*;
-import java.util.Iterator;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class GameController {
-    private Player player;
     private Map map;
+    private Player player;
     private boolean isRunning;
-    private LilyFinalBoss lily;
-    private Sword sword;
-    private MagicDust magicDust;
-    private RiddleChest riddleChest;
-    private final List<Item> items;
+    private Rectangle playerHitbox;
 
     public GameController(Map map, Player player) {
-        items = map.getItemsOnMap();
         this.map = map;
         this.player = player;
         this.isRunning = true;
+        this.playerHitbox = new Rectangle();
     }
 
     public void update() {
         // Update player movement, logic
         //player.update();
-        player.update();
+        generatePlayerHitbox();
         checkPlayerPickup();
+        checkEnemyAttack();
     }
 
     public void stopGame() {
@@ -59,31 +58,55 @@ public class GameController {
         return isRunning;
     }
 
+    public void generatePlayerHitbox() {
+        playerHitbox = new Rectangle(
+                player.worldX + player.hitbox.x,
+                player.worldY + player.hitbox.y,
+                player.hitbox.width,
+                player.hitbox.height
+        );
+
+    }
+
     public void checkPlayerPickup() {
-        Rectangle playerHitbox = new Rectangle(player.worldX, player.worldY, player.getHitboxWidth(), player.getHitboxHeight());
 
-        for (Item item : map.getItemsOnMap()) {
-            Rectangle itemHitbox = new Rectangle(item.getWorldX(), item.getWorldY(), GameUI.getTileSize(), GameUI.getTileSize());
+        // Only check against interactable items
+        for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
+            if (item.getItemState() != ItemState.INTERACTABLE) continue;
 
-            Iterator<Item> iterator = map.getItemsOnMap().iterator();
-            while (iterator.hasNext()) {
-                Item item = iterator.next();
-                Rectangle itemHitbox = new Rectangle(item.getWorldX(), item.getWorldY(), GameUI.getTileSize(), GameUI.getTileSize());
+            Rectangle itemHitbox = new Rectangle(
+                    item.getWorldX(), item.getWorldY(),
+                    GameUI.getTileSize(), GameUI.getTileSize()
+            );
 
-                if (playerHitbox.intersects(itemHitbox)) {
-                    //Player picked up the item!
-                    item.pickUp();
-                    player.pickUpItem(item);
-                    //player.addToInventory(item);
-                    player.getInventory().add(item);
-                    // Remove item from map
-
-                    map.removeItemsOnMap();
-
+            if (playerHitbox.intersects(itemHitbox)){
+                boolean pickedUp = player.pickUpItem(item);
+                if (pickedUp) {
+                    map.removeItem(item);
+                    break; // stop after first pickup
                 }
-                iterator.remove();
-
             }
         }
     }
+
+    public void checkEnemyAttack() {
+        for (Enemy enemy : map.getEnemiesOnMap()) {
+            // Define the enemy's hostility detection area as a square around its position
+            Rectangle enemyHostilityBox = new Rectangle(
+                    enemy.worldX - enemy.getHostilityArea() / 2,
+                    enemy.worldY - enemy.getHostilityArea() / 2,
+                    enemy.getHostilityArea(),
+                    enemy.getHostilityArea()
+            );
+
+            if (playerHitbox.intersects(enemyHostilityBox)) {
+                enemy.enemyAttack(player);
+                // Reduce player's life (assuming you have a method or field for this)
+                //player.reduceLives();
+            }
+        }
+    }
+
 }
+
+

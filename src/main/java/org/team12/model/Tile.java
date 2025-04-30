@@ -71,7 +71,6 @@ public class Tile {
         return item != null;
     }
 
-
     public boolean isOccupied() {
         return (item != null | enemy != null | !isObstacle);
     }
