@@ -17,6 +17,7 @@
 
 package org.team12.view;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
@@ -28,15 +29,17 @@ import java.awt.*;
 public class GameUI extends JPanel implements Runnable{
 
     // SCREEN SETTINGS AND VARIABLES
-    private final int originalTileSize = 16; // 16 x 16 pixel tile
-    private final int scale = 3; // scale everything up by a factor or 3
-    public int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
+    private static final int originalTileSize = 16; // 16 x 16 pixel tile
+    private static final int scale = 3; // scale everything up by a factor or 3
+    private static int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
 
-    public int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
-    public int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
-    public int screenWidth = tileSize * maxScreenCol; // 786 pixels
+    private static int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
+    private static int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
+    private static int screenWidth = tileSize * maxScreenCol; // 786 pixels
+    private static int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
-    public int getTileSize() {
+
+    public static int getTileSize() {
         return tileSize;
     }
 
@@ -44,11 +47,17 @@ public class GameUI extends JPanel implements Runnable{
         return maxWorldCol;
     }
 
+    public static int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public static int getScreenHeight() {
+        return screenHeight;
+    }
+
     public int getMaxWorldRow() {
         return maxWorldRow;
     }
-
-    public int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
 
     // GAME LOOP VARIABLES
@@ -65,14 +74,16 @@ public class GameUI extends JPanel implements Runnable{
     private MapRenderer mapRenderer;
     private EntityRenderer entityRenderer;
     private InputController inputController = new InputController();
+    private CollisionController collisionController;
     public Player player;
 
 
 
     // Constructor for a game UI
     public GameUI(){
-        player = new Player(this, inputController, 20);
         map = new Map("/map/dungeonMap.txt");
+        collisionController = new CollisionController(map);
+        player = new Player(inputController, collisionController, 20);
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize);
         // Set the size of the UI to the size of the screen

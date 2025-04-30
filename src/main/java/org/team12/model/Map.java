@@ -33,7 +33,7 @@ import java.util.Objects;
 
 public class Map {
     private Tile[][] grid;
-    public List<Item> itemsOnMap;
+    private List<Item> itemsOnMap;
     private List<Enemy> enemiesOnMap;
 
     private int width;
@@ -93,8 +93,8 @@ public class Map {
                             Sword sword = new Sword();
                             itemsOnMap.add(sword);
                             grid[x][y].setItem(sword);
-                            itemsOnMap.getLast().setX(x * GameUI.tileSize);
-                            itemsOnMap.getLast().setY(y * GameUI.tileSize);
+                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
+                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
 
                             break;
                         default:
@@ -125,7 +125,7 @@ public class Map {
         return height;
     }
 
-    private boolean isInsideBounds(int x, int y) {
+    public boolean isInsideBounds(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 

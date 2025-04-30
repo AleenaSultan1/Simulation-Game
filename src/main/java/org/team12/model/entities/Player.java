@@ -17,6 +17,7 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
@@ -29,23 +30,29 @@ import java.util.Objects;
 
 
 public class Player extends Entity {
-    GameUI gameUI;
     InputController inputController;
     public final int screenX;
     public final int screenY;
+    private CollisionController collisionController;
     public int hitboxWidth = 32;  // usually tile size
     public int hitboxHeight = 32;
 
 
-    public Player(GameUI gameUI, InputController inputController, int hp) {
+    public Player(InputController inputController, CollisionController collisionController, int hp) {
         super(hp);
-        this.gameUI = gameUI;
         this.inputController = inputController;
+        this.collisionController = collisionController;
         this.setDefaultValues();
         this.getPlayerImage();
-        screenX = gameUI.screenWidth / 2 - (gameUI.tileSize / 2);
-        screenY = gameUI.screenHeight / 2 - (gameUI.tileSize / 2);
-
+        screenX = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
+        screenY = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
+        hitbox = new Rectangle();
+        hitboxDefaultX = 8; // Could be adjusted
+        hitboxDefaultY = 8;
+        hitbox.x = hitboxDefaultX;
+        hitbox.y = hitboxDefaultY;
+        hitbox.width = GameUI.getTileSize() - 16;
+        hitbox.height = GameUI.getTileSize() - 16;
 
     }
 
@@ -58,20 +65,27 @@ public class Player extends Entity {
     }
 
     public void update() {
+        int dx = 0;
+        int dy = 0;
         if (inputController.upPressed || inputController.downPressed ||
                 inputController.leftPressed || inputController.rightPressed) {
             if (inputController.upPressed) {
                 direction = "up";
-                worldY -= speed;
+                dy -= speed;
             } else if (inputController.downPressed) {
                 direction = "down";
-                worldY += speed;
+                dy += speed;
             } else if (inputController.leftPressed) {
                 direction = "left";
-                worldX -= speed;
+                dx -= speed;
             } else if (inputController.rightPressed) {
                 direction = "right";
-                worldX += speed;
+                dx += speed;
+            }
+
+            if (collisionController.canMoveTo(this, dx, dy)) {
+                worldX += dx;
+                worldY += dy;
             }
 
             // Used for player walking animation
@@ -153,11 +167,11 @@ public class Player extends Entity {
     }
 
     public int getTileX() {
-        return worldX / gameUI.tileSize;
+        return worldX / GameUI.getTileSize();
     }
 
     public int getTileY() {
-        return worldY / gameUI.tileSize;
+        return worldY / GameUI.getTileSize();
     }
 
     public void pickUpItem(Item item) {

@@ -68,5 +68,9 @@ public class Tile {
         return (item != null | enemy != null | !isObstacle);
     }
 
+    public boolean hasItem() {
+        return item != null;
+    }
+
 }
 
