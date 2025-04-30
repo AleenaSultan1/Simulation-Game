@@ -116,7 +116,6 @@ public class Map {
                         // Lily Final Boss
                         case 6:
                             LilyFinalBoss lilyFinalBoss = new LilyFinalBoss(10, 2);
-                            System.out.println("LilyFinalBoss spawned at: (" + x + ", " + y + ")");
                             enemiesOnMap.add(lilyFinalBoss);
                             lilyFinalBoss.setCoord(x, y);
                             grid[x][y].setLilyFinalBoss(lilyFinalBoss);

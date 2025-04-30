@@ -75,7 +75,6 @@ public class LilyFinalBoss extends Enemy {
 
     @Override
     public BufferedImage getCurrentSprite() {
-        System.out.println("Lily getCurrentSprite() called"); // for debug
         try {
             switch (direction) {
                 case "up":

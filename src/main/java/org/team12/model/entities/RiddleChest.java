@@ -36,14 +36,38 @@ public class RiddleChest extends Item {
     private void initializeRiddles() {
         // Add your riddles and answers here
         riddles.add(new Riddle(
-                "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?",
-                "echo"));
+                "What command shows which files have unchanged but not committed?",
+                "git status"));
         riddles.add(new Riddle(
-                "The more you take, the more you leave behind. What am I?",
-                "footsteps"));
+                "What data structure uses FIFO order?",
+                "queue"));
         riddles.add(new Riddle(
-                "What has keys but can't open locks, has space but no room, and you can enter but not go in?",
-                "keyboard"));
+                "What keyword is used to handle exceptions?",
+                "try-catch"));
+        riddles.add(new Riddle(
+                "What are the four pillars of OOP?",
+                "encapsulation, abstraction, inheritance, polymorphism"));
+        riddles.add(new Riddle(
+                "What is the worst-case time complexity of HashMap operations?",
+                "O(n)"));
+        riddles.add(new Riddle(
+                "What Java type is used for precise decimal calculations?",
+                "BigDecimal"));
+        riddles.add(new Riddle(
+                "How do you list all branches in a repository?",
+                "git branch"));
+        riddles.add(new Riddle(
+                "Which traversal visits root, then left, then right in a tree?",
+                "Preorder"));
+        riddles.add(new Riddle(
+                "Which keyword is used to inherit a class in Java?",
+                "extends"));
+        riddles.add(new Riddle(
+                "What keyword refers to the current object?",
+                "this"));
+        riddles.add(new Riddle(
+                "Which Java keyword indicates a missing return value?",
+                "void"));
     }
 
 @Override

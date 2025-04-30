@@ -157,8 +157,7 @@ public class GameUI extends JPanel implements Runnable{
                         enemy.moveRandomly();
                     }
                     if (lilyFinalBoss != null) {
-                        System.out.println("Lily is NOT NULL");
-                        //lilyFinalBoss.moveRandomly();
+                        lilyFinalBoss.moveRandomly();
                     }
 
                     lastMoveTime = currentTime;
