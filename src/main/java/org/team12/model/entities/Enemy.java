@@ -35,7 +35,7 @@ public class Enemy extends Entity {
         super(hp);
         this.hostilityArea = hostilityArea;
         this.enemyState = EnemyStatus.PEACEFUL;
-        this.speed = 4;
+        this.speed = 10;
     }
 
     public boolean isDead() {
@@ -56,31 +56,34 @@ public class Enemy extends Entity {
     }
 
     public void moveRandomly() {
-        Random rand = new Random();
-        int step = rand.nextInt(4);
-        switch (step) {
-            case 0:
-                direction = "up";
-                worldY += speed;
-                break;
-            case 1:
-                direction = "down";
-                worldY -= speed;
+        actionLockCounter++;
+        if (actionLockCounter == 10) {
+            Random rand = new Random();
+            int step = rand.nextInt(4);
+            switch (step) {
+                case 0:
+                    direction = "up";
+                    worldY += speed;
+                    break;
+                case 1:
+                    direction = "down";
+                    worldY -= speed;
 
-                break;
-            case 2:
-                direction = "left";
-                worldX -= speed;
+                    break;
+                case 2:
+                    direction = "left";
+                    worldX -= speed;
 
-                break;
-            case 3:
-                direction = "right";
-                worldX += speed;
-                break;
-            default:
-                break;
+                    break;
+                case 3:
+                    direction = "right";
+                    worldX += speed;
+                    break;
+                default:
+                    break;
+            }
+            actionLockCounter = 0;
         }
-
     }
 
     @Override

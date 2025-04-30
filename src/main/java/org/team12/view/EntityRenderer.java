@@ -47,11 +47,13 @@ public class EntityRenderer {
 // Only draw tiles that are within the visible screen area
         if (entity.worldX + tileSize > player.worldX - player.getScreenX() &&
             entity.worldX - tileSize < player.worldX + player.getScreenX() &&
-            entity.worldY + tileSize > player.worldY - player.getScreenX() &&
+            entity.worldY + tileSize > player.worldY - player.getScreenY() &&
             entity.worldY - tileSize < player.worldY + player.getScreenY()) {
 
         BufferedImage image = entity.getCurrentSprite(); // Assume each Entity can provide its current sprite based on direction/animation
         if (image != null) {
+            System.out.printf("Drawing entity at (%d, %d), player at (%d, %d)\n",
+                    entity.worldX, entity.worldY, player.worldX, player.worldY);
             g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
         }
         }

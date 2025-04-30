@@ -40,6 +40,8 @@ public abstract class Entity {
     public int spriteCounter = 0;
     public int spriteNum =1;
 
+    public int actionLockCounter = 0;
+
 
 
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;

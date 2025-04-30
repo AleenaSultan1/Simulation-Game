@@ -33,6 +33,7 @@ public class Tile {
     private int y;
     private Item item;
     private Enemy enemy;
+    private LilyFinalBoss lilyFinalBoss;
 
 
     public Tile(int x, int y) {
@@ -57,6 +58,14 @@ public class Tile {
 
     public void setEnemy(Enemy enemy) {
         this.enemy = enemy;
+    }
+
+    public LilyFinalBoss getLilyFinalBoss() {
+        return lilyFinalBoss;
+    }
+
+    public void setLilyFinalBoss(LilyFinalBoss lilyFinalBoss) {
+        this.lilyFinalBoss = lilyFinalBoss;
     }
 
     public boolean hasObstacle() {

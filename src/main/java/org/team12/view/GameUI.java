@@ -23,6 +23,7 @@ import org.team12.controller.GameController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
+import org.team12.model.entities.LilyFinalBoss;
 import org.team12.model.entities.Player;
 
 import javax.swing.JPanel;
@@ -79,6 +80,7 @@ public class GameUI extends JPanel implements Runnable{
     private InputController inputController = new InputController();
     private CollisionController collisionController;
     public Player player;
+    public LilyFinalBoss lilyFinalBoss;
 
 
 
@@ -87,6 +89,7 @@ public class GameUI extends JPanel implements Runnable{
         map = new Map("/map/dungeonMap.txt");
         collisionController = new CollisionController(map);
         player = new Player(inputController, collisionController, 20);
+        this.lilyFinalBoss = map.getLilyFinalBoss();
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize);
         // Set the size of the UI to the size of the screen
@@ -149,11 +152,11 @@ public class GameUI extends JPanel implements Runnable{
                 drawCount++;
                 gameController.update();
                 player.update();
-                if (currentTime - lastMoveTime > moveCooldown) {
-                    for (Enemy enemy : map.getEnemiesOnMap()) {
-                        enemy.moveRandomly();
-                    }
-                    lastMoveTime = currentTime;
+                for (Enemy enemy : map.getEnemiesOnMap()) {
+                    enemy.moveRandomly();
+                }
+                if (lilyFinalBoss != null) {
+                    lilyFinalBoss.moveRandomly();
                 }
 
             }
@@ -186,6 +189,9 @@ public class GameUI extends JPanel implements Runnable{
         entityRenderer.drawEntity(g2, player, player);
         for (Enemy enemy : map.getEnemiesOnMap()) {
             entityRenderer.drawEntity(g2, enemy, player);
+        }
+        if (lilyFinalBoss != null) {
+            entityRenderer.drawEntity(g2, lilyFinalBoss, player);
         }
         // dispose of the objects
         g2.dispose();

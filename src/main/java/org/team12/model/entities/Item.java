@@ -67,9 +67,15 @@ public class Item {
         itemState = ItemState.UNINTERACTABLE;
     }
 
-
+    public String getName() {
+        return name;
+    }
 
     public ItemState getItemState() {
         return itemState;
+    }
+
+    public boolean isCollision() {
+        return collision;
     }
 }
