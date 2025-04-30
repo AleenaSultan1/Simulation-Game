@@ -152,15 +152,11 @@ public class GameUI extends JPanel implements Runnable{
                 drawCount++;
                 gameController.update();
                 player.update();
-                if (currentTime - lastMoveTime > moveCooldown) {
-                    for (Enemy enemy : map.getEnemiesOnMap()) {
-                        enemy.moveRandomly();
-                    }
-                    if (lilyFinalBoss != null) {
-                        lilyFinalBoss.moveRandomly();
-                    }
-
-                    lastMoveTime = currentTime;
+                for (Enemy enemy : map.getEnemiesOnMap()) {
+                    enemy.moveRandomly();
+                }
+                if (lilyFinalBoss != null) {
+                    lilyFinalBoss.moveRandomly();
                 }
 
             }
