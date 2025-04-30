@@ -17,14 +17,12 @@
 
 package org.team12.model.entities;
 
-import org.team12.controller.UtilityTool;
-import org.team12.view.GameUI;
+import org.team12.controller.CollisionController;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Objects;
 
 public abstract class Entity {
     protected int HP;
@@ -75,18 +73,4 @@ public abstract class Entity {
     public BufferedImage getCurrentSprite() {
         return null;
     }
-
-    public BufferedImage setup(String imagePath){
-        UtilityTool utilTool = new UtilityTool();
-        BufferedImage image = null;
-        try{
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(imagePath + ".png")));
-            image = utilTool.scaleImage(image, GameUI.tileSize, GameUI.tileSize);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return image;
-    }
-
-
 }

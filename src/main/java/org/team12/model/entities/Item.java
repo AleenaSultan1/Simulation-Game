@@ -29,11 +29,11 @@ public class Item {
     public BufferedImage image;
     public String name;
     public boolean collision = false;
-    public int worldX, worldY;
+    private int worldX;
+    private int worldY;
 
     public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
-    public int hitboxDefaultX = 0;
-    public int hitboxDefaultY = 0;
+
 
     UtilityTool utilTool = new UtilityTool();
 
@@ -46,18 +46,22 @@ public class Item {
         this.itemState = ItemState.INTERACTABLE;
     }
 
-    public void draw(Graphics2D g2, GameUI gameUI) {
-        int screenX = worldX - gameUI.player.worldX + gameUI.player.screenX;
-        int screenY = worldY - gameUI.player.worldY + gameUI.player.screenY;
-
-        if (worldX + gameUI.tileSize > gameUI.player.worldX - gameUI.player.screenX &&
-                worldX - gameUI.tileSize < gameUI.player.worldX + gameUI.player.screenX &&
-                worldY + gameUI.tileSize > gameUI.player.worldY - gameUI.player.screenY &&
-                worldY - gameUI.tileSize < gameUI.player.worldY + gameUI.player.screenY) {
-
-            g2.drawImage(image, screenX, screenY, gameUI.tileSize, gameUI.tileSize, null);
-        }
+    public void setX(int x) {
+         this.worldX = x;
     }
+
+    public void setY(int y) {
+         this.worldY = y;
+    }
+
+    public int getWorldX() {
+        return worldX;
+    }
+
+    public int getWorldY() {
+        return worldY;
+    }
+
 
     public void pickUp() {
         itemState = ItemState.UNINTERACTABLE;

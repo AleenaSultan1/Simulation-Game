@@ -17,31 +17,44 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
-import org.team12.model.Tile;
+import org.team12.states.ItemState;
 import org.team12.view.GameUI;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class Player extends Entity {
-    GameUI gameUI;
+    private ArrayList<Item> inventory;
     InputController inputController;
-    public final int screenX;
-    public final int screenY;
-    public boolean hasSword = false;
-    int sword = 0;
-    public boolean canCure = false;
+    private final int screenX;
+    private final int screenY;
+    private int hitboxWidth = 32;  // usually tile size
+    private int hitboxHeight = 32;
+    private CollisionController collisionController;
 
-
-    public Player(GameUI gameUI, InputController inputController, int hp) {
+    public Player(InputController inputController, CollisionController collisionController, int hp) {
         super(hp);
-        this.gameUI = gameUI;
+        this.inventory = new ArrayList<>();
         this.inputController = inputController;
+        this.collisionController = collisionController;
         this.setDefaultValues();
         this.getPlayerImage();
-        screenX = gameUI.screenWidth / 2 - (gameUI.tileSize / 2);
-        screenY = gameUI.screenHeight / 2 - (gameUI.tileSize / 2);
+        screenX = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
+        screenY = GameUI.getScreenHeight() / 2 - (GameUI.getTileSize() / 2);
+        hitbox = new Rectangle();
+        hitboxDefaultX = 8; // Could be adjusted
+        hitboxDefaultY = 8;
+        hitbox.x = hitboxDefaultX;
+        hitbox.y = hitboxDefaultY;
+        hitbox.width = GameUI.getTileSize() - 16;
+        hitbox.height = GameUI.getTileSize() - 16;
+
 
     }
 
@@ -54,20 +67,27 @@ public class Player extends Entity {
     }
 
     public void update() {
+        int dx = 0;
+        int dy = 0;
         if (inputController.upPressed || inputController.downPressed ||
                 inputController.leftPressed || inputController.rightPressed) {
             if (inputController.upPressed) {
                 direction = "up";
-                worldY -= speed;
+                dy -= speed;
             } else if (inputController.downPressed) {
                 direction = "down";
-                worldY += speed;
+                dy += speed;
             } else if (inputController.leftPressed) {
                 direction = "left";
-                worldX -= speed;
+                dx -= speed;
             } else if (inputController.rightPressed) {
                 direction = "right";
-                worldX += speed;
+                dx += speed;
+            }
+
+            if (collisionController.canMoveTo(this, dx, dy)) {
+                worldX += dx;
+                worldY += dy;
             }
 
             // Used for player walking animation
@@ -85,43 +105,25 @@ public class Player extends Entity {
 
     }
 
-    //Picks up an object if the player is touching it
-    public void pickUpObject(int objIndex) {
+    public void getPlayerImage() {
 
-        int playerCol = (worldX + hitbox.x) / gameUI.tileSize;
-        int playerRow = (worldY + hitbox.y) / gameUI.tileSize;
+        try {
+            up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_1.png")));
+            up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_2.png")));
+            down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_down_1.png")));
+            down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_down_2.png")));
+            right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_right_1.png")));
+            right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_right_2.png")));
+            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_1.png")));
+            left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_2.png")));
 
-        Tile currentTile = gameUI.map.getTile(playerCol, playerRow);
-
-        if (currentTile != null && currentTile.getItem() != null) {
-            Item item = currentTile.getItem();
-            String objectName = item.getName();
-
-            switch (objectName) {
-                case "Sword":
-                    this.hasSword = true;
-                    System.out.println("Sword picked up!");
-                    break;
-                case "MagicDust":
-                    System.out.println("MagicDust picked up!");
-                    break;
-                // Add more cases for different items
+            // Debug check
+            if (up1 == null) {
+                System.err.println("Failed to load player sprites!");
             }
-
-            // Remove the item from the tile after picking it up
-            currentTile.setItem(null);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }
-
-    public void getPlayerImage(){
-        up1 = setup("/player/player_up_1");
-        up2 = setup("/player/player_up_2");
-        down1 = setup("/player/player_down_1");
-        down2 = setup("/player/player_down_2");
-        right1 = setup("/player/player_right_1");
-        right2 = setup("/player/player_right_2");
-        left1 = setup("/player/player_left_1");
-        left2 = setup("/player/player_left_2");
     }
 
     @Override
@@ -164,5 +166,41 @@ public class Player extends Entity {
                 break;
         }
         return image;
+    }
+
+    public int getTileX() {
+        return worldX / GameUI.getTileSize();
+    }
+
+    public int getTileY() {
+        return worldY / GameUI.getTileSize();
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
+    }
+
+    public int getHitboxWidth() {
+        return hitboxWidth;
+    }
+
+    public int getHitboxHeight() {
+        return hitboxHeight;
+    }
+
+    public boolean pickUpItem(Item item) {
+        if (item != null && item.getItemState() == ItemState.INTERACTABLE && inputController.interactionKeyPressed) {
+            item.pickUp();
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<Item> getInventory() {
+        return inventory;
     }
 }

@@ -51,8 +51,8 @@ public class Enemy extends Entity {
     }
 
     public void setCoord(int x, int y) {
-        this.worldX = x * GameUI.tileSize;
-        this.worldY = y * GameUI.tileSize;
+        this.worldX = x * GameUI.getTileSize();
+        this.worldY = y * GameUI.getTileSize();
     }
 
     public void moveRandomly() {
