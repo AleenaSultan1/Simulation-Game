@@ -17,16 +17,11 @@
 
 package org.team12.model.entities;
 
-import org.team12.view.GameUI;
-
-import javax.imageio.ImageIO;
-import java.io.IOException;
-import java.util.Objects;
-
 public class Sword extends Item {
     private int strength;
 
     public Sword() {
         strength = 5;
     }
+
 }

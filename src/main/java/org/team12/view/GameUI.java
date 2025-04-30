@@ -28,14 +28,27 @@ import java.awt.*;
 public class GameUI extends JPanel implements Runnable{
 
     // SCREEN SETTINGS AND VARIABLES
-    private static final int originalTileSize = 16; // 16 x 16 pixel tile
-    private static final int scale = 3; // scale everything up by a factor or 3
-    public static int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
+    private final int originalTileSize = 16; // 16 x 16 pixel tile
+    private final int scale = 3; // scale everything up by a factor or 3
+    public int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
 
-    public static int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
-    public static int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
-    public static int screenWidth = tileSize * maxScreenCol; // 786 pixels
-    public static int screenHeight = tileSize * maxScreenRow; // 576 pixels
+    public int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
+    public int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
+    public int screenWidth = tileSize * maxScreenCol; // 786 pixels
+
+    public int getTileSize() {
+        return tileSize;
+    }
+
+    public int getMaxWorldCol() {
+        return maxWorldCol;
+    }
+
+    public int getMaxWorldRow() {
+        return maxWorldRow;
+    }
+
+    public int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
 
     // GAME LOOP VARIABLES

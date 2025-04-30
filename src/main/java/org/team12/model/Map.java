@@ -19,6 +19,7 @@ package org.team12.model;
 
 import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
+import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
 import java.awt.*;
@@ -32,11 +33,12 @@ import java.util.Objects;
 
 public class Map {
     private Tile[][] grid;
-    private List<Item> itemsOnMap;
+    public List<Item> itemsOnMap;
     private List<Enemy> enemiesOnMap;
 
     private int width;
     private int height;
+
 
     public Map(String filepath) {
         enemiesOnMap = new ArrayList<>();
@@ -91,10 +93,13 @@ public class Map {
                             Sword sword = new Sword();
                             itemsOnMap.add(sword);
                             grid[x][y].setItem(sword);
+                            itemsOnMap.getLast().setX(x * GameUI.tileSize);
+                            itemsOnMap.getLast().setY(y * GameUI.tileSize);
+
                             break;
                         default:
                             break;
-                    }
+ }
 
                 }
                 y++;
@@ -131,5 +136,19 @@ public class Map {
     public List<Enemy> getEnemiesOnMap() {
         return enemiesOnMap;
     }
+
+    public void updateItemsOnMap() {
+        for (int x =  0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Tile tile = grid[x][y];
+                if (tile.hasItem() && tile.getItem().getItemState() == ItemState.UNINTERACTABLE) {
+                    tile.setItem(null);
+
+                }
+            }
+        }
+    }
+
+
 }
 
