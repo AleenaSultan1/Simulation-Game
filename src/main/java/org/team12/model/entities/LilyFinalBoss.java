@@ -37,12 +37,12 @@ public class LilyFinalBoss extends Entity {
         //maxLife = 10;
         //life = maxLife;
         //attack = 8;
-        solidArea.x = 4;
-        solidArea.y = 4;
-        solidArea.width = 40;
-        solidArea.height = 44;
-        solidAreaDefaultX = solidArea.x;
-        solidAreaDefaultY = solidArea.y;
+        hitbox.x = 4;
+        hitbox.y = 4;
+        hitbox.width = 40;
+        hitbox.height = 44;
+        hitboxDefaultX = hitbox.x;
+        hitboxDefaultY = hitbox.y;
         //attackArea.width = 48;
         //attackArea.height = 48;
 

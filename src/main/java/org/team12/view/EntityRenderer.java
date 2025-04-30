@@ -50,10 +50,10 @@ public class EntityRenderer {
                 entity.worldY + tileSize > player.worldY - player.screenY &&
                 entity.worldY - tileSize < player.worldY + player.screenY) {
 
-            BufferedImage image = entity.getCurrentSprite(); // Assume each Entity can provide its current sprite based on direction/animation
-            if (image != null) {
-                g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
-            }
+//            BufferedImage image = entity.(); // Assume each Entity can provide its current sprite based on direction/animation
+//            if (image != null) {
+//                g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
+//            }
         }
     }
 }

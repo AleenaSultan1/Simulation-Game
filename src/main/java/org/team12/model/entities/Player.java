@@ -21,6 +21,7 @@ import org.team12.controller.GameController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
 import org.team12.view.GameUI;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -28,12 +29,9 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity {
     GameController gameController;
     InputController inputController;
-    GameUI gameUI;
-    Map map;
     public final int screenX;
     public final int screenY;
     public boolean hasSword = false;
-    public boolean hasKey = false;
 
     public boolean canCure = false;
 
@@ -94,12 +92,15 @@ public class Player extends Entity {
             collisionOn = false;
             // check if the player is touching an impassable tile
             gameController.cController.checkTile(this);
-            // check if the player is touching an interactable item
+
+            // Check Item Collision
             int objIndex = gameController.cController.checkObject(this, true);
             pickUpObject(objIndex);
-            // check enemy collision
-            int enemyIndex = gameController.cController.checkEntity(this, gameController.map.enemies);
-            interactEnemy(enemyIndex);
+
+            //Check Enemy Collision
+            int monsterIndex = gameController.cController.checkEntity(this, gameController.map.monster);
+            interact(monsterIndex);
+
 
             // if collision is false, player can move
             if(!collisionOn){
@@ -119,6 +120,7 @@ public class Player extends Entity {
                 }
             }
 
+
             // Used for player walking animation
             spriteCounter ++;
             if(spriteCounter > 12){
@@ -134,6 +136,13 @@ public class Player extends Entity {
 
 
     }
+    public void interact(int i){
+        if (i!=999){
+            System.out.println("hitting monster");
+        }
+    }
+
+
 
     // Picks up an object if the player is touching it
     public void pickUpObject(int objIndex){
@@ -145,22 +154,8 @@ public class Player extends Entity {
                 case "Sword":
                     this.hasSword = true;
                     gameController.map.obj[objIndex] = null;
-                    System.out.println("Sword picked up");
-                    break;
-                case "Key":
-                    this.hasKey = true;
-                    gameController.map.obj[objIndex] = null;
-                    System.out.println("Key picked up");
-                    break;
+                    gameController.pHud.showMessage ("You picked up the sword!");
             }
-            // deletes the object we touched
-            //gameUI.obj[objIndex] = null;
-        }
-    }
-
-    public void interactEnemy (int enemyIndex) {
-        if (enemyIndex != 999) {
-            System.out.println("You're hitting an evil goon!");
         }
     }
 
@@ -174,6 +169,7 @@ public class Player extends Entity {
         right2 = setup("/player/player_right_2");
         left1 = setup("/player/player_left_1");
         left2 = setup("/player/player_left_2");
+
     }
 
     public void draw(Graphics2D g2) {

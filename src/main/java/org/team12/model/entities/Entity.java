@@ -33,10 +33,11 @@ public class Entity {
     public int worldX,worldY;
     // How fast an entity moves (4 pixels)
     public int speed;
+    public String name;
 
     // Used for determining direction for animations
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
-    public String direction;
+    public String direction = "down";
 
     // Variables to alternate sprites - Creating animations
     public int spriteCounter = 0;
@@ -48,29 +49,27 @@ public class Entity {
     public int life;
 
     // Used for checking collisions/hitboxes
-    public Rectangle hitbox;
+    public Rectangle hitbox = new Rectangle(0,0,48, 48);
     public int hitboxDefaultX, hitboxDefaultY;
     public boolean collisionOn = false;
-
-    public BufferedImage image;
-    public String name;
-    public String type;
-    public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // for collision detection later
-    public int solidAreaDefaultX, solidAreaDefaultY;
-
 
     public Entity(GameController gameController){
         this.gameController = gameController;
     }
+    public void setAction(){}
 
-    public void setAction() {
-    }
-
-    public void update() {
+    // Method to be inherited
+    public void update(){
+        // If any subclasses have this, set their actino (enemy ai), player does not do anything
         setAction();
+
         collisionOn = false;
+
         gameController.cController.checkTile(this);
         gameController.cController.checkObject(this, false);
+
+        // checks if any entity (player or monster) is touching one another
+        //gameController.cController.checkEntity(this, gameController.map.monster);
         gameController.cController.checkPlayer(this);
 
         // if collision is false, player can move
@@ -104,10 +103,10 @@ public class Entity {
         }
     }
 
-    public void draw (Graphics2D g2, GameController gameController) {
-        BufferedImage image = null;
 
-        // This shows where on the screen do we draw
+    public void draw(Graphics2D g2){
+
+        BufferedImage image = null;
         int screenX = worldX - gameController.player.worldX + gameController.player.screenX;
         int screenY = worldY - gameController.player.worldY + gameController.player.screenY;
 
@@ -117,55 +116,46 @@ public class Entity {
                 worldY + gameController.tileSize > gameController.player.worldY - gameController.player.screenY &&
                 worldY - gameController.tileSize < gameController.player.worldY + gameController.player.screenY){
 
-            switch (direction) {
+            switch(direction){
                 case "up":
-                    if (spriteNum == 1) {
+                    if(spriteNum == 1){
                         image = up1;
-                        break;
                     }
-                    if (spriteNum == 2) {
+                    if (spriteNum == 2){
                         image = up2;
-                        break;
                     }
+                    break;
                 case "down":
-                    if (spriteNum == 1) {
+                    if(spriteNum == 1){
                         image = down1;
-                        break;
                     }
-                    if (spriteNum == 2) {
+                    if (spriteNum == 2){
                         image = down2;
-                        break;
-                    }
+                    };
+                    break;
                 case "left":
-                    if (spriteNum == 1) {
+                    if(spriteNum == 1){
                         image = left1;
-                        break;
                     }
                     if (spriteNum == 2) {
                         image = left2;
-                        break;
                     }
+                    break;
                 case "right":
-                    if (spriteNum == 1) {
+                    if(spriteNum == 1){
                         image = right1;
-                        break;
                     }
-                    if (spriteNum == 2) {
+                    if (spriteNum == 2){
                         image = right2;
-                        break;
                     }
-                break;
+                    break;
             }
             // draw the appropriate sprite for the tile
-            g2 .drawImage(image, screenX, screenY, gameController.tileSize, gameController.tileSize, null);
+            g2.drawImage(image, screenX, screenY, gameController.tileSize, gameController.tileSize, null);
         }
     }
 
-    public BufferedImage getCurrentSprite() {
-        return null;
-    }
-
-    // Scales the sprites to x3 their original size
+    // Scales the player sprites to x3 their original size
     public BufferedImage setup(String imagePath){
         UtilityTool utilTool = new UtilityTool();
         BufferedImage image = null;
@@ -177,5 +167,4 @@ public class Entity {
         }
         return image;
     }
-
 }

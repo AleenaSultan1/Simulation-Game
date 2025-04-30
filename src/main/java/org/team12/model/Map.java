@@ -41,26 +41,11 @@ public class Map {
 
     //Construct a list of potential different objects (30 slots for 30 distinct, unique objects)
     public Item[] obj = new Item[30];
-    public Entity[] enemies = new Entity[30];
+    // Number of monsters that we can display at a time
+    public Entity[] monster = new Entity[10];
 
-    private Tile[][] grid;
-    private List<Item> itemsOnMap;
-    public List<Enemy> enemiesOnMap;
-    private int width;
-    private int height;
 
-//    public Map(int width, int height, gameUI) {
-//        this.width = width;
-//        this.height = height;
-//        this.grid = new Tile[width][height];
-//        this.itemsOnMap = new ArrayList<>();
-//        this.enemiesOnMap = new ArrayList<>();
-//
-//
-//        generateMap();
-//    }
-
-    public Map(GameController gameController){
+    public Map(GameController gameController) {
         // Sets the number of different possible tiles to 10
         tile = new Tile[10];
         this.gameController = gameController;
@@ -71,11 +56,10 @@ public class Map {
         getTileImage();
         //load map from files
         loadMap("/map/dungeonMapV2.txt");
-        //loadMap("/map/dungeonMap.txt");
     }
 
-    public void loadMap(String file){
-        try{
+    public void loadMap(String file) {
+        try {
             // import map file
             InputStream is = getClass().getResourceAsStream(file);
             // read the contents of the text file
@@ -85,23 +69,23 @@ public class Map {
             int row = 0;
 
             // while there is still room in the array
-            while (col<gameController.maxWorldCol && row<gameController.maxWorldRow){
+            while (col < gameController.maxWorldCol && row < gameController.maxWorldRow) {
                 // read the line
                 String line = br.readLine();
-                while (col<gameController.maxWorldCol){
+                while (col < gameController.maxWorldCol) {
                     // split the values to place them into the array
-                    String numbers [] = line.split(" ");
-                    int num  = Integer.parseInt(numbers[col]);
+                    String numbers[] = line.split(" ");
+                    int num = Integer.parseInt(numbers[col]);
                     mapTileNum[col][row] = num;
                     col++;
                 }
-                if(col == gameController.maxWorldCol){
+                if (col == gameController.maxWorldCol) {
                     col = 0;
                     row++;
                 }
             }
-        br.close();
-        } catch(Exception e){
+            br.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -115,27 +99,28 @@ public class Map {
         setup(2, "fakeWall2", false);
     }
 
-    public void setup(int index, String imageName, boolean isObstacle){
+    public void setup(int index, String imageName, boolean isObstacle) {
         UtilityTool utilTool = new UtilityTool();
-        try{
+        try {
             tile[index] = new Tile();
             tile[index].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/" + imageName + ".png")));
             tile[index].image = utilTool.scaleImage(tile[index].image, gameController.tileSize, gameController.tileSize);
             tile[index].isObstacle = isObstacle;
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
      * Draws tiles onto the screen
+     *
      * @param g2 java graphics class
      */
-    public void draw(Graphics2D g2){
+    public void draw(Graphics2D g2) {
         // set initial variables to start at beginning of text file
         int worldCol = 0;
         int worldRow = 0;
-        while (worldCol < gameController.maxWorldCol && worldRow < gameController.maxWorldRow){
+        while (worldCol < gameController.maxWorldCol && worldRow < gameController.maxWorldRow) {
             int tileNum = mapTileNum[worldCol][worldRow];
 
             // Checks the tiles in relation to the world
@@ -147,104 +132,23 @@ public class Map {
 
             // Rendering Efficiency: Render only the visible parts on the screen
             if (worldX + gameController.tileSize > gameController.player.worldX - gameController.player.screenX &&
-                worldX - gameController.tileSize < gameController.player.worldX + gameController.player.screenX &&
-                worldY + gameController.tileSize > gameController.player.worldY - gameController.player.screenY &&
-                worldY - gameController.tileSize < gameController.player.worldY + gameController.player.screenY){
+                    worldX - gameController.tileSize < gameController.player.worldX + gameController.player.screenX &&
+                    worldY + gameController.tileSize > gameController.player.worldY - gameController.player.screenY &&
+                    worldY - gameController.tileSize < gameController.player.worldY + gameController.player.screenY) {
                 // draw the appropriate sprite for the tile
-                g2 .drawImage(tile[tileNum].image, screenX, screenY, null);
+                g2.drawImage(tile[tileNum].image, screenX, screenY, null);
             }
 
 
             //increment columns
             worldCol++;
             // if we hit the end of the line
-            if (worldCol == gameController.maxWorldCol){
+            if (worldCol == gameController.maxWorldCol) {
                 //reset our pointer to the beginning on the next worldRow
                 worldCol = 0;
                 worldRow++;
             }
         }
-    }
-
-
-    public void placeItems() {
-        obj[0] = new Sword(gameController);
-        obj[0].worldX = 27 * gameController.tileSize;
-        obj[0].worldY = 19 * gameController.tileSize;
-
-        obj[1] = new Table(gameController);
-        obj[1].worldX = 3 * gameController.tileSize;
-        obj[1].worldY = 3 * gameController.tileSize;
-
-        obj[2] = new Key(gameController);
-        obj[2].worldX = 27 * gameController.tileSize;
-        obj[2].worldY = 19 * gameController.tileSize;
-
-        obj[3] = new Chest(gameController);
-        obj[3].worldX = 25 * gameController.tileSize;
-        obj[3].worldY = 10 * gameController.tileSize;
-    }
-
-    public void placeEnemy() {
-        // +- 8 compared with (18, 25) of the player
-        enemies[0] = new Enemy(gameController);
-        enemies[0].worldX = 10 * gameController.tileSize;
-        enemies[0].worldY = 15 * gameController.tileSize;
-
-        enemies[1] = new Enemy(gameController);
-        enemies[1].worldX = 26 * gameController.tileSize;
-        enemies[1].worldY = 16 * gameController.tileSize;
-
-        enemies[2] = new Enemy(gameController);
-        enemies[2].worldX = 15 * gameController.tileSize;
-        enemies[2].worldY = 17 * gameController.tileSize;
-    }
-
-    public void placeLilyFinalBoss(LilyFinalBoss boss, int x, int y) {
-        grid[x][y].setLilyFinalBoss(boss);
-        boss.worldX = x * gameUI.tileSize;
-        boss.worldY = y * gameUI.tileSize;
-    }
-
-    public Item pickUpItem(int x, int y) {
-        Item item = grid[x][y].getItem();
-        if (item != null) {
-            grid[x][y].setItem(null);
-            itemsOnMap.remove(item);
-        }
-        return item;
-    }
-
-//    public boolean movePlayer(Player player, int newX, int newY) {
-//        if (isInsideBounds(newX, newY)) {
-//            player.setXCoordinate(newX);
-//            player.setYCoordinate(newY);
-//            return true;
-//        }
-//        return false;
-//    }
-
-    private boolean isInsideBounds(int x, int y) {
-        return x >= 0 && x < width && y >= 0 && y < height;
-    }
-
-//    public boolean isOccupied(int x, int y) {
-//        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();
-//    }
-
-    public Tile getTile(int x, int y) {
-        if (x >= 0 && x < width && y >= 0 && y < height) {
-            return grid[x][y];
-        }
-        return null;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
     }
 }
 

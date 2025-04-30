@@ -18,8 +18,8 @@
 package org.team12.controller;
 
 import org.team12.model.Map;
-import org.team12.model.entities.Entity;
 import org.team12.model.entities.Player;
+import org.team12.view.PlayerHud;
 import org.team12.view.GameUI;
 
 public class GameController implements Runnable{
@@ -27,8 +27,6 @@ public class GameController implements Runnable{
 
     // GAME SETTINGS
     private static final int FPS = 60; // Used in the main game loop to run the game at 60 frames per second
-
-
 
 
     // MAP SETTINGS
@@ -51,13 +49,14 @@ public class GameController implements Runnable{
     // GAME LOOP VARIABLES
     Thread gameThread; // Thread to start the game loop of 60 frames per second
 
-    // Game objects
+    // GAME OBJECTS
     public GameUI gameUI;
     public InputController inputController;
     public Player player;
-    public Entity lilyFinalBoss;
     public Map map;
     public CollisionController cController;
+    public PlayerHud pHud = new PlayerHud (this);
+    public AssetController assetController = new AssetController(this);
 
 
 
@@ -65,6 +64,7 @@ public class GameController implements Runnable{
         // Initialize Objects
         inputController = new InputController();
         cController = new CollisionController(this);
+        assetController = new AssetController(this);
 
         // Initialize game objects
         map = new Map(this);
@@ -76,9 +76,7 @@ public class GameController implements Runnable{
 
     }
 
-//    public void setupGame() {
-//        assetSetter.setEnemy();
-//    }
+
 
     public void startGame() {
         populateMap();
@@ -89,25 +87,21 @@ public class GameController implements Runnable{
 
     // Used to spawn in items, enemies, etc.
     public void populateMap(){
-        map.placeItems();
-        map.placeEnemy();
-        //map.placeLilyFinalBoss();
+        assetController.setObjects();
+        assetController.setMonsters();
     }
+
 
     // At the moment: moves the player according to which key is pressed
     public void update(){
         player.update();
 
-        for (int i = 0; i < map.enemies.length; i++) {
-            if (map.enemies[i] != null) {
-                map.enemies[i].update();
+        // for every enemy on the map
+        for (int i = 0; i < map.monster.length; i++){
+            if (map.monster[i] != null){
+                map.monster[i].update();
             }
         }
-
-//        if (lilyFinalBoss != null) {
-//            lilyFinalBoss.update();
-//        }
-
     }
 
     /**
@@ -123,9 +117,6 @@ public class GameController implements Runnable{
         long lastTime = System.nanoTime();
         long currentTime;
 
-        // Variables to display FPS every second
-        long timer = 0;
-        int drawCount = 0;
 
         // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
@@ -134,7 +125,7 @@ public class GameController implements Runnable{
             currentTime = System.nanoTime();
 
             delta += (currentTime - lastTime) / drawInterval;
-            timer += (currentTime - lastTime);
+            //timer += (currentTime - lastTime);
             lastTime = currentTime;
 
             if(delta>=1){
@@ -143,17 +134,12 @@ public class GameController implements Runnable{
                 // Makes a new frame for the Game UI with the updated changes
                 gameUI.repaint();
                 delta--;
-                drawCount++;
+                //drawCount++;
             }
-
-            // Displays FPS
-//            if(timer >= 1000000000){
-//                System.out.println("FPS: " + drawCount);
-//                drawCount = 0;
-//                timer = 0;
-//            }
         }
     }
+
+
 
     public static void main(String[] args) {// Run on the Event Dispatch Thread
         javax.swing.SwingUtilities.invokeLater(() -> {

@@ -20,7 +20,6 @@ package org.team12.view;
 
 import org.team12.controller.GameController;
 import org.team12.model.Map;
-import org.team12.model.entities.Player;
 
 import java.awt.*;
 import javax.swing.JPanel;
@@ -29,13 +28,8 @@ import javax.swing.JFrame;
 public class GameUI extends JPanel{
     private GameController gameController;
     private Map map;
-    private MapRenderer mapRenderer;
-    private EntityRenderer entityRenderer;
-    public Player player;
 
-    private final int originalTileSize = 16; // 16 x 16 pixel tile
-    private final int scale = 3; // scale everything up by a factor or 3
-    public int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
+
 
 
     // Constructor for a game UI
@@ -50,11 +44,13 @@ public class GameUI extends JPanel{
         this.requestFocusInWindow(); // focuses everything in the window
         this.setDoubleBuffered(true);
         this.setFocusable(true);
-        this.setFocusTraversalKeysEnabled(false); // let arrow keys through
         // Creates an object to register user inputs
         this.addKeyListener(gameController.inputController);
 
     }
+
+
+
 
     public void initializeWindow(){
         // Create a screen window to display the game
@@ -73,7 +69,6 @@ public class GameUI extends JPanel{
         // More Formatting
         window.setLocationRelativeTo(null);
         window.setVisible(true);
-        this.requestFocusInWindow(); // remove this if game can't run
     }
 
 
@@ -97,22 +92,18 @@ public class GameUI extends JPanel{
             }
         }
 
-        //draw enemies
-        for (int i = 0; i < gameController.map.enemies.length; i++){
-            if (gameController.map.enemies[i] != null){
-                gameController.map.enemies[i].draw(g2, gameController);
+        for (int i = 0; i < gameController.map.monster.length; i++){
+            if (gameController.map.monster[i] != null){
+                gameController.map.monster[i].draw(g2);
             }
         }
 
         // draw the player
         gameController.player.draw(g2);
 
-//        // draw the map
-//        mapRenderer.draw(g2);
-//        entityRenderer.drawEntity(g2, player, player);
-//        for (Enemy enemy : map.enemiesOnMap) {
-//            entityRenderer.drawEntity(g2, enemy, player);
-//        }
+        // Draw the Player Hud
+        gameController.pHud.draw(g2);
+
 
         // dispose of the objects
         g2.dispose();

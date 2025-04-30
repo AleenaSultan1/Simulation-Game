@@ -36,12 +36,12 @@ public class Enemy extends Entity {
         name = "Green monster";
         speed = 1;
         maxLife = 4;
-        solidArea.x = 3;
-        solidArea.y = 18;
-        solidArea.width = 42;
-        solidArea.height = 30;
-        solidAreaDefaultX = solidArea.x;
-        solidAreaDefaultY = solidArea.y;
+        hitbox.x = 3;
+        hitbox.y = 18;
+        hitbox.width = 42;
+        hitbox.height = 30;
+        hitboxDefaultX = hitbox.x;
+        hitboxDefaultY = hitbox.y;
 
         getImage();
     }
