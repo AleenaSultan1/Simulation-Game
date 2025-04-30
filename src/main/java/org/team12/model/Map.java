@@ -32,8 +32,8 @@ import java.util.Objects;
 
 public class Map {
     private Tile[][] grid;
-    public List<Item> itemsOnMap;
-    public List<Enemy> enemiesOnMap;
+    private List<Item> itemsOnMap;
+    private List<Enemy> enemiesOnMap;
 
     private int width;
     private int height;
@@ -124,5 +124,12 @@ public class Map {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
+    public List<Item> getItemsOnMap() {
+        return itemsOnMap;
+    }
+
+    public List<Enemy> getEnemiesOnMap() {
+        return enemiesOnMap;
+    }
 }
 

@@ -123,7 +123,7 @@ public class GameUI extends JPanel implements Runnable{
                 drawCount++;
                 player.update();
                 if (currentTime - lastMoveTime > moveCooldown) {
-                    for (Enemy enemy : map.enemiesOnMap) {
+                    for (Enemy enemy : map.getEnemiesOnMap()) {
                         enemy.moveRandomly();
                     }
                     lastMoveTime = currentTime;
@@ -157,7 +157,7 @@ public class GameUI extends JPanel implements Runnable{
         // draw the map
         mapRenderer.draw(g2);
         entityRenderer.drawEntity(g2, player, player);
-        for (Enemy enemy : map.enemiesOnMap) {
+        for (Enemy enemy : map.getEnemiesOnMap()) {
             entityRenderer.drawEntity(g2, enemy, player);
         }
         // dispose of the objects

@@ -23,33 +23,22 @@ import org.team12.model.entities.*;
 import org.team12.states.EnemyStatus;
 import org.team12.view.GameUI;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
 public class GameController {
-    private Map map;
-    private GameUI gameUI;
-
     private Player player;
     private LilyFinalBoss lily;
     private Sword sword;
     private MagicDust magicDust;
     private RiddleChest riddleChest;
-
-    private int numGoons = 5;
-    private int lvlHeight = 20;
-
-    private Enemy[] goons = new Enemy[numGoons];
-
-    private Pair<Integer, Integer> lvlOneDim = new Pair<>(lvlHeight, 0);
-    private Pair<Integer, Integer> lvlTwoDim = new Pair<>(lvlHeight*2 + 1, lvlHeight + 1);
-    private Pair<Integer, Integer> lvlThreeDim = new Pair<>(lvlHeight*3 + 2, lvlHeight*2 + 2);
+    private final List<Item> items;
 
 
-    public GameController() {
-        sword = new Sword();
-        magicDust = new MagicDust();
-        riddleChest = new RiddleChest();
+    public GameController(Map map) {
+        items = map.getItemsOnMap();
     }
 
     /**
