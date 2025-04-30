@@ -37,18 +37,18 @@ public class EntityRenderer {
     public void drawEntity(Graphics2D g2, Entity entity, Player player) {
         // Calculate where on the screen the entity should appear
         if (entity.getClass() == Player.class) {
-            screenX = ((Player) entity).screenX;
-            screenY = ((Player) entity).screenY;
+            screenX = ((Player) entity).getScreenX();
+            screenY = ((Player) entity).getScreenY();
 
         } else {
-            screenX = entity.worldX - player.worldX + player.screenX;
-            screenY = entity.worldY - player.worldY + player.screenY;
+            screenX = entity.worldX - player.worldX + player.getScreenX();
+            screenY = entity.worldY - player.worldY + player.getScreenY();
         }
 // Only draw tiles that are within the visible screen area
-        if (entity.worldX + tileSize > player.worldX - player.screenX &&
-            entity.worldX - tileSize < player.worldX + player.screenX &&
-            entity.worldY + tileSize > player.worldY - player.screenY &&
-            entity.worldY - tileSize < player.worldY + player.screenY) {
+        if (entity.worldX + tileSize > player.worldX - player.getScreenX() &&
+            entity.worldX - tileSize < player.worldX + player.getScreenX() &&
+            entity.worldY + tileSize > player.worldY - player.getScreenX() &&
+            entity.worldY - tileSize < player.worldY + player.getScreenY()) {
 
         BufferedImage image = entity.getCurrentSprite(); // Assume each Entity can provide its current sprite based on direction/animation
         if (image != null) {

@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import org.team12.controller.GameController;
 import org.team12.view.GameUI;
 
 import javax.swing.*;

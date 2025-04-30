@@ -15,8 +15,10 @@
  * ****************************************
  */
 
+
 package org.team12.view;
 
+import org.team12.controller.GameController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
@@ -30,12 +32,34 @@ public class GameUI extends JPanel implements Runnable{
     // SCREEN SETTINGS AND VARIABLES
     private static final int originalTileSize = 16; // 16 x 16 pixel tile
     private static final int scale = 3; // scale everything up by a factor or 3
-    public static int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
+    private static int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
 
-    public static int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
-    public static int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
-    public static int screenWidth = tileSize * maxScreenCol; // 786 pixels
-    public static int screenHeight = tileSize * maxScreenRow; // 576 pixels
+    private static int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
+    private static int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
+    private static int screenWidth = tileSize * maxScreenCol; // 786 pixels
+    private static int screenHeight = tileSize * maxScreenRow; // 576 pixels
+    private GameController gameController;
+
+
+    public static int getTileSize() {
+        return tileSize;
+    }
+
+    public int getMaxWorldCol() {
+        return maxWorldCol;
+    }
+
+    public static int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public static int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public int getMaxWorldRow() {
+        return maxWorldRow;
+    }
 
 
     // GAME LOOP VARIABLES
@@ -58,7 +82,7 @@ public class GameUI extends JPanel implements Runnable{
 
     // Constructor for a game UI
     public GameUI(){
-        player = new Player(this, inputController, 20);
+        player = new Player(inputController, 20);
         map = new Map("/map/dungeonMap.txt");
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize);
@@ -73,6 +97,7 @@ public class GameUI extends JPanel implements Runnable{
         this.setFocusable(true);
         // Creates an object to register user inputs
         this.addKeyListener(inputController);
+        gameController = new GameController(map, player);
 
     }
 
@@ -103,10 +128,9 @@ public class GameUI extends JPanel implements Runnable{
         int drawCount = 0;
         long lastMoveTime = System.currentTimeMillis();
 
-
         // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
-
+            gameController.update();
 
             currentTime = System.nanoTime();
 
@@ -123,7 +147,7 @@ public class GameUI extends JPanel implements Runnable{
                 drawCount++;
                 player.update();
                 if (currentTime - lastMoveTime > moveCooldown) {
-                    for (Enemy enemy : map.enemiesOnMap) {
+                    for (Enemy enemy : map.getEnemiesOnMap()) {
                         enemy.moveRandomly();
                     }
                     lastMoveTime = currentTime;
@@ -157,7 +181,7 @@ public class GameUI extends JPanel implements Runnable{
         // draw the map
         mapRenderer.draw(g2);
         entityRenderer.drawEntity(g2, player, player);
-        for (Enemy enemy : map.enemiesOnMap) {
+        for (Enemy enemy : map.getEnemiesOnMap()) {
             entityRenderer.drawEntity(g2, enemy, player);
         }
         // dispose of the objects

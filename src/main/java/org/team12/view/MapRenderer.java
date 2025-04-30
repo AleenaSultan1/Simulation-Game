@@ -19,9 +19,7 @@ package org.team12.view;
 
 import org.team12.model.Map;
 import org.team12.model.Tile;
-import org.team12.model.entities.Enemy;
-import org.team12.model.entities.Item;
-import org.team12.model.entities.Player;
+import org.team12.model.entities.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -34,6 +32,7 @@ public class MapRenderer {
     private BufferedImage floorImage;
     private BufferedImage wallImage;
     private BufferedImage swordImage;
+    private BufferedImage chestCloseImage;
     private BufferedImage enemyImage;
     private int tileSize;
     private Player player;
@@ -50,12 +49,15 @@ public class MapRenderer {
             floorImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/stoneFloor.png")));
             wallImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/wall.png")));
             swordImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
+            chestCloseImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/chest1.png")));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void draw(Graphics2D g2) {
+
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 // worldX/Y is the absolute position of the tile
@@ -63,14 +65,14 @@ public class MapRenderer {
                 int worldY = y * tileSize;
 
                 // screenX/Y is where the tile appears relative to the player
-                int screenX = worldX - player.worldX + player.screenX;
-                int screenY = worldY - player.worldY + player.screenY;
+                int screenX = worldX - player.worldX + player.getScreenX();
+                int screenY = worldY - player.worldY + player.getScreenY();
 
                 // Only draw tiles that are within the visible screen area
-                if (worldX + tileSize > player.worldX - player.screenX &&
-                        worldX - tileSize < player.worldX + player.screenX &&
-                        worldY + tileSize > player.worldY - player.screenY &&
-                        worldY - tileSize < player.worldY + player.screenY) {
+                if (worldX + tileSize > player.worldX - player.getScreenX() &&
+                        worldX - tileSize < player.worldX + player.getScreenX() &&
+                        worldY + tileSize > player.worldY - player.getScreenY() &&
+                        worldY - tileSize < player.worldY + player.getScreenY()) {
 
                     Tile tile = map.getTile(x, y);
                     // 1. Draw the wall and floor
@@ -81,10 +83,13 @@ public class MapRenderer {
                     }
                     // 2. If there is an Item, draw the item
                     Item item = tile.getItem();
-                    if (item != null) {
+                    if (item instanceof Sword) {
                         g2.drawImage(swordImage, screenX, screenY, tileSize, tileSize, null);
                     }
 
+                    else if (item instanceof RiddleChest){
+                        g2.drawImage(chestCloseImage, screenX, screenY, tileSize, tileSize, null);
+                    }
 
                 }
             }

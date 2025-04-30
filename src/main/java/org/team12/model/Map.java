@@ -33,14 +33,16 @@ import java.util.Objects;
 
 public class Map {
     private Tile[][] grid;
-    public List<Item> itemsOnMap;
-    public List<Enemy> enemiesOnMap;
+    private List<Item> itemsOnMap;
+    private List<Enemy> enemiesOnMap;
 
     private int width;
     private int height;
 
 
     public Map(String filepath) {
+        enemiesOnMap = new ArrayList<>();
+        itemsOnMap = new ArrayList<>();
         loadMap(filepath);
     }
     private void loadMap(String filepath) {
@@ -74,27 +76,50 @@ public class Map {
                 for (int x = 0; x < numbers.length; x++) {
                     grid[x][y] = new Tile(x, y);
                     int tileType = Integer.parseInt(numbers[x]);
-                    if (tileType == 1) {
-                        grid[x][y].setObstacle(true);
-                    }
+                    // Wall
+                    switch (tileType) {
+                        case 1:
+                            grid[x][y].setObstacle(true);
+                            break;
+                        // Goon
+                        case 2:
+                            Enemy enemy = new Enemy(10, 2);
+                            enemiesOnMap.add(enemy);
+                            enemy.setCoord(x, y);
+                            grid[x][y].setEnemy(enemy);
+                            break;
+                        // Sword
+                        case 3:
+                            Sword sword = new Sword();
+                            itemsOnMap.add(sword);
+                            grid[x][y].setItem(sword);
+                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
+                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            break;
 
-                    if (tileType == 2) {
-                        //Enemy enemy = new Enemy(10, 2);
-                        //grid[x][y].setEnemy(enemy);
-                    }
-                    if (tileType == 3) {
-                        Item item = new Item();
-                        grid[x][y].setItem(item);
-                        itemsOnMap.add(item);
-                        itemsOnMap.getLast().setX(x * GameUI.tileSize);
-                        itemsOnMap.getLast().setY(y * GameUI.tileSize);
+                        case 4:
+                            RiddleChest riddleChest = new RiddleChest();
+                            itemsOnMap.add(riddleChest);
+                            grid[x][y].setItem(riddleChest);
+                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
+                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            break;
 
+                        case 5:
+                            MagicDust magicDust = new MagicDust();
+                            itemsOnMap.add(magicDust);
+                            grid[x][y].setItem(magicDust);
+                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
+                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            break;
+
+                        default:
+                            break;
                     }
 
                 }
                 y++;
             }
-
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,16 +141,19 @@ public class Map {
         return height;
     }
 
-    private boolean isInsideBounds(int x, int y) {
+    public boolean isInsideBounds(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-    public boolean isOccupied(int x, int y) {
-//        return grid[x][y].hasEnemy() || grid[x][y].hasObstacle();
-        return false;
+    public List<Item> getItemsOnMap() {
+        return itemsOnMap;
     }
 
-    public void updateItemsOnMap() {
+    public List<Enemy> getEnemiesOnMap() {
+        return enemiesOnMap;
+    }
+
+    public void removeItemsOnMap() {
         for (int x =  0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Tile tile = grid[x][y];
@@ -136,7 +164,6 @@ public class Map {
             }
         }
     }
-
 
 }
 

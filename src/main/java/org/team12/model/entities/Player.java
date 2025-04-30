@@ -25,26 +25,28 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 
 public class Player extends Entity {
-    GameUI gameUI;
+    private ArrayList<Item> inventory;
     InputController inputController;
-    public final int screenX;
-    public final int screenY;
-    public int hitboxWidth = 32;  // usually tile size
-    public int hitboxHeight = 32;
+    private final int screenX;
+    private final int screenY;
+    private int hitboxWidth = 32;  // usually tile size
+    private int hitboxHeight = 32;
 
 
-    public Player(GameUI gameUI, InputController inputController, int hp) {
+
+    public Player(InputController inputController, int hp) {
         super(hp);
-        this.gameUI = gameUI;
+        this.inventory = new ArrayList<>();
         this.inputController = inputController;
         this.setDefaultValues();
         this.getPlayerImage();
-        screenX = gameUI.screenWidth / 2 - (gameUI.tileSize / 2);
-        screenY = gameUI.screenHeight / 2 - (gameUI.tileSize / 2);
+        screenX = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
+        screenY = GameUI.getScreenHeight() / 2 - (GameUI.getTileSize() / 2);
 
 
     }
@@ -153,18 +155,37 @@ public class Player extends Entity {
     }
 
     public int getTileX() {
-        return worldX / gameUI.tileSize;
+        return worldX / GameUI.getTileSize();
     }
 
     public int getTileY() {
-        return worldY / gameUI.tileSize;
+        return worldY / GameUI.getTileSize();
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
+    }
+
+    public int getHitboxWidth() {
+        return hitboxWidth;
+    }
+
+    public int getHitboxHeight() {
+        return hitboxHeight;
     }
 
     public void pickUpItem(Item item) {
-        if (item != null && item.getItemState() == ItemState.INTERACTABLE) {
+        if (item != null && item.getItemState() == ItemState.INTERACTABLE && inputController.interactionKeyPressed) {
             item.pickUp();
         }
 
     }
 
+    public ArrayList<Item> getInventory() {
+        return inventory;
+    }
 }
