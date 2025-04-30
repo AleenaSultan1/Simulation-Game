@@ -19,6 +19,7 @@ package org.team12.view;
 
 import org.team12.controller.InputController;
 import org.team12.model.Map;
+import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Player;
 
 import javax.swing.JPanel;
@@ -27,14 +28,14 @@ import java.awt.*;
 public class GameUI extends JPanel implements Runnable{
 
     // SCREEN SETTINGS AND VARIABLES
-    public static int originalTileSize = 16; // 16 x 16 pixel tile
-    public static int scale = 3; // scale everything up by a factor or 3
+    private static final int originalTileSize = 16; // 16 x 16 pixel tile
+    private static final int scale = 3; // scale everything up by a factor or 3
     public static int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
 
-    public int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
-    public int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
-    public int screenWidth = tileSize * maxScreenCol; // 786 pixels
-    public int screenHeight = tileSize * maxScreenRow; // 576 pixels
+    public static int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
+    public static int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
+    public static int screenWidth = tileSize * maxScreenCol; // 786 pixels
+    public static int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
 
     // GAME LOOP VARIABLES
@@ -49,6 +50,7 @@ public class GameUI extends JPanel implements Runnable{
 
     private Map map;
     private MapRenderer mapRenderer;
+    private EntityRenderer entityRenderer;
     private InputController inputController = new InputController();
     public Player player;
 
@@ -59,6 +61,7 @@ public class GameUI extends JPanel implements Runnable{
         player = new Player(this, inputController, 20);
         map = new Map("/map/dungeonMap.txt");
         mapRenderer = new MapRenderer(player, map, tileSize);
+        entityRenderer = new EntityRenderer(tileSize);
         // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         // Sets the background of the map: will need to load/generate a map
@@ -93,10 +96,13 @@ public class GameUI extends JPanel implements Runnable{
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
+        long moveCooldown = 10000;
 
         // Variables to display FPS every second
         long timer = 0;
         int drawCount = 0;
+        long lastMoveTime = System.currentTimeMillis();
+
 
         // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
@@ -108,6 +114,7 @@ public class GameUI extends JPanel implements Runnable{
             timer += (currentTime - lastTime);
             lastTime = currentTime;
 
+
             if(delta>=1){
                 // update player position, will also be used to update enemy position and status of items
                 // Makes a new frame for the Game UI with the updated changes
@@ -115,6 +122,13 @@ public class GameUI extends JPanel implements Runnable{
                 delta--;
                 drawCount++;
                 player.update();
+                if (currentTime - lastMoveTime > moveCooldown) {
+                    for (Enemy enemy : map.enemiesOnMap) {
+                        enemy.moveRandomly();
+                    }
+                    lastMoveTime = currentTime;
+                }
+
             }
 
             // Displays FPS
@@ -142,8 +156,10 @@ public class GameUI extends JPanel implements Runnable{
 
         // draw the map
         mapRenderer.draw(g2);
-        player.draw(g2);
-
+        entityRenderer.drawEntity(g2, player, player);
+        for (Enemy enemy : map.enemiesOnMap) {
+            entityRenderer.drawEntity(g2, enemy, player);
+        }
         // dispose of the objects
         g2.dispose();
     }
