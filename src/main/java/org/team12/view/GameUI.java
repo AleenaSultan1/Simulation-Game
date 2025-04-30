@@ -124,7 +124,7 @@ public class GameUI extends JPanel implements Runnable{
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
-        long moveCooldown = 10000;
+        long moveCooldown = 1000000;
 
         // Variables to display FPS every second
         long timer = 0;

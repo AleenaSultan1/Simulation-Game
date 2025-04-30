@@ -19,6 +19,7 @@ public class DungeonGameApp {
         window.setResizable(false);
         window.setTitle("Dungeon Game");
 
+
         // Create the GameUI (our main game panel)
         GameUI gameUI = new GameUI();
         window.add(gameUI);
