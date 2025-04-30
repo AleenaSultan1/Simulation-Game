@@ -34,7 +34,7 @@ import java.util.Objects;
 public class Map {
     private Tile[][] grid;
     public List<Item> itemsOnMap;
-    private List<Enemy> enemiesOnMap;
+    public List<Enemy> enemiesOnMap;
 
     private int width;
     private int height;
