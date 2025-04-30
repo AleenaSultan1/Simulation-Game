@@ -192,11 +192,12 @@ public class Player extends Entity {
         return hitboxHeight;
     }
 
-    public void pickUpItem(Item item) {
+    public boolean pickUpItem(Item item) {
         if (item != null && item.getItemState() == ItemState.INTERACTABLE && inputController.interactionKeyPressed) {
             item.pickUp();
+            return true;
         }
-
+        return false;
     }
 
     public ArrayList<Item> getInventory() {

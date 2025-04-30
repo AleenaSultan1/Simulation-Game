@@ -21,9 +21,11 @@ import org.team12.model.Map;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
 import org.team12.model.entities.RiddleChest;
+import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class GameController {
@@ -52,21 +54,30 @@ public class GameController {
     }
 
     public void checkPlayerPickup() {
-        Rectangle playerHitbox = new Rectangle(player.worldX, player.worldY, player.getHitboxWidth(), player.getHitboxHeight());
+        Rectangle playerHitbox = new Rectangle(
+                player.worldX + player.hitbox.x,
+                player.worldY + player.hitbox.y,
+                player.hitbox.width,
+                player.hitbox.height
+        );
 
-        for (Item item : map.getItemsOnMap()) {
-            Rectangle itemHitbox = new Rectangle(item.getWorldX(), item.getWorldY(), GameUI.getTileSize(), GameUI.getTileSize());
+        // Only check against interactable items
+        for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
+            if (item.getItemState() != ItemState.INTERACTABLE) continue;
 
-            if (playerHitbox.intersects(itemHitbox)) {
-                // Player picked up the item!
-                //item.pickUp();
-                player.pickUpItem(item);
-                //player.addToInventory(item);
-                player.getInventory().add(item);
-                // Remove item from map
-                map.removeItemsOnMap();
+            Rectangle itemHitbox = new Rectangle(
+                    item.getWorldX(), item.getWorldY(),
+                    GameUI.getTileSize(), GameUI.getTileSize()
+            );
 
+            if (playerHitbox.intersects(itemHitbox)){
+                boolean pickedUp = player.pickUpItem(item);
+                if (pickedUp) {
+                    map.removeItem(item);
+                    break; // stop after first pickup
+                }
             }
         }
     }
+
 }

@@ -128,42 +128,45 @@ public class Map {
 
 
     public Tile getTile ( int x, int y){
-            if (x >= 0 && x < width && y >= 0 && y < height) {
-                return grid[x][y];
-            }
-            return null;
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            return grid[x][y];
         }
+        return null;
+    }
 
-        public int getWidth () {
-            return width;
-        }
+    public int getWidth () {
+        return width;
+    }
 
-        public int getHeight () {
-            return height;
-        }
+    public int getHeight () {
+        return height;
+    }
 
-        public boolean isInsideBounds ( int x, int y){
-            return x >= 0 && x < width && y >= 0 && y < height;
-        }
+    public boolean isInsideBounds ( int x, int y){
+        return x >= 0 && x < width && y >= 0 && y < height;
+    }
 
-        public List<Item> getItemsOnMap () {
-            return itemsOnMap;
-        }
+    public List<Item> getItemsOnMap () {
+        return itemsOnMap;
+    }
 
-        public List<Enemy> getEnemiesOnMap () {
-            return enemiesOnMap;
-        }
+    public List<Enemy> getEnemiesOnMap () {
+        return enemiesOnMap;
+    }
 
 
-        public void removeItemsOnMap() {
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    Tile tile = grid[x][y];
-                    if (tile.hasItem() && tile.getItem().getItemState() == ItemState.UNINTERACTABLE) {
-                        tile.setItem(null);
-
-                    }
+    public void removeItem(Item item) {
+        // Find the item's tile by position and clear it
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Tile tile = grid[x][y];
+                if (tile.getItem() == item) {
+                    tile.setItem(null);
+                    itemsOnMap.remove(item); // precise removal
+                    return;
                 }
             }
         }
     }
+
+}
