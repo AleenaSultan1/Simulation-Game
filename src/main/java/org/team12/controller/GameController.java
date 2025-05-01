@@ -77,7 +77,6 @@ public class GameController implements Runnable{
     }
 
 
-
     public void startGame() {
         populateMap();
         // Starts a gameThread which is used to run the game loop
