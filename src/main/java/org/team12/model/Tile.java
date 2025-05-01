@@ -64,10 +64,6 @@ public class Tile {
         return lilyFinalBoss;
     }
 
-    public void setLilyFinalBoss(LilyFinalBoss lilyFinalBoss) {
-        this.lilyFinalBoss = lilyFinalBoss;
-    }
-
     public boolean hasObstacle() {
         return isObstacle;
     }

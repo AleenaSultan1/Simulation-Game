@@ -55,10 +55,10 @@ public class GameController {
 
     public void checkPlayerPickup() {
         Rectangle playerHitbox = new Rectangle(
-                player.worldX + player.hitbox.x,
-                player.worldY + player.hitbox.y,
-                player.hitbox.width,
-                player.hitbox.height
+                player.worldX + player.getHitbox().x,
+                player.worldY + player.getHitbox().y,
+                player.getHitbox().width,
+                player.getHitbox().height
         );
 
         // Only check against interactable items

@@ -18,6 +18,7 @@
 package org.team12.model.entities;
 
 import org.team12.controller.CollisionController;
+import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -30,8 +31,9 @@ public abstract class Entity {
     public int worldX;
     public int worldY;
     // Used for checking collisions/hitboxes
-    public Rectangle hitbox;
-    public int hitboxDefaultX, hitboxDefaultY;
+    protected CollisionController collisionController;
+    protected Rectangle hitbox;
+    protected int hitboxDefaultX, hitboxDefaultY;
     public boolean collisionOn = false;
     public int speed;
     public String direction;
@@ -49,6 +51,13 @@ public abstract class Entity {
     public Entity(int hp) {
         this.HP = hp;
         this.state = true; // alive by default
+        hitbox = new Rectangle();
+        hitboxDefaultX = 8; // Could be adjusted
+        hitboxDefaultY = 8;
+        hitbox.x = hitboxDefaultX;
+        hitbox.y = hitboxDefaultY;
+        hitbox.width = GameUI.getTileSize() - 16;
+        hitbox.height = GameUI.getTileSize() - 16;
     }
 
     public int getworldX() {
@@ -57,6 +66,10 @@ public abstract class Entity {
 
     public int getworldY() {
         return worldY;
+    }
+
+    public Rectangle getHitbox() {
+        return hitbox;
     }
 
     public int getHP() {
@@ -70,6 +83,7 @@ public abstract class Entity {
         }
     }
 
+    // null method to be overriden
     public BufferedImage getCurrentSprite() {
         return null;
     }
