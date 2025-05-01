@@ -59,11 +59,7 @@ public class GameController {
     }
 
     public void generatePlayerHitbox() {
-        playerHitbox = new Rectangle(
-                player.worldX + player.getHitbox().x,
-                player.worldY + player.getHitbox().y,
-                player.getHitbox().width,
-                player.getHitbox().height);
+        playerHitbox = player.getHitbox();
     }
 
 
@@ -73,10 +69,7 @@ public class GameController {
         for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
             if (item.getItemState() != ItemState.INTERACTABLE) continue;
 
-            Rectangle itemHitbox = new Rectangle(
-                    item.getWorldX(), item.getWorldY(),
-                    GameUI.getTileSize(), GameUI.getTileSize()
-            );
+            Rectangle itemHitbox = item.getHitbox();
 
             if (playerHitbox.intersects(itemHitbox)){
                 boolean pickedUp = player.pickUpItem(item);
@@ -100,8 +93,6 @@ public class GameController {
 
             if (playerHitbox.intersects(enemyHostilityBox)) {
                 enemy.enemyAttack(player);
-                // Reduce player's life (assuming you have a method or field for this)
-                //player.reduceLives();
             } else {
                 enemy.moveRandomly();
             }

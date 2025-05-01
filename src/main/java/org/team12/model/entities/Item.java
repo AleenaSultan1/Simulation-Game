@@ -32,7 +32,7 @@ public class Item {
     private int worldX;
     private int worldY;
 
-    public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
+    public Rectangle hitbox = new Rectangle(worldX, worldY, GameUI.getTileSize(), GameUI.getTileSize());
 
 
     UtilityTool utilTool = new UtilityTool();
@@ -75,4 +75,7 @@ public class Item {
         return itemState;
     }
 
+    public Rectangle getHitbox() {
+        return hitbox;
+    }
 }
