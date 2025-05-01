@@ -18,7 +18,6 @@
 
 package org.team12.view;
 
-import org.team12.controller.CollisionController;
 import org.team12.controller.GameController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
@@ -77,20 +76,16 @@ public class GameUI extends JPanel implements Runnable{
     private Map map;
     private MapRenderer mapRenderer;
     private EntityRenderer entityRenderer;
-    private InputController inputController = new InputController();
-    private CollisionController collisionController;
-    public Player player;
-
+    private InputController inputController;
+    private Player player;
 
 
     // Constructor for a game UI
     public GameUI(){
         map = new Map("/map/dungeonMap.txt");
-        collisionController = new CollisionController(map);
-        map.setCollisionController(collisionController);
-        player = new Player(inputController, collisionController, 20);
-        map.setPlayer(player);
-        gameController = new GameController(map, player);
+        inputController = new InputController();
+        gameController = new GameController(map, inputController);
+        player = gameController.getPlayer();
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize);
         // Set the size of the UI to the size of the screen
@@ -145,7 +140,6 @@ public class GameUI extends JPanel implements Runnable{
 
 
             if(delta>=1){
-                // update player position, will also be used to update enemy position and status of items
                 // Makes a new frame for the Game UI with the updated changes
                 repaint();
                 delta--;

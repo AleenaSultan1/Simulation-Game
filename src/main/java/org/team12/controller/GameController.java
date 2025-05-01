@@ -21,33 +21,47 @@ import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
-import org.team12.model.entities.RiddleChest;
 import org.team12.states.ItemState;
-import org.team12.view.GameUI;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class GameController {
     private Map map;
     private Player player;
     private boolean isRunning;
     private Rectangle playerHitbox;
+    private CollisionController collisionController;
+    private InputController inputController;
 
-    public GameController(Map map, Player player) {
+
+    public GameController(Map map, InputController inputController) {
         this.map = map;
-        this.player = player;
+
+        collisionController = new CollisionController(map);
+        map.setCollisionController(collisionController);
+        this.inputController = inputController;
+        player = new Player(inputController, collisionController, 20);
+        map.setPlayer(player);
+
         this.isRunning = true;
-        this.playerHitbox = new Rectangle();
+        this.playerHitbox = player.getHitbox();
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     public void update() {
-        // Update player movement, logic
-        //player.update();
-        generatePlayerHitbox();
-        checkPlayerPickup();
-        checkEnemyAttack();
+        // Update player movement, logic per InputController
+        player.update();
+        checkEnemyHostility();
+        if (inputController.interactionKeyPressed) {
+            checkPlayerPickup();
+        }
+        if (inputController.attackKeyPressed) {
+            // Player attack
+        }
     }
 
     public void stopGame() {
@@ -57,11 +71,6 @@ public class GameController {
     public boolean isRunning() {
         return isRunning;
     }
-
-    public void generatePlayerHitbox() {
-        playerHitbox = player.getHitbox();
-    }
-
 
     public void checkPlayerPickup() {
 
@@ -81,7 +90,7 @@ public class GameController {
         }
     }
 
-    public void checkEnemyAttack() {
+    public void checkEnemyHostility() {
         for (Enemy enemy : map.getEnemiesOnMap()) {
             // Define the enemy's hostility detection area as a square around its position
             Rectangle enemyHostilityBox = new Rectangle(
