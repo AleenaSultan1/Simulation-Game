@@ -84,6 +84,15 @@ public class GameController {
         return isRunning;
     }
 
+
+    public void generatePlayerHitbox() {
+        playerHitbox = new Rectangle(
+                player.worldX + player.getHitbox().x,
+                player.worldY + player.getHitbox().y,
+                player.getHitbox().width,
+                player.getHitbox().height);
+    }
+
     public void checkPlayerPickup() {
 
         // Only check against interactable items
@@ -139,8 +148,23 @@ public class GameController {
                     enemy.getHostilityArea()
             );
 
+            // Define the enemy's attack detection area as a square around its position
+            Rectangle enemyAttackRange = new Rectangle(
+                    enemy.worldX - enemy.getAttackRange() / 2,
+                    enemy.worldY - enemy.getAttackRange() / 2,
+                    enemy.getAttackRange(),
+                    enemy.getAttackRange()
+            );
+
+
             if (playerHitbox.intersects(enemyHostilityBox)) {
-                enemy.enemyAttack(player);
+                enemy.enemyMoveToPlayer(player);
+                // Reduce player's life (assuming you have a method or field for this)
+                //player.reduceLives();
+
+                if (playerHitbox.intersects(enemyAttackRange)) {
+                    enemy.enemyAttackPlayer(player);
+                }
             } else {
                 enemy.moveRandomly();
             }

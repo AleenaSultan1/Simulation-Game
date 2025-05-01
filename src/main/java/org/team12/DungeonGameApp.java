@@ -24,7 +24,6 @@ public class DungeonGameApp {
         GameUI gameUI = new GameUI();
         window.add(gameUI);
         window.pack(); // fit window to GameUI's preferred size
-
         // Center window and make it visible
         window.setLocationRelativeTo(null);
         window.setVisible(true);

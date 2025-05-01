@@ -34,11 +34,13 @@ public class MapRenderer {
     private BufferedImage swordImage;
     private BufferedImage chestCloseImage;
     private BufferedImage enemyImage;
+    private PlayerHud playerHud;
     private int tileSize;
     private Player player;
 
     public MapRenderer(Player player, Map map, int tileSize) {
         this.map = map;
+        this.playerHud = new PlayerHud();
         this.tileSize = tileSize;
         this.player = player;
         loadImages();
@@ -51,13 +53,14 @@ public class MapRenderer {
             swordImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
             chestCloseImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/chest1.png")));
 
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void draw(Graphics2D g2) {
-
+        playerHud.draw(g2);
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 // worldX/Y is the absolute position of the tile
@@ -90,6 +93,7 @@ public class MapRenderer {
                     else if (item instanceof RiddleChest){
                         g2.drawImage(chestCloseImage, screenX, screenY, tileSize, tileSize, null);
                     }
+
 
                 }
             }
