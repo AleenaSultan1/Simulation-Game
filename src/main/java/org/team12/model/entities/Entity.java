@@ -27,8 +27,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public abstract class Entity {
+
     protected EnemyStatus currentEntityStatus;
     protected int HP;
+    private final int MaxHP;
+    protected boolean state; //true=alive
     public int worldX;
     public int worldY;
     // Used for checking collisions/hitboxes
@@ -47,6 +50,7 @@ public abstract class Entity {
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
     public Entity(int hp) {
+        this.MaxHP = hp;
         this.HP = hp;
         this.currentEntityStatus = EnemyStatus.PEACEFUL;
         hitbox = new Rectangle();
@@ -56,6 +60,10 @@ public abstract class Entity {
         hitbox.y = hitboxDefaultY;
         hitbox.width = GameUI.getTileSize() - 16;
         hitbox.height = GameUI.getTileSize() - 16;
+    }
+
+    public int getMaxHP() {
+        return MaxHP;
     }
 
     public int getworldX() {

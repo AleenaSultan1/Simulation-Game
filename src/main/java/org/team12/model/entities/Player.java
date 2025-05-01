@@ -37,6 +37,8 @@ public class Player extends Entity {
     private int hitboxWidth = 32;  // usually tile size
     private int hitboxHeight = 32;
     private CollisionController collisionController;
+    private int attackRangeScale;
+    private Rectangle attackRange;
 
     public Player(InputController inputController, CollisionController collisionController, int hp) {
         super(hp);
@@ -47,6 +49,25 @@ public class Player extends Entity {
         this.getPlayerImage();
         screenX = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
         screenY = GameUI.getScreenHeight() / 2 - (GameUI.getTileSize() / 2);
+
+        attackRangeScale = 5;
+    }
+
+    public Rectangle getAttackRange() {
+        int attackSize = getAttackRangeScale();
+        int centerX = worldX + hitbox.width / 2;
+        int centerY = worldY + hitbox.height / 2;
+
+        return new Rectangle(
+                centerX - attackSize / 2,
+                centerY - attackSize / 2,
+                attackSize,
+                attackSize
+        );
+    }
+
+    public int getAttackRangeScale() {
+        return attackRangeScale;
     }
 
     public void setDefaultValues() {
@@ -185,10 +206,9 @@ public class Player extends Entity {
     }
 
     public boolean pickUpItem(Item item) {
-        if (item != null && item.getItemState() == ItemState.INTERACTABLE && inputController.interactionKeyPressed) {
+        if (item != null && item.getItemState() == ItemState.INTERACTABLE) {
             item.pickUp();
             inventory.add(item);
-
             return true;
         }
         return false;
@@ -197,6 +217,27 @@ public class Player extends Entity {
 
     public ArrayList<Item> getInventory() {
         return inventory;
+    }
+
+    public boolean attackEnemy(Enemy enemy) {
+        // If player has a sword
+        Item sword = playerHasItem(Sword.class);
+        if (sword instanceof Sword) {
+            enemy.takeDamage(((Sword) sword).strength);
+            System.out.println("Player attacked with Sword");
+            return true;
+        }
+        return false;
+    }
+
+    // Helper method, check if inventory has item
+    private Item playerHasItem(Class<? extends Item> targetClass) {
+        for (Item item : inventory) {
+            if (targetClass.isInstance(item)) {
+                return item;
+            }
+        }
+        return null;
     }
 
 }

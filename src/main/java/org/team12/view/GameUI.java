@@ -23,6 +23,7 @@ import org.team12.controller.GameController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
+import org.team12.model.entities.Entity;
 import org.team12.model.entities.LilyFinalBoss;
 import org.team12.model.entities.Player;
 
@@ -74,6 +75,11 @@ public class GameUI extends JPanel implements Runnable{
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
 
+//    private Map map;
+//    private MapRenderer mapRenderer;
+//    private EntityRenderer entityRenderer;
+//    private InputController inputController;
+//    private Player player;
     private Map map;
     private MapRenderer mapRenderer;
     private EntityRenderer entityRenderer;
@@ -86,13 +92,12 @@ public class GameUI extends JPanel implements Runnable{
     // Constructor for a game UI
     public GameUI(){
         map = new Map("/map/dungeonMap.txt");
-        collisionController = new CollisionController(map);
-        map.setCollisionController(collisionController);
-        player = new Player(inputController, collisionController, 50);
-        map.setPlayer(player);
-        gameController = new GameController(map, player);
+        inputController = new InputController();
+        gameController = new GameController(map, inputController);
+        player = gameController.getPlayer();
         mapRenderer = new MapRenderer(player, map, tileSize);
-        entityRenderer = new EntityRenderer(tileSize);
+        entityRenderer = new EntityRenderer(tileSize, player);
+
         // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         // Sets the background of the map: will need to load/generate a map
@@ -127,12 +132,10 @@ public class GameUI extends JPanel implements Runnable{
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
-        long moveCooldown = 1000000;
 
         // Variables to display FPS every second
         long timer = 0;
         int drawCount = 0;
-        long lastMoveTime = System.currentTimeMillis();
 
         // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
@@ -145,13 +148,13 @@ public class GameUI extends JPanel implements Runnable{
 
 
             if(delta>=1){
-                // update player position, will also be used to update enemy position and status of items
                 // Makes a new frame for the Game UI with the updated changes
                 repaint();
                 delta--;
                 drawCount++;
                 gameController.update();
                 player.update();
+
 
             }
 
@@ -164,12 +167,6 @@ public class GameUI extends JPanel implements Runnable{
         }
     }
 
-    // At the moment: moves the player according to which key is pressed
-//    public void update(){
-//        player.update();
-//
-//    }
-
     // Paints the player as a white rectangle
     // HIERARCHY MATTERS, map should always be first and player should always be last
     public void paintComponent(Graphics g){
@@ -180,10 +177,14 @@ public class GameUI extends JPanel implements Runnable{
 
         // draw the map
         mapRenderer.draw(g2);
-        entityRenderer.drawEntity(g2, player, player);
-        for (Enemy enemy : map.getEnemiesOnMap()) {
-            entityRenderer.drawEntity(g2, enemy, player);
+        for (Entity entity : map.getEntitiesOnMap()) {
+            entityRenderer.drawEntity(g2, entity);
+            if (entity instanceof Enemy) {
+                entityRenderer.drawEnemyHP(g2, (Enemy) entity);
+            }
         }
+
+        entityRenderer.drawPlayerLife(g2);
         // dispose of the objects
         g2.dispose();
     }
