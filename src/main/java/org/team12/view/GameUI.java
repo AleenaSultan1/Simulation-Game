@@ -88,7 +88,7 @@ public class GameUI extends JPanel implements Runnable{
         map = new Map("/map/dungeonMap.txt");
         collisionController = new CollisionController(map);
         map.setCollisionController(collisionController);
-        player = new Player(inputController, collisionController, 20);
+        player = new Player(inputController, collisionController, 50);
         map.setPlayer(player);
         gameController = new GameController(map, player);
         mapRenderer = new MapRenderer(player, map, tileSize);

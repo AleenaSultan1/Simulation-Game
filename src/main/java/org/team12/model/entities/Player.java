@@ -198,4 +198,5 @@ public class Player extends Entity {
     public ArrayList<Item> getInventory() {
         return inventory;
     }
+
 }

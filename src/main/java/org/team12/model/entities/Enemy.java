@@ -28,18 +28,20 @@ import java.util.Objects;
 import java.util.Random;
 
 public class Enemy extends Entity {
-    private EnemyStatus enemyState;
     private int hostilityArea; // the region where it can detect the player (might as well implement collision check)
     private BufferedImage sprite;
     private int stepLimit = 0;
     private int stepsTaken = 0;
     private final Random rand = new Random();
+    private int attackCounter;
+    private int attackRange;
 
     public Enemy(int hp, int hostilityArea) {
         super(hp);
-        this.hostilityArea = GameUI.getTileSize() * 3;
-        this.enemyState = EnemyStatus.PEACEFUL;
+        this.hostilityArea = GameUI.getTileSize() * 10;
+        this.attackRange = GameUI.getTileSize() * 3;
         this.speed = 2;
+        this.attackCounter = 0;
     }
 
     public boolean isDead() {
@@ -47,11 +49,11 @@ public class Enemy extends Entity {
     }
 
     public EnemyStatus getState() {
-        return enemyState;
+        return super.currentEntityStatus;
     }
 
     public void setEnemyState (EnemyStatus newState) {
-        this.enemyState = newState;
+        super.currentEntityStatus = newState;
     }
     public void setCollisionController(CollisionController collisionController) {
         this.collisionController = collisionController;
@@ -62,10 +64,26 @@ public class Enemy extends Entity {
         this.worldY = y * GameUI.getTileSize();
     }
 
-    public void enemyAttack(Player player) {
+    public void enemyMoveToPlayer(Player player) {
+        System.out.println("is hostile");
         setEnemyState(EnemyStatus.HOSTILE);
 //        System.out.println("Hostile");
         moveToPlayer(player);
+    }
+
+    public void enemyAttackPlayer(Player player) {
+        attackCounter++;
+        //System.out.println(attackCounter);
+        if (attackCounter >= 60) {
+            System.out.println("is attacking");
+            player.takeDamage(2);
+            attackCounter = 0;
+            System.out.println("HP: " + player.getHP());
+        }
+    }
+
+    public int getAttackRange() {
+        return attackRange;
     }
 
     public void moveRandomly() {
@@ -168,29 +186,6 @@ public class Enemy extends Entity {
             worldY += dy;
         }
 
-    }
-
-    public void moveToPlayer2(Player player) {
-        int dx = player.worldX - this.worldX;
-        int dy = player.worldY - this.worldY;
-
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (dx > 0) {
-                direction = "right";
-                worldX += speed;
-            } else {
-                direction = "left";
-                worldX -= speed;
-            }
-        } else {
-            if (dy > 0) {
-                direction = "down";
-                worldY += speed;
-            } else {
-                direction = "up";
-                worldY -= speed;
-            }
-        }
     }
 
     public int getHostilityArea() {
