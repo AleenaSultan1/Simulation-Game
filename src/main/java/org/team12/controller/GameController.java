@@ -60,13 +60,12 @@ public class GameController {
 
     public void generatePlayerHitbox() {
         playerHitbox = new Rectangle(
-                player.worldX + player.hitbox.x,
-                player.worldY + player.hitbox.y,
-                player.hitbox.width,
-                player.hitbox.height
-        );
-
+                player.worldX + player.getHitbox().x,
+                player.worldY + player.getHitbox().y,
+                player.getHitbox().width,
+                player.getHitbox().height);
     }
+
 
     public void checkPlayerPickup() {
 

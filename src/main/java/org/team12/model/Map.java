@@ -17,6 +17,7 @@
 
 package org.team12.model;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
 import org.team12.states.ItemState;
@@ -38,7 +39,9 @@ public class Map {
 
     private int width;
     private int height;
-    private LilyFinalBoss lilyFinalBoss;
+
+    private Player player;
+    private CollisionController collisionController;
 
 
     public Map(String filepath) {
@@ -118,8 +121,7 @@ public class Map {
                             LilyFinalBoss lilyFinalBoss = new LilyFinalBoss(10, 2);
                             enemiesOnMap.add(lilyFinalBoss);
                             lilyFinalBoss.setCoord(x, y);
-                            grid[x][y].setLilyFinalBoss(lilyFinalBoss);
-                            this.lilyFinalBoss = lilyFinalBoss;
+                            grid[x][y].setEnemy(lilyFinalBoss);
                             break;
 
                         default:
@@ -135,8 +137,14 @@ public class Map {
         }
     }
 
+    public void setCollisionController(CollisionController collisionController) {
+        this.collisionController = collisionController;
+        for (Enemy enemy : enemiesOnMap) {
+            enemy.setCollisionController(collisionController);
+        }
+    }
 
-    public Tile getTile ( int x, int y){
+    public Tile getTile (int x, int y){
         if (x >= 0 && x < width && y >= 0 && y < height) {
             return grid[x][y];
         }
@@ -163,10 +171,9 @@ public class Map {
         return enemiesOnMap;
     }
 
-    public LilyFinalBoss getLilyFinalBoss () {
-        return lilyFinalBoss;
-    }
-
+//    public List<Entity> getEntitiesOnMap () {
+//        return enemiesOnMap;
+//    }
 
     public void removeItem(Item item) {
         // Find the item's tile by position and clear it

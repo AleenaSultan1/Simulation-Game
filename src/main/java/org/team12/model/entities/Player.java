@@ -47,15 +47,6 @@ public class Player extends Entity {
         this.getPlayerImage();
         screenX = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
         screenY = GameUI.getScreenHeight() / 2 - (GameUI.getTileSize() / 2);
-        hitbox = new Rectangle();
-        hitboxDefaultX = 8; // Could be adjusted
-        hitboxDefaultY = 8;
-        hitbox.x = hitboxDefaultX;
-        hitbox.y = hitboxDefaultY;
-        hitbox.width = GameUI.getTileSize() - 16;
-        hitbox.height = GameUI.getTileSize() - 16;
-
-
     }
 
     public void setDefaultValues() {
@@ -74,18 +65,19 @@ public class Player extends Entity {
             if (inputController.upPressed) {
                 direction = "up";
                 dy -= speed;
-            } else if (inputController.downPressed) {
+            } if (inputController.downPressed) {
                 direction = "down";
                 dy += speed;
-            } else if (inputController.leftPressed) {
+            } if (inputController.leftPressed) {
                 direction = "left";
                 dx -= speed;
-            } else if (inputController.rightPressed) {
+            } if (inputController.rightPressed) {
                 direction = "right";
                 dx += speed;
             }
 
-            if (collisionController.canMoveTo(this, dx, dy)) {
+            Entity collided = collisionController.checkEntityCollision(this, dx, dy);
+            if (collisionController.canMoveTo(this, dx, dy) & collided == null) {
                 worldX += dx;
                 worldY += dy;
             }

@@ -36,7 +36,7 @@ public class EntityRenderer {
 
     public void drawEntity(Graphics2D g2, Entity entity, Player player) {
         // Calculate where on the screen the entity should appear
-        if (entity.getClass() == Player.class) {
+        if (entity instanceof Player) {
             screenX = ((Player) entity).getScreenX();
             screenY = ((Player) entity).getScreenY();
 
@@ -52,8 +52,8 @@ public class EntityRenderer {
 
         BufferedImage image = entity.getCurrentSprite(); // Assume each Entity can provide its current sprite based on direction/animation
         if (image != null) {
-            System.out.printf("Drawing entity at (%d, %d), player at (%d, %d)\n",
-                    entity.worldX, entity.worldY, player.worldX, player.worldY);
+//            System.out.printf("Drawing entity at (%d, %d), player at (%d, %d)\n",
+//                    entity.worldX, entity.worldY, player.worldX, player.worldY);
             g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
         }
         }

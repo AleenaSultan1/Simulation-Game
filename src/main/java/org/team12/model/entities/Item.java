@@ -75,7 +75,4 @@ public class Item {
         return itemState;
     }
 
-    public boolean isCollision() {
-        return collision;
-    }
 }
