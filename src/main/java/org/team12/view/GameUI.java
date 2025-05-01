@@ -151,9 +151,6 @@ public class GameUI extends JPanel implements Runnable{
                 drawCount++;
                 gameController.update();
                 player.update();
-                for (Enemy enemy : map.getEnemiesOnMap()) {
-                    enemy.moveRandomly();
-                }
 
             }
 

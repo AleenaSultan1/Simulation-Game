@@ -102,6 +102,8 @@ public class GameController {
                 enemy.enemyAttack(player);
                 // Reduce player's life (assuming you have a method or field for this)
                 //player.reduceLives();
+            } else {
+                enemy.moveRandomly();
             }
         }
     }
