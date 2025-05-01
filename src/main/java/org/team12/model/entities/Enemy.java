@@ -62,14 +62,6 @@ public class Enemy extends Entity {
         this.worldY = y * GameUI.getTileSize();
     }
 
-//    public void moveRandomly() {
-//        Random rand = new Random();
-//        int step = rand.nextInt(100) + 1;
-//        for (int i = 0; i < step; i++) {
-//            turnRandomly();
-//        }
-//    }
-
     public void moveRandomly() {
         actionLockCounter++;
 
