@@ -22,6 +22,7 @@ import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
 import org.team12.states.ItemState;
+import org.team12.view.GameUI;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -54,7 +55,8 @@ public class GameController {
 
     public void update() {
         // Update player movement, logic per InputController
-        player.update();
+//        player.update();
+        generateNewPlayerHitbox();
         checkEnemyHostility();
         if (inputController.interactionKeyPressed) {
             checkPlayerPickup();
@@ -63,6 +65,14 @@ public class GameController {
             // Player attack
         }
     }
+    public void generateNewPlayerHitbox() {
+        playerHitbox = new Rectangle(
+                player.worldX + player.getHitbox().x,
+                player.worldY + player.getHitbox().y,
+                player.getHitbox().width,
+                player.getHitbox().height);
+    }
+
 
     public void stopGame() {
         isRunning = false;
@@ -78,7 +88,10 @@ public class GameController {
         for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
             if (item.getItemState() != ItemState.INTERACTABLE) continue;
 
-            Rectangle itemHitbox = item.getHitbox();
+            Rectangle itemHitbox = new Rectangle(
+                    item.getWorldX(), item.getWorldY(),
+                    GameUI.getTileSize(), GameUI.getTileSize()
+            );
 
             if (playerHitbox.intersects(itemHitbox)){
                 boolean pickedUp = player.pickUpItem(item);

@@ -64,7 +64,7 @@ public class Enemy extends Entity {
 
     public void enemyAttack(Player player) {
         setEnemyState(EnemyStatus.HOSTILE);
-//        System.out.println("Hostile");
+        System.out.println("Hostile");
         moveToPlayer(player);
     }
 
@@ -74,7 +74,7 @@ public class Enemy extends Entity {
         // Decide new direction and step count every 60 ticks (1 second if 60 FPS)
         if (actionLockCounter >= 60 || stepsTaken >= stepLimit) {
             int turn = rand.nextInt(4);
-            stepLimit = rand.nextInt(5) + 10; // Move steps in chosen direction
+            stepLimit = rand.nextInt(10) + 20; // Move steps in chosen direction
             stepsTaken = 0;
 
             switch (turn) {
@@ -169,31 +169,6 @@ public class Enemy extends Entity {
         }
 
     }
-
-
-    public void moveToPlayer2(Player player) {
-        int dx = player.worldX - this.worldX;
-        int dy = player.worldY - this.worldY;
-
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (dx > 0) {
-                direction = "right";
-                worldX += speed;
-            } else {
-                direction = "left";
-                worldX -= speed;
-            }
-        } else {
-            if (dy > 0) {
-                direction = "down";
-                worldY += speed;
-            } else {
-                direction = "up";
-                worldY -= speed;
-            }
-        }
-    }
-
 
 
     public int getHostilityArea() {
