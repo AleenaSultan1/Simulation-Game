@@ -170,7 +170,6 @@ public class Enemy extends Entity {
 
     }
 
-
     public void moveToPlayer2(Player player) {
         int dx = player.worldX - this.worldX;
         int dy = player.worldY - this.worldY;
@@ -193,8 +192,6 @@ public class Enemy extends Entity {
             }
         }
     }
-
-
 
     public int getHostilityArea() {
         return hostilityArea;
