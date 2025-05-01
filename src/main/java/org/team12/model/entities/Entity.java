@@ -52,6 +52,7 @@ public class Entity {
     public Rectangle hitbox = new Rectangle(0,0,48, 48);
     public int hitboxDefaultX, hitboxDefaultY;
     public boolean collisionOn = false;
+    public int type; // 0 for player, 1 for monster
 
     public Entity(GameController gameController){
         this.gameController = gameController;
@@ -70,7 +71,14 @@ public class Entity {
 
         // checks if any entity (player or monster) is touching one another
         //gameController.cController.checkEntity(this, gameController.map.monster);
-        gameController.cController.checkPlayer(this);
+        boolean contactPlayer = gameController.cController.checkPlayer(this);
+        if (this.type == 2 && contactPlayer){
+            if (!gameController.player.isInvincible){
+                gameController.player.life -=1;
+                gameController.player.isInvincible = true;
+            }
+        }
+
 
         // if collision is false, player can move
         if(!collisionOn){

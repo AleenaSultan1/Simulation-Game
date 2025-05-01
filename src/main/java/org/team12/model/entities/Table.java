@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Table extends Item{
-    GameController gameController;
 
     public Table(GameController gameController) {
         name = "Table";

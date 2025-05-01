@@ -81,28 +81,38 @@ public class GameUI extends JPanel{
         // create a new Graphics 2d Object
         Graphics2D g2 = (Graphics2D) g;
 
-        // draw the map
-        gameController.map.draw(g2);
+        //Draw the title screen
+        if (gameController.gameState == gameController.titleState){
+            gameController.pHud.draw(g2);
 
-        // draw the objects on the map
-        // Parse through our possible object list and draw the appropriate ones for each object
-        for (int i = 0; i < gameController.map.obj.length; i++){
-            if (gameController.map.obj[i] != null){
-                gameController.map.obj[i].draw(g2, gameController);
+
+        } else {
+            // DRAW MAP
+            gameController.map.draw(g2);
+
+            // DRAW OBJECTS/ITEMS
+            // Parse through our possible object list and draw the appropriate ones for each object
+            for (int i = 0; i < gameController.map.obj.length; i++){
+                if (gameController.map.obj[i] != null){
+                    gameController.map.obj[i].draw(g2, gameController);
+                }
             }
+
+            // DRAW ENEMIES
+            for (int i = 0; i < gameController.map.monster.length; i++){
+                if (gameController.map.monster[i] != null){
+                    gameController.map.monster[i].draw(g2);
+                }
+            }
+
+            // DRAW PLAYER
+            gameController.player.draw(g2);
+
+            // DRAW PLAYER HUD
+            gameController.pHud.draw(g2);
         }
 
-        for (int i = 0; i < gameController.map.monster.length; i++){
-            if (gameController.map.monster[i] != null){
-                gameController.map.monster[i].draw(g2);
-            }
-        }
 
-        // draw the player
-        gameController.player.draw(g2);
-
-        // Draw the Player Hud
-        gameController.pHud.draw(g2);
 
 
         // dispose of the objects

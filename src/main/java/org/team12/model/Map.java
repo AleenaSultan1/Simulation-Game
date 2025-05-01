@@ -37,7 +37,7 @@ public class Map {
     // Used for determining tile type
     public Tile[] tile;
     // Used for loading map data, stores all the map data from a txt file
-    public int mapTileNum[][];
+    public int[][] mapTileNum;
 
     //Construct a list of potential different objects (30 slots for 30 distinct, unique objects)
     public Item[] obj = new Item[30];

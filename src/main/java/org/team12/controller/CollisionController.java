@@ -185,7 +185,8 @@ public class CollisionController {
         return index;
     }
 
-    public void checkPlayer(Entity entity){
+    public boolean checkPlayer(Entity entity){
+        boolean contactPlayer = false;
         // Get Entity's hitbox
         entity.hitbox.x = entity.worldX+entity.hitbox.x;
         entity.hitbox.y = entity.worldY+entity.hitbox.y;
@@ -197,42 +198,29 @@ public class CollisionController {
         switch(entity.direction){
             case "up":
                 entity.hitbox.y -= entity.speed;
-                if(entity.hitbox.intersects(gameController.player.hitbox)){
-                    entity.collisionOn = true;
-                }
                 break;
             case "down":
                 entity.hitbox.y += entity.speed;
-                if(entity.hitbox.intersects(gameController.player.hitbox)){
-                    if(entity.hitbox.intersects(gameController.player.hitbox)){
-                        entity.collisionOn = true;
-                    }
-                }
                 break;
             case "left":
                 entity.hitbox.x -=entity.speed;
-                if(entity.hitbox.intersects(gameController.player.hitbox)){
-                    // If the two rectangles (hitboxes) are intersecting,
-                    if(entity.hitbox.intersects(gameController.player.hitbox)){
-                        entity.collisionOn = true;
-                    }
-                }
                 break;
             case "right":
                 entity.hitbox.x += entity.speed;
-                if(entity.hitbox.intersects(gameController.player.hitbox)){
-                    // If the two rectangles (hitboxes) are intersecting,
-                    if(entity.hitbox.intersects(gameController.player.hitbox)){
-                        entity.collisionOn = true;
-                    }
-                }
                 break;
         }
+        if(entity.hitbox.intersects(gameController.player.hitbox)){
+            entity.collisionOn = true;
+            contactPlayer = true;
+        }
+
         // return the rectangles (hitboxes) back to its original position
         entity.hitbox.x = entity.hitboxDefaultX;
         entity.hitbox.y = entity.hitboxDefaultY;
         gameController.player.hitbox.x = gameController.player.hitboxDefaultX;
         gameController.player.hitbox.y = gameController.player.hitboxDefaultY;
+
+        return contactPlayer;
     }
 }
 

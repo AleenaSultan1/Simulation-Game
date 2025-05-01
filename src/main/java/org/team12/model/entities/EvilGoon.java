@@ -18,12 +18,15 @@
 package org.team12.model.entities;
 
 import org.team12.controller.GameController;
+import org.team12.states.EnemyStatus;
 
 import java.util.Random;
 
 
 
 public class EvilGoon extends Entity{
+    private EnemyStatus entityStatus ;
+    private int hostilityArea; // the region where it can detect the player (might as well implement collision check)
 
     public EvilGoon(GameController gameController) {
         super(gameController);
@@ -32,6 +35,10 @@ public class EvilGoon extends Entity{
         speed = 3;
         maxLife = 4;
         life = maxLife;
+        type = 2;
+        this.entityStatus = EnemyStatus.PEACEFUL;
+
+
 
         hitbox.x = 6;
         hitbox.y = 8;

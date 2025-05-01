@@ -19,8 +19,6 @@ package org.team12.model.entities;
 
 import org.team12.controller.GameController;
 import org.team12.controller.InputController;
-import org.team12.model.Map;
-import org.team12.view.GameUI;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -32,6 +30,10 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
     public boolean hasSword = false;
+
+    // Invincibility frames
+    public boolean isInvincible = false;
+    public int invincibleCount = 0;
 
     public boolean canCure = false;
 
@@ -99,7 +101,7 @@ public class Player extends Entity {
 
             //Check Enemy Collision
             int monsterIndex = gameController.cController.checkEntity(this, gameController.map.monster);
-            interact(monsterIndex);
+            contactMonster(monsterIndex);
 
 
             // if collision is false, player can move
@@ -134,11 +136,23 @@ public class Player extends Entity {
             }
         }
 
+        // Invincibility frames
+        if (isInvincible){
+            invincibleCount++;
+            if (invincibleCount > 60){
+                isInvincible = false;
+                invincibleCount = 0;
+            }
+        }
+
 
     }
-    public void interact(int i){
+    public void contactMonster(int i){
         if (i!=999){
-            System.out.println("hitting monster");
+            if (!isInvincible){
+                isInvincible = true;
+                life -=1;
+            };
         }
     }
 
@@ -210,6 +224,14 @@ public class Player extends Entity {
                 }
                 break;
         }
-        g2.drawImage(image, screenX, screenY, gameController.tileSize, gameController.tileSize, null);
+        // Draw invincibility indicator
+        if (isInvincible){
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+        }
+
+        g2.drawImage(image, screenX, screenY, null);
+
+        // reset the invincibility frames
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
     }
 }

@@ -58,11 +58,17 @@ public class GameController implements Runnable{
     public PlayerHud pHud = new PlayerHud (this);
     public AssetController assetController = new AssetController(this);
 
+    //Game State
+    public int gameState;
+    public final int titleState = 0;
+    public final int playState = 1;
+    public final int pauseState = 2;
+
 
 
     public GameController() {
         // Initialize Objects
-        inputController = new InputController();
+        inputController = new InputController(this);
         cController = new CollisionController(this);
         assetController = new AssetController(this);
 
@@ -79,6 +85,7 @@ public class GameController implements Runnable{
 
 
     public void startGame() {
+        gameState = titleState;
         populateMap();
         // Starts a gameThread which is used to run the game loop
         gameThread = new Thread(this);
@@ -94,13 +101,18 @@ public class GameController implements Runnable{
 
     // At the moment: moves the player according to which key is pressed
     public void update(){
-        player.update();
+        if (gameState == playState) {
+            player.update();
 
-        // for every enemy on the map
-        for (int i = 0; i < map.monster.length; i++){
-            if (map.monster[i] != null){
-                map.monster[i].update();
+            // for every enemy on the map
+            for (int i = 0; i < map.monster.length; i++) {
+                if (map.monster[i] != null) {
+                    map.monster[i].update();
+                }
             }
+        }
+        if (gameState == pauseState) {
+            //do nothign
         }
     }
 
