@@ -3,19 +3,20 @@
  * Spring 2025
  *
  * Name: Radley Le
- * Date: 4/30/25
- * Time: 3:32 PM
+ * Date: 4/28/25
+ * Time: 2:43 PM
  *
  * Project: csci205_final_project
- * Package: org.team12.view
- * Class: DisplayUI
+ * Package: org.team12.controller
+ * Class: EventController
  *
  * Description:
  *
  * ****************************************
  */
 
-package org.team12.view;
+package org.team12.controller;
 
-public class DisplayUI {
+public class EventController {
+
 }

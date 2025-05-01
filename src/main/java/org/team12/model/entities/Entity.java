@@ -26,7 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public abstract class Entity {
-    protected int HP;
+    public int HP;
     protected boolean state; //true=alive
     public int worldX;
     public int worldY;

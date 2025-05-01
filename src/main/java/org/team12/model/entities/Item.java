@@ -26,7 +26,8 @@ import org.team12.view.GameUI;
 
 public class Item {
     // Item image
-    public BufferedImage image;
+    public BufferedImage image, image2, image3;
+
     public String name;
     public boolean collision = false;
     private int worldX;

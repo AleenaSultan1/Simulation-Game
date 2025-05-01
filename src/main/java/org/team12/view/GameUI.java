@@ -96,7 +96,7 @@ public class GameUI extends JPanel implements Runnable{
         gameController = new GameController(map, inputController);
         player = gameController.getPlayer();
         mapRenderer = new MapRenderer(player, map, tileSize);
-        entityRenderer = new EntityRenderer(tileSize);
+        entityRenderer = new EntityRenderer(tileSize, player);
 
         // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -178,7 +178,7 @@ public class GameUI extends JPanel implements Runnable{
         // draw the map
         mapRenderer.draw(g2);
         for (Entity entity : map.getEntitiesOnMap()) {
-            entityRenderer.drawEntity(g2, entity, player);
+            entityRenderer.drawEntity(g2, entity);
         }
         // dispose of the objects
         g2.dispose();
