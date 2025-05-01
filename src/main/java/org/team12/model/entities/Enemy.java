@@ -37,7 +37,7 @@ public class Enemy extends Entity {
 
     public Enemy(int hp, int hostilityArea) {
         super(hp);
-        this.hostilityArea = hostilityArea;
+        this.hostilityArea = GameUI.getTileSize() * 3;
         this.enemyState = EnemyStatus.PEACEFUL;
         this.speed = 2;
     }
@@ -60,6 +60,12 @@ public class Enemy extends Entity {
     public void setCoord(int x, int y) {
         this.worldX = x * GameUI.getTileSize();
         this.worldY = y * GameUI.getTileSize();
+    }
+
+    public void enemyAttack(Player player) {
+        setEnemyState(EnemyStatus.HOSTILE);
+//        System.out.println("Hostile");
+        moveToPlayer(player);
     }
 
     public void moveRandomly() {
@@ -125,6 +131,73 @@ public class Enemy extends Entity {
             e.printStackTrace();
         }
         return sprite;
+    }
+
+    public void moveToPlayer(Player player) {
+        actionLockCounter++;
+        int dx = 0;
+        int dy = 0;
+        // Decide new direction and step count every 60 ticks (1 second if 60 FPS)
+        if (actionLockCounter >= 1) {
+            int diffX = player.worldX - this.worldX;
+            int diffY = player.worldY - this.worldY;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 0) {
+                    direction = "right";
+                    dx += speed;
+                } else {
+                    direction = "left";
+                    dx -= speed;
+                }
+            } else {
+                if (diffY > 0) {
+                    direction = "down";
+                    dy += speed;
+                } else {
+                    direction = "up";
+                    dy -= speed;
+                }
+            }
+            actionLockCounter = 0;
+        }
+        // Try to move if possible
+        Entity collided = collisionController.checkEntityCollision(this, dx, dy);
+        if (collisionController.canMoveTo(this, dx, dy) & collided == null) {
+            worldX += dx;
+            worldY += dy;
+        }
+
+    }
+
+
+    public void moveToPlayer2(Player player) {
+        int dx = player.worldX - this.worldX;
+        int dy = player.worldY - this.worldY;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > 0) {
+                direction = "right";
+                worldX += speed;
+            } else {
+                direction = "left";
+                worldX -= speed;
+            }
+        } else {
+            if (dy > 0) {
+                direction = "down";
+                worldY += speed;
+            } else {
+                direction = "up";
+                worldY -= speed;
+            }
+        }
+    }
+
+
+
+    public int getHostilityArea() {
+        return hostilityArea;
     }
 
 }

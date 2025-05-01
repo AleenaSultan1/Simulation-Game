@@ -54,7 +54,7 @@ public class CollisionController {
         return true;
     }
 
-    // ✅ Collision with other entities
+    // Collision with other entities
     public Entity checkEntityCollision(Entity e, int dx, int dy) {
         Rectangle eBox = getFutureHitbox(e, dx, dy);
         List<Entity> others = new ArrayList<>(map.getEntitiesOnMap());
@@ -73,7 +73,6 @@ public class CollisionController {
         return null;
     }
 
-    // Collision with the player
     public boolean checkPlayerCollision(Entity e, Player player, int dx, int dy) {
         Rectangle eBox = getFutureHitbox(e, dx, dy);
         Rectangle playerBox = new Rectangle(
@@ -85,7 +84,9 @@ public class CollisionController {
         return eBox.intersects(playerBox);
     }
 
-    // ✅ Helper: get predicted hitbox
+
+
+    // Helper: get predicted hitbox
     private Rectangle getFutureHitbox(Entity e, int dx, int dy) {
         return new Rectangle(
                 e.worldX + e.getHitbox().x + dx,

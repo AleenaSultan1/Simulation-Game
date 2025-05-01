@@ -18,6 +18,7 @@
 package org.team12.controller;
 
 import org.team12.model.Map;
+import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
 import org.team12.model.entities.RiddleChest;
@@ -32,17 +33,21 @@ public class GameController {
     private Map map;
     private Player player;
     private boolean isRunning;
+    private Rectangle playerHitbox;
 
     public GameController(Map map, Player player) {
         this.map = map;
         this.player = player;
         this.isRunning = true;
+        this.playerHitbox = new Rectangle();
     }
 
     public void update() {
         // Update player movement, logic
         //player.update();
+        generatePlayerHitbox();
         checkPlayerPickup();
+        checkEnemyAttack();
     }
 
     public void stopGame() {
@@ -53,13 +58,16 @@ public class GameController {
         return isRunning;
     }
 
-    public void checkPlayerPickup() {
-        Rectangle playerHitbox = new Rectangle(
+    public void generatePlayerHitbox() {
+        playerHitbox = new Rectangle(
                 player.worldX + player.getHitbox().x,
                 player.worldY + player.getHitbox().y,
                 player.getHitbox().width,
-                player.getHitbox().height
-        );
+                player.getHitbox().height);
+    }
+
+
+    public void checkPlayerPickup() {
 
         // Only check against interactable items
         for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
@@ -80,4 +88,26 @@ public class GameController {
         }
     }
 
+    public void checkEnemyAttack() {
+        for (Enemy enemy : map.getEnemiesOnMap()) {
+            // Define the enemy's hostility detection area as a square around its position
+            Rectangle enemyHostilityBox = new Rectangle(
+                    enemy.worldX - enemy.getHostilityArea() / 2,
+                    enemy.worldY - enemy.getHostilityArea() / 2,
+                    enemy.getHostilityArea(),
+                    enemy.getHostilityArea()
+            );
+
+            if (playerHitbox.intersects(enemyHostilityBox)) {
+                enemy.enemyAttack(player);
+                // Reduce player's life (assuming you have a method or field for this)
+                //player.reduceLives();
+            } else {
+                enemy.moveRandomly();
+            }
+        }
+    }
+
 }
+
+
