@@ -54,7 +54,7 @@ public class CollisionController {
         return true;
     }
 
-    // Collision with other entities
+    // Collision with other entities (including Player)
     public Entity checkEntityCollision(Entity e, int dx, int dy) {
         Rectangle eBox = getFutureHitbox(e, dx, dy);
         List<Entity> others = new ArrayList<>(map.getEntitiesOnMap());

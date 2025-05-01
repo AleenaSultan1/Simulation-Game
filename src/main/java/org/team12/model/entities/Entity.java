@@ -26,7 +26,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public abstract class Entity {
-    public int HP;
+    private int HP;
+    private final int MaxHP;
     protected boolean state; //true=alive
     public int worldX;
     public int worldY;
@@ -49,6 +50,7 @@ public abstract class Entity {
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
     public Entity(int hp) {
+        this.MaxHP = hp;
         this.HP = hp;
         this.state = true; // alive by default
         hitbox = new Rectangle();
@@ -58,6 +60,10 @@ public abstract class Entity {
         hitbox.y = hitboxDefaultY;
         hitbox.width = GameUI.getTileSize() - 16;
         hitbox.height = GameUI.getTileSize() - 16;
+    }
+
+    public int getMaxHP() {
+        return MaxHP;
     }
 
     public int getworldX() {

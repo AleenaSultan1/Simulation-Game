@@ -21,6 +21,7 @@ import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
+import org.team12.states.EnemyStatus;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
@@ -62,7 +63,8 @@ public class GameController {
             checkPlayerPickup();
         }
         if (inputController.attackKeyPressed) {
-            // Player attack
+            System.out.println("Attack key pressed");
+            checkPlayerAttack();
         }
     }
     public void generateNewPlayerHitbox() {
@@ -98,6 +100,30 @@ public class GameController {
                 if (pickedUp) {
                     map.removeItem(item);
                     break; // stop after first pickup
+                }
+            }
+        }
+    }
+    public void checkPlayerAttack() {
+
+        // Only check against alive Enemies
+        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) { // avoid ConcurrentModification
+            if (enemy.getState() == EnemyStatus.DEAD) continue;
+
+            int attackSize = player.getAttackRangeScale();
+
+
+            Rectangle enemyHitBox = new Rectangle(
+                    enemy.worldX + enemy.getHitbox().x,
+                    enemy.worldY + enemy.getHitbox().y,
+                    enemy.getHitbox().width,
+                    enemy.getHitbox().height);
+
+            if (player.getAttackRange().intersects(enemyHitBox)){
+                System.out.println("Try attacking");
+                boolean atattacked = player.attackEnemy(enemy);
+                if (atattacked) {
+                    break; // stop after first enemy
                 }
             }
         }

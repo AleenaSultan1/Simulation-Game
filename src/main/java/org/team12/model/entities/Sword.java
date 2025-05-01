@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Sword extends Item {
-    private int strength;
+    public int strength;
 
     public Sword() {
         strength = 5;

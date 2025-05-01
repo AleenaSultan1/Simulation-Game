@@ -179,7 +179,12 @@ public class GameUI extends JPanel implements Runnable{
         mapRenderer.draw(g2);
         for (Entity entity : map.getEntitiesOnMap()) {
             entityRenderer.drawEntity(g2, entity);
+            if (entity instanceof Enemy) {
+                entityRenderer.drawEnemyHP(g2, (Enemy) entity);
+            }
         }
+
+        entityRenderer.drawPlayerLife(g2);
         // dispose of the objects
         g2.dispose();
     }

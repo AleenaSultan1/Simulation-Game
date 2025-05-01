@@ -43,7 +43,7 @@ public class Enemy extends Entity {
     }
 
     public boolean isDead() {
-        return this.HP <= 0;
+        return this.getHP() <= 0;
     }
 
     public EnemyStatus getState() {
@@ -64,7 +64,7 @@ public class Enemy extends Entity {
 
     public void enemyAttack(Player player) {
         setEnemyState(EnemyStatus.HOSTILE);
-        System.out.println("Hostile");
+//        System.out.println("Hostile");
         moveToPlayer(player);
     }
 

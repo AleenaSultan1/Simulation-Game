@@ -17,10 +17,8 @@
 
 package org.team12.view;
 
-import org.team12.model.entities.Entity;
-import org.team12.model.entities.Heart;
-import org.team12.model.entities.Item;
-import org.team12.model.entities.Player;
+import org.team12.controller.UtilityTool;
+import org.team12.model.entities.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -36,13 +34,15 @@ public class EntityRenderer {
 
 
     public EntityRenderer(int tileSize, Player player) {
-        Item heart = new Heart();
-        heartFull = heart.image;
-        heartHalf = heart.image2;
-        heartEmpty = heart.image3;
-
         this.player = player;
         this.tileSize = tileSize;
+
+        Item heart = new Heart();
+
+        heartFull = UtilityTool.scaleImage(heart.image, tileSize, tileSize);
+        heartHalf = UtilityTool.scaleImage(heart.image2, tileSize, tileSize);
+        heartEmpty = UtilityTool.scaleImage(heart.image3, tileSize, tileSize);
+
     }
 
     public void drawEntity(Graphics2D g2, Entity entity) {
@@ -50,6 +50,8 @@ public class EntityRenderer {
         if (entity instanceof Player) {
             screenX = ((Player) entity).getScreenX();
             screenY = ((Player) entity).getScreenY();
+            g2.setColor(Color.RED);
+            g2.draw(((Player) entity).getAttackRange());
 
         } else {
             screenX = entity.worldX - player.worldX + player.getScreenX();
@@ -67,8 +69,44 @@ public class EntityRenderer {
 //                    entity.worldX, entity.worldY, player.worldX, player.worldY);
                 g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
             }
+
         }
     }
+
+    public void drawEnemyHP(Graphics2D g2, Enemy enemy) {
+        // Step 1: Convert worldX/Y to screenX/Y
+        int screenX = enemy.worldX - player.worldX + player.getScreenX();
+        int screenY = enemy.worldY - player.worldY + player.getScreenY();
+
+        // Step 2: Only draw if on screen
+        if (enemy.worldX + tileSize > player.worldX - player.getScreenX() &&
+                enemy.worldX - tileSize < player.worldX + player.getScreenX() &&
+                enemy.worldY + tileSize > player.worldY - player.getScreenY() &&
+                enemy.worldY - tileSize < player.worldY + player.getScreenY()) {
+
+            // Step 3: Draw background of HP bar (gray)
+            int barWidth = tileSize;
+            int barHeight = 5;
+            int barX = screenX;
+            int barY = screenY - 10; // Slightly above enemy head
+
+            g2.setColor(Color.BLACK);
+            g2.fillRect(barX, barY, barWidth, barHeight);
+
+            // Step 4: Draw actual HP portion (red)
+            float hpRatio = (float) enemy.getHP() / enemy.getMaxHP();
+            int filledWidth = (int) (barWidth * hpRatio);
+
+            g2.setColor(Color.RED);
+            g2.fillRect(barX, barY, filledWidth, barHeight);
+
+            // Optional: Border
+            g2.setColor(Color.BLACK);
+            g2.setStroke(new BasicStroke(2)); // Thickness in pixels
+            g2.drawRect(barX, barY, barWidth, barHeight);
+        }
+    }
+
 
     public void drawPlayerLife(Graphics2D g2){
         int x = tileSize/2;
@@ -76,7 +114,7 @@ public class EntityRenderer {
         int i = 0;
 
         // draw available max life (3 hearts)
-        while (i < 20/2){
+        while (i < player.getMaxHP()/2){
             g2.drawImage(heartEmpty, x, y, null);
             i++;
             x += tileSize;
