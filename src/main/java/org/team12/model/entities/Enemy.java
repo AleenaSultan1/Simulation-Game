@@ -64,7 +64,7 @@ public class Enemy extends Entity {
 
     public void enemyAttack(Player player) {
         setEnemyState(EnemyStatus.HOSTILE);
-        System.out.println("Hostile");
+//        System.out.println("Hostile");
         moveToPlayer(player);
     }
 
@@ -162,8 +162,8 @@ public class Enemy extends Entity {
             actionLockCounter = 0;
         }
         // Try to move if possible
-        boolean collided = collisionController.checkPlayerCollision(this, player, dx, dy);
-        if (collisionController.canMoveTo(this, dx, dy) & !collided) {
+        Entity collided = collisionController.checkEntityCollision(this, dx, dy);
+        if (collisionController.canMoveTo(this, dx, dy) & collided == null) {
             worldX += dx;
             worldY += dy;
         }

@@ -89,6 +89,7 @@ public class GameUI extends JPanel implements Runnable{
         collisionController = new CollisionController(map);
         map.setCollisionController(collisionController);
         player = new Player(inputController, collisionController, 20);
+        map.setPlayer(player);
         gameController = new GameController(map, player);
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize);

@@ -57,7 +57,7 @@ public class CollisionController {
     // Collision with other entities
     public Entity checkEntityCollision(Entity e, int dx, int dy) {
         Rectangle eBox = getFutureHitbox(e, dx, dy);
-        List<Enemy> others = new ArrayList<>(map.getEnemiesOnMap());
+        List<Entity> others = new ArrayList<>(map.getEntitiesOnMap());
         others.remove(e);
         for (Entity other : others) {
             if (other == e) continue;
@@ -73,7 +73,6 @@ public class CollisionController {
         return null;
     }
 
-    //  Collision with the player
     public boolean checkPlayerCollision(Entity e, Player player, int dx, int dy) {
         Rectangle eBox = getFutureHitbox(e, dx, dy);
         Rectangle playerBox = new Rectangle(

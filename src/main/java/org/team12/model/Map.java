@@ -80,8 +80,9 @@ public class Map {
                 for (int x = 0; x < numbers.length; x++) {
                     grid[x][y] = new Tile(x, y);
                     int tileType = Integer.parseInt(numbers[x]);
+                    char tileTypeChar = (char) tileType;
                     // Wall
-                    switch (tileType) {
+                    switch (tileTypeChar) {
                         case 1:
                             grid[x][y].setObstacle(true);
                             break;
@@ -123,11 +124,9 @@ public class Map {
                             lilyFinalBoss.setCoord(x, y);
                             grid[x][y].setEnemy(lilyFinalBoss);
                             break;
-
                         default:
                             break;
                     }
-
                 }
                 y++;
             }
@@ -142,6 +141,10 @@ public class Map {
         for (Enemy enemy : enemiesOnMap) {
             enemy.setCollisionController(collisionController);
         }
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public Tile getTile (int x, int y){
@@ -171,9 +174,11 @@ public class Map {
         return enemiesOnMap;
     }
 
-//    public List<Entity> getEntitiesOnMap () {
-//        return enemiesOnMap;
-//    }
+    public List<Entity> getEntitiesOnMap () {
+        List<Entity> entities = new ArrayList<>(enemiesOnMap);
+        entities.add(player);
+        return entities;
+    }
 
     public void removeItem(Item item) {
         // Find the item's tile by position and clear it
