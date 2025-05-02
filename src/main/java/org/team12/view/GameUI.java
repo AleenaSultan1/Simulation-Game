@@ -83,6 +83,8 @@ public class GameUI extends JPanel implements Runnable{
     private Map map;
     private MapRenderer mapRenderer;
     private EntityRenderer entityRenderer;
+    private PlayerHud playerHud;
+
     private InputController inputController = new InputController();
     private CollisionController collisionController;
     public Player player;
@@ -97,6 +99,7 @@ public class GameUI extends JPanel implements Runnable{
         player = gameController.getPlayer();
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize, player);
+        playerHud = new PlayerHud(tileSize, player);
 
         // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -184,7 +187,7 @@ public class GameUI extends JPanel implements Runnable{
             }
         }
 
-        entityRenderer.drawPlayerLife(g2);
+        playerHud.drawPlayerLife(g2);
         // dispose of the objects
         g2.dispose();
     }

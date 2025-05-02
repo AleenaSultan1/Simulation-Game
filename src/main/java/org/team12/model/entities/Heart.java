@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Heart extends Item{
-    private BufferedImage image2;
-    private BufferedImage image3;
+//    private BufferedImage image2;
+//    private BufferedImage image3;
 
     public Heart() {
         name = "Heart";

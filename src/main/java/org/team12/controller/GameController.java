@@ -85,12 +85,12 @@ public class GameController {
     }
 
 
-    public void generatePlayerHitbox() {
-        playerHitbox = new Rectangle(
-                player.worldX + player.getHitbox().x,
-                player.worldY + player.getHitbox().y,
-                player.getHitbox().width,
-                player.getHitbox().height);
+    public Rectangle generateNewEnemyHitbox(Enemy enemy) {
+        return new Rectangle(
+                enemy.worldX + enemy.getHitbox().x,
+                enemy.worldY + enemy.getHitbox().y,
+                enemy.getHitbox().width,
+                enemy.getHitbox().height);
     }
 
     public void checkPlayerPickup() {
@@ -120,15 +120,16 @@ public class GameController {
             if (enemy.getState() == EnemyStatus.DEAD) continue;
 
             int attackSize = player.getAttackRangeScale();
+            Rectangle enemyHitBox = generateNewEnemyHitbox(enemy);
+            Rectangle playerAttackRange = new Rectangle(
+                    player.worldX - player.getAttackRangeScale() / 2,
+                    player.worldY - player.getAttackRangeScale() / 2,
+                    player.getAttackRangeScale(),
+                    player.getAttackRangeScale()
+            );
 
 
-            Rectangle enemyHitBox = new Rectangle(
-                    enemy.worldX + enemy.getHitbox().x,
-                    enemy.worldY + enemy.getHitbox().y,
-                    enemy.getHitbox().width,
-                    enemy.getHitbox().height);
-
-            if (player.getAttackRange().intersects(enemyHitBox)){
+            if (playerAttackRange.intersects(enemyHitBox)){
                 System.out.println("Try attacking");
                 boolean atattacked = player.attackEnemy(enemy);
                 if (atattacked) {
