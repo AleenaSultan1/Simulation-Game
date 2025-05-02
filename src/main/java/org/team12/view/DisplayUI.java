@@ -3,20 +3,19 @@
  * Spring 2025
  *
  * Name: Radley Le
- * Date: 4/18/25
- * Time: 3:38 PM
+ * Date: 4/30/25
+ * Time: 3:32 PM
  *
  * Project: csci205_final_project
- * Package: org.team12.states
- * Class: GameState
+ * Package: org.team12.view
+ * Class: DisplayUI
  *
  * Description:
  *
  * ****************************************
  */
 
-package org.team12.states;
+package org.team12.view;
 
-public enum GameState {
-
+public class DisplayUI {
 }

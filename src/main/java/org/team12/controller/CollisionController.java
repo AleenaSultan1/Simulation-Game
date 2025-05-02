@@ -18,7 +18,6 @@ package org.team12.controller;
 
 import org.team12.model.Map;
 import org.team12.model.Tile;
-import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Entity;
 import org.team12.model.entities.Player;
 import org.team12.view.GameUI;

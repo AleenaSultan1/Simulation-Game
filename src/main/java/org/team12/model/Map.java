@@ -18,14 +18,10 @@
 package org.team12.model;
 
 import org.team12.controller.CollisionController;
-import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
-import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
-import java.awt.*;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;

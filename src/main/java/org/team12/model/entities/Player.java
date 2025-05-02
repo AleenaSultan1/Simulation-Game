@@ -17,36 +17,60 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
+import org.team12.states.ItemState;
 import org.team12.view.GameUI;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 
 public class Player extends Entity {
-    GameUI gameUI;
+    private ArrayList<Item> inventory;
     InputController inputController;
-    public final int screenX;
-    public final int screenY;
+    private final int screenX;
+    private final int screenY;
+    private int hitboxWidth = 32;  // usually tile size
+    private int hitboxHeight = 32;
+    private CollisionController collisionController;
+    private int attackRangeScale;
+    private Rectangle attackRange;
 
-
-    public Player(GameUI gameUI, InputController inputController, int hp) {
+    public Player(InputController inputController, CollisionController collisionController, int hp) {
         super(hp);
-        this.gameUI = gameUI;
+        this.inventory = new ArrayList<>();
         this.inputController = inputController;
+        this.collisionController = collisionController;
         this.setDefaultValues();
         this.getPlayerImage();
-        screenX = gameUI.screenWidth/2 - (gameUI.tileSize/2);
-        screenY = gameUI.screenHeight/2 -(gameUI.tileSize/2);
+        screenX = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
+        screenY = GameUI.getScreenHeight() / 2 - (GameUI.getTileSize() / 2);
 
-
+        attackRangeScale = 5;
     }
 
-    public void setDefaultValues(){
+    public Rectangle getAttackRange() {
+        int attackSize = getAttackRangeScale();
+        int centerX = worldX + hitbox.width / 2;
+        int centerY = worldY + hitbox.height / 2;
+
+        return new Rectangle(
+                centerX - attackSize / 2,
+                centerY - attackSize / 2,
+                attackSize,
+                attackSize
+        );
+    }
+
+    public int getAttackRangeScale() {
+        return attackRangeScale;
+    }
+
+    public void setDefaultValues() {
         // Set player's default position. Normally the player spawns in the top left at (0, 0). Moves the player more towards the center of the screen
         worldX = 100;
         worldY = 100;
@@ -54,30 +78,37 @@ public class Player extends Entity {
         direction = "down";
     }
 
-    public void update(){
-        if(inputController.upPressed || inputController.downPressed ||
+    public void update() {
+        int dx = 0;
+        int dy = 0;
+        if (inputController.upPressed || inputController.downPressed ||
                 inputController.leftPressed || inputController.rightPressed) {
-            if(inputController.upPressed){
+            if (inputController.upPressed) {
                 direction = "up";
-                worldY -= speed;
-            } else if (inputController.downPressed){
+                dy -= speed;
+            } if (inputController.downPressed) {
                 direction = "down";
-                worldY += speed;
-            } else if (inputController.leftPressed){
+                dy += speed;
+            } if (inputController.leftPressed) {
                 direction = "left";
-                worldX -= speed;
-            } else if (inputController.rightPressed){
+                dx -= speed;
+            } if (inputController.rightPressed) {
                 direction = "right";
-                worldX += speed;
+                dx += speed;
+            }
+
+            Entity collided = collisionController.checkEntityCollision(this, dx, dy);
+            if (collisionController.canMoveTo(this, dx, dy) & collided == null) {
+                worldX += dx;
+                worldY += dy;
             }
 
             // Used for player walking animation
-            spriteCounter ++;
-            if(spriteCounter > 12){
-                if(spriteNum == 1){
+            spriteCounter++;
+            if (spriteCounter > 12) {
+                if (spriteNum == 1) {
                     spriteNum = 2;
-                }
-                else if(spriteNum == 2){
+                } else if (spriteNum == 2) {
                     spriteNum = 1;
                 }
                 spriteCounter = 0;
@@ -87,9 +118,9 @@ public class Player extends Entity {
 
     }
 
-    public void getPlayerImage(){
+    public void getPlayerImage() {
 
-        try{
+        try {
             up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_1.png"))); // This one works
             up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_2.png")));
             down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_down_1.png")));
@@ -103,7 +134,7 @@ public class Player extends Entity {
             if (up1 == null) {
                 System.err.println("Failed to load player sprites!");
             }
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -112,25 +143,26 @@ public class Player extends Entity {
     public BufferedImage getCurrentSprite() {
         // Animation for walking
         BufferedImage image = null;
-        switch(direction){
+        switch (direction) {
             case "up":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = up1;
                 }
-                if (spriteNum == 2){
+                if (spriteNum == 2) {
                     image = up2;
                 }
                 break;
             case "down":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = down1;
                 }
-                if (spriteNum == 2){
+                if (spriteNum == 2) {
                     image = down2;
-                };
+                }
+                ;
                 break;
             case "left":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = left1;
                 }
                 if (spriteNum == 2) {
@@ -138,15 +170,74 @@ public class Player extends Entity {
                 }
                 break;
             case "right":
-                if(spriteNum == 1){
+                if (spriteNum == 1) {
                     image = right1;
                 }
-                if (spriteNum == 2){
+                if (spriteNum == 2) {
                     image = right2;
                 }
                 break;
         }
         return image;
+    }
+
+    public int getTileX() {
+        return worldX / GameUI.getTileSize();
+    }
+
+    public int getTileY() {
+        return worldY / GameUI.getTileSize();
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
+    }
+
+    public int getHitboxWidth() {
+        return hitboxWidth;
+    }
+
+    public int getHitboxHeight() {
+        return hitboxHeight;
+    }
+
+    public boolean pickUpItem(Item item) {
+        if (item != null && item.getItemState() == ItemState.INTERACTABLE) {
+            item.pickUp();
+            inventory.add(item);
+            return true;
+        }
+        return false;
+
+    }
+
+    public ArrayList<Item> getInventory() {
+        return inventory;
+    }
+
+    public boolean attackEnemy(Enemy enemy) {
+        // If player has a sword
+        Item sword = playerHasItem(Sword.class);
+        if (sword instanceof Sword) {
+            enemy.takeDamage(((Sword) sword).strength);
+            System.out.println("Player attacked with Sword");
+            return true;
+        }
+        return false;
+    }
+
+    // Helper method, check if inventory has item
+    private Item playerHasItem(Class<? extends Item> targetClass) {
+        for (Item item : inventory) {
+            if (targetClass.isInstance(item)) {
+                return item;
+            }
+        }
+        return null;
     }
 
 }
