@@ -18,6 +18,7 @@
 package org.team12.model.entities;
 
 import org.team12.controller.CollisionController;
+import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -25,15 +26,17 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public abstract class Entity {
-    protected int HP;
+    private int HP;
+    private final int MaxHP;
     protected boolean state; //true=alive
     public int worldX;
     public int worldY;
     // Used for checking collisions/hitboxes
-    public Rectangle hitbox;
-    public int hitboxDefaultX, hitboxDefaultY;
+    protected CollisionController collisionController;
+    protected Rectangle hitbox;
+    protected int hitboxDefaultX, hitboxDefaultY;
     public boolean collisionOn = false;
-    public int speed;
+    public double speed;
     public String direction;
 
     // Variables to alternate sprites - Creating animations
@@ -47,8 +50,20 @@ public abstract class Entity {
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
     public Entity(int hp) {
+        this.MaxHP = hp;
         this.HP = hp;
         this.state = true; // alive by default
+        hitbox = new Rectangle();
+        hitboxDefaultX = 8; // Could be adjusted
+        hitboxDefaultY = 8;
+        hitbox.x = hitboxDefaultX;
+        hitbox.y = hitboxDefaultY;
+        hitbox.width = GameUI.getTileSize() - 16;
+        hitbox.height = GameUI.getTileSize() - 16;
+    }
+
+    public int getMaxHP() {
+        return MaxHP;
     }
 
     public int getworldX() {
@@ -57,6 +72,10 @@ public abstract class Entity {
 
     public int getworldY() {
         return worldY;
+    }
+
+    public Rectangle getHitbox() {
+        return hitbox;
     }
 
     public int getHP() {
@@ -70,6 +89,7 @@ public abstract class Entity {
         }
     }
 
+    // null method to be overriden
     public BufferedImage getCurrentSprite() {
         return null;
     }

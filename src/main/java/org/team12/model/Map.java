@@ -17,6 +17,7 @@
 
 package org.team12.model;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
 import org.team12.states.ItemState;
@@ -38,7 +39,9 @@ public class Map {
 
     private int width;
     private int height;
-    private LilyFinalBoss lilyFinalBoss;
+
+    private Player player;
+    private CollisionController collisionController;
 
 
     public Map(String filepath) {
@@ -77,8 +80,9 @@ public class Map {
                 for (int x = 0; x < numbers.length; x++) {
                     grid[x][y] = new Tile(x, y);
                     int tileType = Integer.parseInt(numbers[x]);
+                    char tileTypeChar = (char) tileType;
                     // Wall
-                    switch (tileType) {
+                    switch (tileTypeChar) {
                         case 1:
                             grid[x][y].setObstacle(true);
                             break;
@@ -118,14 +122,11 @@ public class Map {
                             LilyFinalBoss lilyFinalBoss = new LilyFinalBoss(10, 2);
                             enemiesOnMap.add(lilyFinalBoss);
                             lilyFinalBoss.setCoord(x, y);
-                            grid[x][y].setLilyFinalBoss(lilyFinalBoss);
-                            this.lilyFinalBoss = lilyFinalBoss;
+                            grid[x][y].setEnemy(lilyFinalBoss);
                             break;
-
                         default:
                             break;
                     }
-
                 }
                 y++;
             }
@@ -135,8 +136,18 @@ public class Map {
         }
     }
 
+    public void setCollisionController(CollisionController collisionController) {
+        this.collisionController = collisionController;
+        for (Enemy enemy : enemiesOnMap) {
+            enemy.setCollisionController(collisionController);
+        }
+    }
 
-    public Tile getTile ( int x, int y){
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Tile getTile (int x, int y){
         if (x >= 0 && x < width && y >= 0 && y < height) {
             return grid[x][y];
         }
@@ -163,10 +174,11 @@ public class Map {
         return enemiesOnMap;
     }
 
-    public LilyFinalBoss getLilyFinalBoss () {
-        return lilyFinalBoss;
+    public List<Entity> getEntitiesOnMap () {
+        List<Entity> entities = new ArrayList<>(enemiesOnMap);
+        entities.add(player);
+        return entities;
     }
-
 
     public void removeItem(Item item) {
         // Find the item's tile by position and clear it

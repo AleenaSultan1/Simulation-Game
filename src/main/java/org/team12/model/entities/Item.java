@@ -26,13 +26,14 @@ import org.team12.view.GameUI;
 
 public class Item {
     // Item image
-    public BufferedImage image;
+    public BufferedImage image, image2, image3;
+
     public String name;
     public boolean collision = false;
     private int worldX;
     private int worldY;
 
-    public Rectangle hitbox = new Rectangle(0, 0, 48, 48);
+    public Rectangle hitbox = new Rectangle(worldX, worldY, GameUI.getTileSize(), GameUI.getTileSize());
 
 
     UtilityTool utilTool = new UtilityTool();
@@ -75,7 +76,7 @@ public class Item {
         return itemState;
     }
 
-    public boolean isCollision() {
-        return collision;
+    public Rectangle getHitbox() {
+        return hitbox;
     }
 }

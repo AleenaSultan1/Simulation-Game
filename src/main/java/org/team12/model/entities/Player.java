@@ -37,6 +37,8 @@ public class Player extends Entity {
     private int hitboxWidth = 32;  // usually tile size
     private int hitboxHeight = 32;
     private CollisionController collisionController;
+    private int attackRangeScale;
+    private Rectangle attackRange;
 
     public Player(InputController inputController, CollisionController collisionController, int hp) {
         super(hp);
@@ -47,15 +49,25 @@ public class Player extends Entity {
         this.getPlayerImage();
         screenX = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
         screenY = GameUI.getScreenHeight() / 2 - (GameUI.getTileSize() / 2);
-        hitbox = new Rectangle();
-        hitboxDefaultX = 8; // Could be adjusted
-        hitboxDefaultY = 8;
-        hitbox.x = hitboxDefaultX;
-        hitbox.y = hitboxDefaultY;
-        hitbox.width = GameUI.getTileSize() - 16;
-        hitbox.height = GameUI.getTileSize() - 16;
 
+        attackRangeScale = 5;
+    }
 
+    public Rectangle getAttackRange() {
+        int attackSize = getAttackRangeScale();
+        int centerX = worldX + hitbox.width / 2;
+        int centerY = worldY + hitbox.height / 2;
+
+        return new Rectangle(
+                centerX - attackSize / 2,
+                centerY - attackSize / 2,
+                attackSize,
+                attackSize
+        );
+    }
+
+    public int getAttackRangeScale() {
+        return attackRangeScale;
     }
 
     public void setDefaultValues() {
@@ -74,18 +86,19 @@ public class Player extends Entity {
             if (inputController.upPressed) {
                 direction = "up";
                 dy -= speed;
-            } else if (inputController.downPressed) {
+            } if (inputController.downPressed) {
                 direction = "down";
                 dy += speed;
-            } else if (inputController.leftPressed) {
+            } if (inputController.leftPressed) {
                 direction = "left";
                 dx -= speed;
-            } else if (inputController.rightPressed) {
+            } if (inputController.rightPressed) {
                 direction = "right";
                 dx += speed;
             }
 
-            if (collisionController.canMoveTo(this, dx, dy)) {
+            Entity collided = collisionController.checkEntityCollision(this, dx, dy);
+            if (collisionController.canMoveTo(this, dx, dy) & collided == null) {
                 worldX += dx;
                 worldY += dy;
             }
@@ -108,13 +121,13 @@ public class Player extends Entity {
     public void getPlayerImage() {
 
         try {
-            up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_1.png")));
+            up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_1.png"))); // This one works
             up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_up_2.png")));
             down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_down_1.png")));
             down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_down_2.png")));
             right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_right_1.png")));
             right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_right_2.png")));
-            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_1.png")));
+            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_1.png"))); // This one works
             left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_2.png")));
 
             // Debug check
@@ -193,14 +206,38 @@ public class Player extends Entity {
     }
 
     public boolean pickUpItem(Item item) {
-        if (item != null && item.getItemState() == ItemState.INTERACTABLE && inputController.interactionKeyPressed) {
+        if (item != null && item.getItemState() == ItemState.INTERACTABLE) {
             item.pickUp();
+            inventory.add(item);
             return true;
         }
         return false;
+
     }
 
     public ArrayList<Item> getInventory() {
         return inventory;
     }
+
+    public boolean attackEnemy(Enemy enemy) {
+        // If player has a sword
+        Item sword = playerHasItem(Sword.class);
+        if (sword instanceof Sword) {
+            enemy.takeDamage(((Sword) sword).strength);
+            System.out.println("Player attacked with Sword");
+            return true;
+        }
+        return false;
+    }
+
+    // Helper method, check if inventory has item
+    private Item playerHasItem(Class<? extends Item> targetClass) {
+        for (Item item : inventory) {
+            if (targetClass.isInstance(item)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
 }

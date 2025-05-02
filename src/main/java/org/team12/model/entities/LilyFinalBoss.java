@@ -17,6 +17,7 @@
 
 package org.team12.model.entities;
 
+import org.team12.controller.CollisionController;
 import org.team12.states.EnemyStatus;
 import org.team12.view.GameUI;
 
@@ -50,38 +51,6 @@ public class LilyFinalBoss extends Enemy {
     public void setCoord(int x, int y) {
         this.worldX = x * GameUI.getTileSize();
         this.worldY = y * GameUI.getTileSize();
-    }
-
-    @Override
-    public void moveRandomly() {
-        actionLockCounter++;
-        if (actionLockCounter == 10) {
-            Random rand = new Random();
-            int step = rand.nextInt(4);
-            switch (step) {
-                case 0:
-                    direction = "up";
-                    worldY += speed;
-                    break;
-                case 1:
-                    direction = "down";
-                    worldY -= speed;
-
-                    break;
-                case 2:
-                    direction = "left";
-                    worldX -= speed;
-
-                    break;
-                case 3:
-                    direction = "right";
-                    worldX += speed;
-                    break;
-                default:
-                    break;
-            }
-            actionLockCounter = 0;
-        }
     }
 
     @Override
