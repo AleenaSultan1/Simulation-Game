@@ -22,7 +22,7 @@ import java.awt.event.KeyListener;
 
 public class InputController implements KeyListener {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, interactionKeyPressed, attackKeyPressed;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -43,6 +43,13 @@ public class InputController implements KeyListener {
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
             rightPressed = true;
         }
+
+        if (code == KeyEvent.VK_SPACE) {
+            interactionKeyPressed = true;
+        }
+        if (code == KeyEvent.VK_E) {
+            attackKeyPressed = true;
+        }
     }
 
     @Override
@@ -60,6 +67,12 @@ public class InputController implements KeyListener {
         }
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
             rightPressed = false;
+        }
+        if (code == KeyEvent.VK_SPACE) {
+            interactionKeyPressed = false;
+        }
+        if (code == KeyEvent.VK_E) {
+            attackKeyPressed = false;
         }
     }
 }

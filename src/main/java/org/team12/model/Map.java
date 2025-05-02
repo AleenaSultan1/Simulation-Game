@@ -17,8 +17,10 @@
 
 package org.team12.model;
 
+import org.team12.controller.CollisionController;
 import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
+import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
 import java.awt.*;
@@ -32,11 +34,15 @@ import java.util.Objects;
 
 public class Map {
     private Tile[][] grid;
-    public List<Item> itemsOnMap;
-    public List<Enemy> enemiesOnMap;
+    private List<Item> itemsOnMap;
+    private List<Enemy> enemiesOnMap;
 
     private int width;
     private int height;
+
+    private Player player;
+    private CollisionController collisionController;
+
 
     public Map(String filepath) {
         enemiesOnMap = new ArrayList<>();
@@ -74,28 +80,53 @@ public class Map {
                 for (int x = 0; x < numbers.length; x++) {
                     grid[x][y] = new Tile(x, y);
                     int tileType = Integer.parseInt(numbers[x]);
+                    char tileTypeChar = (char) tileType;
                     // Wall
-                    switch (tileType) {
+                    switch (tileTypeChar) {
                         case 1:
                             grid[x][y].setObstacle(true);
                             break;
-                    // Goon
+                        // Goon
                         case 2:
                             Enemy enemy = new Enemy(10, 2);
                             enemiesOnMap.add(enemy);
                             enemy.setCoord(x, y);
                             grid[x][y].setEnemy(enemy);
                             break;
-                    // Sword
+                        // Sword
                         case 3:
                             Sword sword = new Sword();
                             itemsOnMap.add(sword);
                             grid[x][y].setItem(sword);
+                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
+                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            break;
+                        // Riddle chest
+                        case 4:
+                            RiddleChest riddleChest = new RiddleChest();
+                            itemsOnMap.add(riddleChest);
+                            grid[x][y].setItem(riddleChest);
+                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
+                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            break;
+                        // Magic dust
+                        case 5:
+                            MagicDust magicDust = new MagicDust();
+                            itemsOnMap.add(magicDust);
+                            grid[x][y].setItem(magicDust);
+                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
+                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            break;
+                        // Lily Final Boss
+                        case 6:
+                            LilyFinalBoss lilyFinalBoss = new LilyFinalBoss(10, 2);
+                            enemiesOnMap.add(lilyFinalBoss);
+                            lilyFinalBoss.setCoord(x, y);
+                            grid[x][y].setEnemy(lilyFinalBoss);
                             break;
                         default:
                             break;
                     }
-
                 }
                 y++;
             }
@@ -105,24 +136,62 @@ public class Map {
         }
     }
 
-    public Tile getTile(int x, int y) {
+    public void setCollisionController(CollisionController collisionController) {
+        this.collisionController = collisionController;
+        for (Enemy enemy : enemiesOnMap) {
+            enemy.setCollisionController(collisionController);
+        }
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Tile getTile (int x, int y){
         if (x >= 0 && x < width && y >= 0 && y < height) {
             return grid[x][y];
         }
         return null;
     }
 
-    public int getWidth() {
+    public int getWidth () {
         return width;
     }
 
-    public int getHeight() {
+    public int getHeight () {
         return height;
     }
 
-    private boolean isInsideBounds(int x, int y) {
+    public boolean isInsideBounds ( int x, int y){
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-}
+    public List<Item> getItemsOnMap () {
+        return itemsOnMap;
+    }
 
+    public List<Enemy> getEnemiesOnMap () {
+        return enemiesOnMap;
+    }
+
+    public List<Entity> getEntitiesOnMap () {
+        List<Entity> entities = new ArrayList<>(enemiesOnMap);
+        entities.add(player);
+        return entities;
+    }
+
+    public void removeItem(Item item) {
+        // Find the item's tile by position and clear it
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Tile tile = grid[x][y];
+                if (tile.getItem() == item) {
+                    tile.setItem(null);
+                    itemsOnMap.remove(item); // precise removal
+                    return;
+                }
+            }
+        }
+    }
+
+}

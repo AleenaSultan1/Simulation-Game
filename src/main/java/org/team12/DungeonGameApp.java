@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import org.team12.controller.GameController;
 import org.team12.view.GameUI;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ public class DungeonGameApp {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Dungeon Game");
+
 
         // Create the GameUI (our main game panel)
         GameUI gameUI = new GameUI();

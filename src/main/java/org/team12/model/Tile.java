@@ -23,6 +23,9 @@ import java.awt.image.BufferedImage;
 
 
 public class Tile {
+
+    //used to generate an image for a particular tile
+    BufferedImage image;
     // Used for collision detection
     public boolean isObstacle;
 
@@ -30,6 +33,7 @@ public class Tile {
     private int y;
     private Item item;
     private Enemy enemy;
+    private LilyFinalBoss lilyFinalBoss;
 
 
     public Tile(int x, int y) {
@@ -56,6 +60,10 @@ public class Tile {
         this.enemy = enemy;
     }
 
+    public LilyFinalBoss getLilyFinalBoss() {
+        return lilyFinalBoss;
+    }
+
     public boolean hasObstacle() {
         return isObstacle;
     }
@@ -68,5 +76,8 @@ public class Tile {
         return (item != null | enemy != null | !isObstacle);
     }
 
+    public boolean hasItem() {
+        return item != null;
+    }
 }
 
