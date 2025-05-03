@@ -73,8 +73,6 @@ public class Player extends Entity {
         return new Rectangle(rangeX, rangeY, rangeWidth, rangeHeight);
     }
 
-
-
     public int getAttackRangeScale() {
         return attackRangeScale;
     }

@@ -52,6 +52,8 @@ public class Map {
     }
 
     public void loadMap(String filepath, GameState gameState) {
+        enemiesOnMap.clear();
+        itemsOnMap.clear();
         try {
             InputStream is = getClass().getResourceAsStream(filepath);
             BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(is)));
@@ -94,7 +96,7 @@ public class Map {
                             grid[x][y].setObstacle(true);
                             break;
                         case 2: // Enemy (Goon)
-                            Enemy enemy = new Enemy(10, 2);
+                            Enemy enemy = new Enemy(30, 2);
                             enemiesOnMap.add(enemy);
                             enemy.setCoord(x, y);
                             grid[x][y].setEnemy(enemy);
@@ -136,7 +138,6 @@ public class Map {
             e.printStackTrace();
         }
     }
-
 
     public void setCollisionController(CollisionController collisionController) {
         this.collisionController = collisionController;
@@ -190,6 +191,20 @@ public class Map {
                 if (tile.getItem() == item) {
                     tile.setItem(null);
                     itemsOnMap.remove(item); // precise removal
+                    return;
+                }
+            }
+        }
+    }
+
+    public void removeEnemy(Entity enemy) {
+        // Find the item's tile by position and clear it
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Tile tile = grid[x][y];
+                if (tile.getEnemy() == enemy) {
+                    tile.setItem(null);
+                    enemiesOnMap.remove(enemy); // precise removal
                     return;
                 }
             }

@@ -34,7 +34,7 @@ public class InputController implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
         // PLAY STATE
-        if (GameController.getGameState() == GameState.START) {
+        if (GameController.getGameState() != GameState.END ) {
 
             if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
                 upPressed = true;

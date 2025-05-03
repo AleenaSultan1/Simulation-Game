@@ -21,6 +21,7 @@ import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
+import org.team12.model.entities.Sword;
 import org.team12.states.EnemyStatus;
 import org.team12.states.GameState;
 import org.team12.states.ItemState;
@@ -56,13 +57,14 @@ public class GameController {
     public void updateMapLevel() {
         setGameState(GameState.LEVEL_2);
         map.loadMap("/map/dungeonMap.txt", gameState);
+        map.setCollisionController(collisionController); // RE-ASSIGN after reloading
+        map.setPlayer(player); // RE-ASSIGN player as well
+        System.out.println("Map level updated to LEVEL_2");
     }
-
 
     public void update() {
         // Update player movement, logic per InputController
-//        player.update();
-        //updateMapLevel();
+        //player.update();
         generateNewPlayerHitbox();
         checkEnemyHostility();
         if (inputController.interactionKeyPressed) {
@@ -82,6 +84,7 @@ public class GameController {
     }
 
     public static void setGameState(GameState newGameState) {
+
         gameState = newGameState;
     }
 
@@ -112,6 +115,9 @@ public class GameController {
     public void checkPlayerAttack() {
 
         // Only check against alive Enemies
+        if (map.getEnemiesOnMap().size() == 0) {
+                updateMapLevel();
+        }
         for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) {
             if (enemy.getState() == EnemyStatus.DEAD) continue;
 
@@ -124,6 +130,9 @@ public class GameController {
             if (player.getAttackRange().intersects(enemyHitBox)){
                 System.out.println("Try attacking");
                 boolean attacked = player.attackEnemy(enemy);
+                if (enemy.getState() == EnemyStatus.DEAD) {
+                    map.removeEnemy(enemy);
+                }
 //                if (attacked) {
 //                    break; // stop after first enemy
 //                }
