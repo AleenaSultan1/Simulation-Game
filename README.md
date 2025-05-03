@@ -58,11 +58,9 @@ Handles rendering and UI presentation:
 - `MapRenderer` – Renders the dungeon layout and tile-based map.
 - `EntityRenderer` – Draws player and enemy entities with sprite animations.
 
-## Resources Folder Structure
+### Resources Folder Structure
 
 All game assets such as sprite images, tile textures, and map files are stored under the `resources/` directory.
-
-### Folder Breakdown
 
 - `resources/Lily/`  
   Contains sprite images for the final boss character, Professor Lily.
