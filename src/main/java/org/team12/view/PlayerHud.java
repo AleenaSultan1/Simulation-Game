@@ -36,7 +36,7 @@ public class PlayerHud {
     public boolean messageOn = false;
     public String message = "";
     int messageTimer = 0;
-    public int commandNumber = 1;
+    public int commandNumber = -1;
 
     private BufferedImage openLaptop;
 
@@ -71,10 +71,6 @@ public class PlayerHud {
         if (gameState == GameState.PAUSE) {
             drawTitleScreen(g2);
         }
-//        if (gameController.gameState == GameState.PLAYING) {
-//            // do play stuff later
-//            drawPlayScreen(g2);
-//        }
 
     }
 

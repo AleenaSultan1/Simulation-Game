@@ -66,8 +66,6 @@ public class GameController {
     }
 
     public void update() {
-//        System.out.println("Game updated");
-        // Update player movement, logic per InputController
         switch (gameState) {
             case PAUSE:
                 GameState selectedState = playerHud.checkUserInteraction();
@@ -78,6 +76,7 @@ public class GameController {
                 }
                 break;
             case PLAYING:
+                // Update player movement, logic per InputController
                 player.update();
                 generateNewPlayerHitbox();
                 checkEnemyHostility();

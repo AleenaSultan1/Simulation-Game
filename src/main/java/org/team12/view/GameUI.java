@@ -180,7 +180,7 @@ public class GameUI extends JPanel implements Runnable{
         // create a new Graphics 2d Object
         Graphics2D g2 = (Graphics2D) g;
         if (gameController.getGameState() == GameState.PAUSE) {
-            playerHud.drawGameState(gameController.getGameState(), g2);
+            playerHud.drawTitleScreen(g2);
             gameController.update();
         } else {
             // draw the map
