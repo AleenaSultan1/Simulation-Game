@@ -21,6 +21,7 @@ import org.team12.states.ItemState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class RiddleChest extends Item {
@@ -42,32 +43,23 @@ public class RiddleChest extends Item {
                 "What data structure uses FIFO order?",
                 "queue"));
         riddles.add(new Riddle(
-                "What keyword is used to handle exceptions?",
-                "try-catch"));
-        riddles.add(new Riddle(
-                "What are the four pillars of OOP?",
-                "encapsulation, abstraction, inheritance, polymorphism"));
-        riddles.add(new Riddle(
-                "What is the worst-case time complexity of HashMap operations?",
-                "O(n)"));
-        riddles.add(new Riddle(
                 "What Java type is used for precise decimal calculations?",
                 "BigDecimal"));
-        riddles.add(new Riddle(
-                "How do you list all branches in a repository?",
-                "git branch"));
-        riddles.add(new Riddle(
-                "Which traversal visits root, then left, then right in a tree?",
-                "Preorder"));
-        riddles.add(new Riddle(
-                "Which keyword is used to inherit a class in Java?",
-                "extends"));
-        riddles.add(new Riddle(
-                "What keyword refers to the current object?",
-                "this"));
-        riddles.add(new Riddle(
-                "Which Java keyword indicates a missing return value?",
-                "void"));
+//        riddles.add(new Riddle(
+//                "How do you list all branches in a repository?",
+//                "git branch"));
+//        riddles.add(new Riddle(
+//                "Which traversal visits root, then left, then right in a tree?",
+//                "Preorder"));
+//        riddles.add(new Riddle(
+//                "Which keyword is used to inherit a class in Java?",
+//                "extends"));
+//        riddles.add(new Riddle(
+//                "What keyword refers to the current object?",
+//                "this"));
+//        riddles.add(new Riddle(
+//                "Which Java keyword indicates a missing return value?",
+//                "void"));
     }
 
 @Override
@@ -77,8 +69,9 @@ public class RiddleChest extends Item {
             System.out.println("\nRiddle " + (currentRiddleIndex + 1) + ":");
             System.out.println(currentRiddle.getQuestion());
             System.out.print("Your answer: ");
-
             String userAnswer = scanner.nextLine().trim().toLowerCase();
+            checkUserInput(userAnswer, currentRiddle.getAnswer());
+
         } else {
             System.out.println("You opened the chest!");
             super.itemState = ItemState.UNINTERACTABLE;

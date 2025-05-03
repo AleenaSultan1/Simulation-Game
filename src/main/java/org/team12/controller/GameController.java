@@ -25,7 +25,6 @@ import org.team12.states.EnemyStatus;
 import org.team12.states.GameState;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
-import org.team12.view.PlayerHud;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -33,72 +32,46 @@ import java.util.ArrayList;
 public class GameController {
     private Map map;
     private Player player;
+    private static GameState gameState;
     private Rectangle playerHitbox;
     private CollisionController collisionController;
     private InputController inputController;
-    private GameState gameState;
-    private PlayerHud playerHud;
 
 
-    public GameController(Map map, InputController inputController, PlayerHud playerHud) {
+    public GameController(Map map, InputController inputController) {
         this.map = map;
-        this.inputController = inputController;
-        this.playerHud = playerHud;
-
         collisionController = new CollisionController(map);
         map.setCollisionController(collisionController);
+        this.inputController = inputController;
         player = new Player(inputController, collisionController, 20);
         map.setPlayer(player);
-
+        this.gameState = GameState.START;
         this.playerHitbox = player.getHitbox();
-
-        //Game State
-        gameState = GameState.PAUSE;
-
-    }
-
-    public GameState getGameState() {
-        return gameState;
     }
 
     public Player getPlayer() {
         return player;
     }
 
+    public void updateMapLevel() {
+        setGameState(GameState.LEVEL_2);
+        map.loadMap("/map/dungeonMap.txt", gameState);
+    }
+
+
     public void update() {
-        switch (gameState) {
-            case PAUSE:
-                GameState selectedState = playerHud.checkUserInteraction();
-                if (selectedState == GameState.END) {
-                    gameState = GameState.END;
-                } else if (selectedState == GameState.PLAYING) {
-                    gameState = GameState.PLAYING;
-                }
-                break;
-            case PLAYING:
-                // Update player movement, logic per InputController
-                player.update();
-                generateNewPlayerHitbox();
-                checkEnemyHostility();
-                if (inputController.interactionKeyJustPressed) {
-                    checkPlayerPickup();
-                    inputController.resetJustPressed();
-                }
-                if (inputController.attackKeyJustPressed) {
-                    System.out.println("Attack key pressed");
-                    checkPlayerAttack();
-                    inputController.resetJustPressed();
-                }
-                if (inputController.escKeyJustPressed) {
-                    gameState = GameState.PAUSE;
-                }
-                break;
-            case END:
-                System.out.println("End");
-                System.exit(0);
-
+        // Update player movement, logic per InputController
+//        player.update();
+        //updateMapLevel();
+        generateNewPlayerHitbox();
+        checkEnemyHostility();
+        if (inputController.interactionKeyPressed) {
+            checkPlayerPickup();
         }
-
+        if (inputController.attackKeyPressed) {
+            System.out.println("Attack key pressed");
+            checkPlayerAttack();
+        }
     }
     public void generateNewPlayerHitbox() {
         playerHitbox = new Rectangle(
@@ -108,18 +81,18 @@ public class GameController {
                 player.getHitbox().height);
     }
 
-    public Rectangle generateNewEnemyHitbox(Enemy enemy) {
-        return new Rectangle(
-                enemy.worldX + enemy.getHitbox().x,
-                enemy.worldY + enemy.getHitbox().y,
-                enemy.getHitbox().width,
-                enemy.getHitbox().height);
+    public static void setGameState(GameState newGameState) {
+        gameState = newGameState;
+    }
+
+    public static GameState getGameState() {
+        return gameState;
     }
 
     public void checkPlayerPickup() {
 
         // Only check against interactable items
-        for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
+        for (Item item : new ArrayList<>(map.getItemsOnMap())) {
             if (item.getItemState() != ItemState.INTERACTABLE) continue;
 
             Rectangle itemHitbox = new Rectangle(
@@ -139,25 +112,21 @@ public class GameController {
     public void checkPlayerAttack() {
 
         // Only check against alive Enemies
-        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) { // avoid ConcurrentModification
+        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) {
             if (enemy.getState() == EnemyStatus.DEAD) continue;
 
-            int attackSize = player.getAttackRangeScale();
-            Rectangle enemyHitBox = generateNewEnemyHitbox(enemy);
-            Rectangle playerAttackRange = new Rectangle(
-                    player.worldX - player.getAttackRangeScale() / 2,
-                    player.worldY - player.getAttackRangeScale() / 2,
-                    player.getAttackRangeScale(),
-                    player.getAttackRangeScale()
-            );
+            Rectangle enemyHitBox = new Rectangle(
+                    enemy.worldX + enemy.getHitbox().x,
+                    enemy.worldY + enemy.getHitbox().y,
+                    enemy.getHitbox().width,
+                    enemy.getHitbox().height);
 
-
-            if (playerAttackRange.intersects(enemyHitBox)){
+            if (player.getAttackRange().intersects(enemyHitBox)){
                 System.out.println("Try attacking");
-                boolean atattacked = player.attackEnemy(enemy);
-                if (atattacked) {
-                    break; // stop after first enemy
-                }
+                boolean attacked = player.attackEnemy(enemy);
+//                if (attacked) {
+//                    break; // stop after first enemy
+//                }
             }
         }
     }
