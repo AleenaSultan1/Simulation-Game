@@ -37,11 +37,7 @@ public class EntityRenderer {
         this.player = player;
         this.tileSize = tileSize;
 
-        Item heart = new Heart();
 
-        heartFull = UtilityTool.scaleImage(heart.image, tileSize, tileSize);
-        heartHalf = UtilityTool.scaleImage(heart.image2, tileSize, tileSize);
-        heartEmpty = UtilityTool.scaleImage(heart.image3, tileSize, tileSize);
 
     }
 
@@ -108,37 +104,6 @@ public class EntityRenderer {
     }
 
 
-    public void drawPlayerLife(Graphics2D g2){
-        int x = tileSize/2;
-        int y = tileSize/2;
-        int i = 0;
-
-        // draw available max life (3 hearts)
-        while (i < player.getMaxHP()/2){
-            g2.drawImage(heartEmpty, x, y, null);
-            i++;
-            x += tileSize;
-
-        }
-
-        //reset
-        x = tileSize/2;
-        y = tileSize/2;
-        i = 0;
-
-        //Draw Current life
-        while (i < player.getHP()){
-            g2.drawImage(heartHalf, x, y, null);
-            i++;
-            // if the player has 2 lives (which form one full heart), draw a full heart
-            if (i < player.getHP()){
-                g2.drawImage(heartFull, x, y, null);
-            }
-            i++;
-            x += tileSize;
-        }
-
-    }
 
 }
 

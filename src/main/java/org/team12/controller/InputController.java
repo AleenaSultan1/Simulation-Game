@@ -22,7 +22,12 @@ import java.awt.event.KeyListener;
 
 public class InputController implements KeyListener {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, interactionKeyPressed, attackKeyPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed;
+    public boolean interactionKeyPressed, attackKeyPressed, enterKeyPressed, escKeyPressed;
+
+    public boolean upJustPressed, downJustPressed, leftJustPressed, rightJustPressed;
+    public boolean attackKeyJustPressed, interactionKeyJustPressed, enterKeyJustPressed, escKeyJustPressed;
+
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -33,22 +38,35 @@ public class InputController implements KeyListener {
         int code = e.getKeyCode();
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
             upPressed = true;
+            upJustPressed = true;
         }
         if (code == KeyEvent.VK_S|| code == KeyEvent.VK_DOWN) {
             downPressed = true;
+            downJustPressed = true;
         }
         if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
             leftPressed = true;
+            leftJustPressed = true;
         }
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
             rightPressed = true;
+            rightJustPressed = true;
         }
-
         if (code == KeyEvent.VK_SPACE) {
             interactionKeyPressed = true;
+            interactionKeyJustPressed = true;
         }
         if (code == KeyEvent.VK_E) {
             attackKeyPressed = true;
+            attackKeyJustPressed = true;
+        }
+        if (code == KeyEvent.VK_ENTER) {
+            enterKeyPressed = true;
+            enterKeyJustPressed = true;
+        }
+        if (code == KeyEvent.VK_ESCAPE) {
+            escKeyPressed = true;
+            escKeyJustPressed = true;
         }
     }
 
@@ -75,4 +93,17 @@ public class InputController implements KeyListener {
             attackKeyPressed = false;
         }
     }
+
+    public void resetJustPressed() {
+        upJustPressed = false;
+        downJustPressed = false;
+        leftJustPressed = false;
+        rightJustPressed = false;
+        attackKeyJustPressed = false;
+        interactionKeyJustPressed = false;
+        enterKeyJustPressed = false;
+        escKeyJustPressed = false;
+
+    }
+
 }

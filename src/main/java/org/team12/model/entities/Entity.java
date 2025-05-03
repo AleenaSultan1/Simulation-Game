@@ -18,6 +18,7 @@
 package org.team12.model.entities;
 
 import org.team12.controller.CollisionController;
+import org.team12.states.EnemyStatus;
 import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
@@ -28,7 +29,7 @@ import java.io.IOException;
 public abstract class Entity {
     private int HP;
     private final int MaxHP;
-    protected boolean state; //true=alive
+    protected EnemyStatus currentEntityStatus;
     public int worldX;
     public int worldY;
     // Used for checking collisions/hitboxes
@@ -42,17 +43,14 @@ public abstract class Entity {
     // Variables to alternate sprites - Creating animations
     public int spriteCounter = 0;
     public int spriteNum =1;
-
     public int actionLockCounter = 0;
-
-
 
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
     public Entity(int hp) {
         this.MaxHP = hp;
         this.HP = hp;
-        this.state = true; // alive by default
+        this.currentEntityStatus = EnemyStatus.PEACEFUL;
         hitbox = new Rectangle();
         hitboxDefaultX = 8; // Could be adjusted
         hitboxDefaultY = 8;
@@ -85,7 +83,8 @@ public abstract class Entity {
     public void takeDamage(int damage) {
         this.HP -= damage;
         if (this.HP <= 0) {
-            this.state = false;
+            currentEntityStatus = EnemyStatus.DEAD;
+            System.out.println("IS DEAD");
         }
     }
 
@@ -94,3 +93,4 @@ public abstract class Entity {
         return null;
     }
 }
+
