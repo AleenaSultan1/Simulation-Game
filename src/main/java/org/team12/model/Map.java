@@ -18,12 +18,12 @@
 package org.team12.model;
 
 import org.team12.controller.CollisionController;
+import org.team12.controller.GameController;
 import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
 import org.team12.states.GameState;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
-
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,9 +62,13 @@ public class Map {
 
             while ((line = br.readLine()) != null) {
                 if (line.trim().startsWith("*")) {
+                    isLevel2Part = true;
                     continue; // skip the separator line itself
                 }
-                if (GameState.LEVEL_2.equals(gameState)) {
+
+                // Only load LEVEL2 part if GameState is LEVEL2
+                if ((gameState != GameState.LEVEL_2 && !isLevel2Part) ||
+                        (gameState == GameState.LEVEL_2 && isLevel2Part)) {
                     lines.add(line);
                 }
             }
@@ -86,6 +90,7 @@ public class Map {
 
                     switch (tileType) {
                         case 1: // Wall
+                        case 9:
                             grid[x][y].setObstacle(true);
                             break;
                         case 2: // Enemy (Goon)
@@ -125,9 +130,8 @@ public class Map {
                             break;
                     }
                 }
-            }
 
-            br.close();
+            } br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -191,5 +195,4 @@ public class Map {
             }
         }
     }
-
 }

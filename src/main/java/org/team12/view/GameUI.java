@@ -92,11 +92,9 @@ public class GameUI extends JPanel implements Runnable{
 
     // Constructor for a game UI
     public GameUI() {
-        map = new Map(null, null);
+        map = new Map("/map/dungeonMap.txt", GameState.LEVEL_2);
         inputController = new InputController();
-        gameController = new GameController(null, inputController);
-        GameState currentState = gameController.getGameState();
-        map.loadMap("/map/dungeonMap.txt", currentState); // You must make loadMap public
+        gameController = new GameController(map, inputController);
         player = gameController.getPlayer();
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize, player);

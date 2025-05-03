@@ -53,9 +53,16 @@ public class GameController {
         return player;
     }
 
+    public void updateMapLevel() {
+        setGameState(GameState.LEVEL_2);
+        map.loadMap("/map/dungeonMap.txt", gameState);
+    }
+
+
     public void update() {
         // Update player movement, logic per InputController
 //        player.update();
+        //updateMapLevel();
         generateNewPlayerHitbox();
         checkEnemyHostility();
         if (inputController.interactionKeyPressed) {

@@ -48,6 +48,14 @@ public class InputController implements KeyListener {
             if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
                 rightPressed = true;
             }
+
+            if (code == KeyEvent.VK_SPACE) {
+                interactionKeyPressed = true;
+            }
+            if (code == KeyEvent.VK_E) {
+                attackKeyPressed = true;
+            }
+
             if (code == KeyEvent.VK_P) {
                 GameController.setGameState(GameState.PAUSE);
             }
