@@ -65,7 +65,7 @@ public class Enemy extends Entity {
     }
 
     public void enemyMoveToPlayer(Player player) {
-        System.out.println("is hostile");
+        //System.out.println("is hostile");
         setEnemyState(EnemyStatus.HOSTILE);
 //        System.out.println("Hostile");
         moveToPlayer(player);
@@ -75,7 +75,7 @@ public class Enemy extends Entity {
         attackCounter++;
         //System.out.println(attackCounter);
         if (attackCounter >= 60) {
-            System.out.println("is attacking");
+            //System.out.println("is attacking");
             player.takeDamage(2);
             attackCounter = 0;
             System.out.println("HP: " + player.getHP());

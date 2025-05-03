@@ -50,21 +50,30 @@ public class Player extends Entity {
         screenX = GameUI.getScreenWidth() / 2 - (GameUI.getTileSize() / 2);
         screenY = GameUI.getScreenHeight() / 2 - (GameUI.getTileSize() / 2);
 
-        attackRangeScale = 5;
+        attackRangeScale = 3;
+
+        attackRange = new Rectangle();
+        attackRange.x = attackRangeScale;
+        attackRange.y = attackRangeScale;
+        attackRange.width = GameUI.getTileSize() * attackRangeScale;
+        attackRange.height = GameUI.getTileSize() * attackRangeScale;
     }
 
     public Rectangle getAttackRange() {
-        int attackSize = getAttackRangeScale();
-        int centerX = worldX + hitbox.width / 2;
-        int centerY = worldY + hitbox.height / 2;
+        int rangeWidth = GameUI.getTileSize() * attackRangeScale;
+        int rangeHeight = GameUI.getTileSize() * attackRangeScale;
 
-        return new Rectangle(
-                centerX - attackSize / 2,
-                centerY - attackSize / 2,
-                attackSize,
-                attackSize
-        );
+        // Center the attack range around the player's world position
+        int centerX = worldX + (GameUI.getTileSize() / 2);
+        int centerY = worldY + (GameUI.getTileSize() / 2);
+
+        int rangeX = centerX - (rangeWidth / 2);
+        int rangeY = centerY - (rangeHeight / 2);
+
+        return new Rectangle(rangeX, rangeY, rangeWidth, rangeHeight);
     }
+
+
 
     public int getAttackRangeScale() {
         return attackRangeScale;

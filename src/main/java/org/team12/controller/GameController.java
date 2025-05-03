@@ -22,6 +22,7 @@ import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
 import org.team12.states.EnemyStatus;
+import org.team12.states.GameState;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 public class GameController {
     private Map map;
     private Player player;
-    private boolean isRunning;
+    private static GameState gameState;
     private Rectangle playerHitbox;
     private CollisionController collisionController;
     private InputController inputController;
@@ -39,14 +40,12 @@ public class GameController {
 
     public GameController(Map map, InputController inputController) {
         this.map = map;
-
         collisionController = new CollisionController(map);
         map.setCollisionController(collisionController);
         this.inputController = inputController;
         player = new Player(inputController, collisionController, 20);
         map.setPlayer(player);
-
-        this.isRunning = true;
+        this.gameState = GameState.START;
         this.playerHitbox = player.getHitbox();
     }
 
@@ -75,27 +74,18 @@ public class GameController {
                 player.getHitbox().height);
     }
 
-
-    public void stopGame() {
-        isRunning = false;
+    public static void setGameState(GameState newGameState) {
+        gameState = newGameState;
     }
 
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    public void generatePlayerHitbox() {
-        playerHitbox = new Rectangle(
-                player.worldX + player.getHitbox().x,
-                player.worldY + player.getHitbox().y,
-                player.getHitbox().width,
-                player.getHitbox().height);
+    public static GameState getGameState() {
+        return gameState;
     }
 
     public void checkPlayerPickup() {
 
         // Only check against interactable items
-        for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
+        for (Item item : new ArrayList<>(map.getItemsOnMap())) {
             if (item.getItemState() != ItemState.INTERACTABLE) continue;
 
             Rectangle itemHitbox = new Rectangle(
@@ -115,11 +105,8 @@ public class GameController {
     public void checkPlayerAttack() {
 
         // Only check against alive Enemies
-        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) { // avoid ConcurrentModification
+        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) {
             if (enemy.getState() == EnemyStatus.DEAD) continue;
-
-            int attackSize = player.getAttackRangeScale();
-
 
             Rectangle enemyHitBox = new Rectangle(
                     enemy.worldX + enemy.getHitbox().x,
@@ -129,10 +116,10 @@ public class GameController {
 
             if (player.getAttackRange().intersects(enemyHitBox)){
                 System.out.println("Try attacking");
-                boolean atattacked = player.attackEnemy(enemy);
-                if (atattacked) {
-                    break; // stop after first enemy
-                }
+                boolean attacked = player.attackEnemy(enemy);
+//                if (attacked) {
+//                    break; // stop after first enemy
+//                }
             }
         }
     }

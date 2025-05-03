@@ -20,6 +20,7 @@ package org.team12.model;
 import org.team12.controller.CollisionController;
 import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
+import org.team12.states.GameState;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
@@ -44,97 +45,94 @@ public class Map {
     private CollisionController collisionController;
 
 
-    public Map(String filepath) {
+    public Map(String filepath, GameState gameState) {
         enemiesOnMap = new ArrayList<>();
         itemsOnMap = new ArrayList<>();
-        loadMap(filepath);
+        loadMap(filepath, gameState);
     }
-    private void loadMap(String filepath) {
+
+    public void loadMap(String filepath, GameState gameState) {
         try {
             InputStream is = getClass().getResourceAsStream(filepath);
             BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(is)));
 
-            // First, read all lines to determine dimensions
+            List<String> lines = new ArrayList<>();
             String line;
-            int rows = 0;
-            int cols = 0;
-            while ((line = br.readLine()) != null) {
-                if (rows == 0) {
-                    cols = line.split(" ").length;
-                }
-                rows++;
-            }
-            this.width = cols;
-            this.height = rows;
+            boolean isLevel2Part = false;
 
-            // Initialize grid
+            while ((line = br.readLine()) != null) {
+                if (line.trim().startsWith("*")) {
+                    continue; // skip the separator line itself
+                }
+                if (GameState.LEVEL_2.equals(gameState)) {
+                    lines.add(line);
+                }
+            }
+
+            this.height = lines.size();
+            this.width = lines.get(0).split(" ").length;
             grid = new Tile[width][height];
 
-            // Reset reader to beginning
-            is = getClass().getResourceAsStream(filepath);
-            br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(is)));
-
-            int y = 0;
-            while ((line = br.readLine()) != null) {
-                String[] numbers = line.split(" ");
+            for (int y = 0; y < height; y++) {
+                String[] numbers = lines.get(y).trim().split(" ");
                 for (int x = 0; x < numbers.length; x++) {
                     grid[x][y] = new Tile(x, y);
-                    int tileType = Integer.parseInt(numbers[x]);
-                    char tileTypeChar = (char) tileType;
-                    // Wall
-                    switch (tileTypeChar) {
-                        case 1:
+                    int tileType;
+                    try {
+                        tileType = Integer.parseInt(numbers[x]);
+                    } catch (NumberFormatException e) {
+                        continue; // skip non-integer tiles in level2 region (e.g. hyphens or dashes)
+                    }
+
+                    switch (tileType) {
+                        case 1: // Wall
                             grid[x][y].setObstacle(true);
                             break;
-                        // Goon
-                        case 2:
+                        case 2: // Enemy (Goon)
                             Enemy enemy = new Enemy(10, 2);
                             enemiesOnMap.add(enemy);
                             enemy.setCoord(x, y);
                             grid[x][y].setEnemy(enemy);
                             break;
-                        // Sword
-                        case 3:
+                        case 3: // Sword
                             Sword sword = new Sword();
                             itemsOnMap.add(sword);
                             grid[x][y].setItem(sword);
-                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
-                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            sword.setX(x * GameUI.getTileSize());
+                            sword.setY(y * GameUI.getTileSize());
                             break;
-                        // Riddle chest
-                        case 4:
+                        case 4: // Riddle Chest
                             RiddleChest riddleChest = new RiddleChest();
                             itemsOnMap.add(riddleChest);
                             grid[x][y].setItem(riddleChest);
-                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
-                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            riddleChest.setX(x * GameUI.getTileSize());
+                            riddleChest.setY(y * GameUI.getTileSize());
                             break;
-                        // Magic dust
-                        case 5:
+                        case 5: // Magic Dust
                             MagicDust magicDust = new MagicDust();
                             itemsOnMap.add(magicDust);
                             grid[x][y].setItem(magicDust);
-                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
-                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            magicDust.setX(x * GameUI.getTileSize());
+                            magicDust.setY(y * GameUI.getTileSize());
                             break;
-                        // Lily Final Boss
-                        case 6:
-                            LilyFinalBoss lilyFinalBoss = new LilyFinalBoss(10, 2);
-                            enemiesOnMap.add(lilyFinalBoss);
-                            lilyFinalBoss.setCoord(x, y);
-                            grid[x][y].setEnemy(lilyFinalBoss);
+                        case 6: // Lily Final Boss
+                            LilyFinalBoss lily = new LilyFinalBoss(10, 2);
+                            enemiesOnMap.add(lily);
+                            lily.setCoord(x, y);
+                            grid[x][y].setEnemy(lily);
                             break;
                         default:
                             break;
                     }
                 }
-                y++;
             }
+
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     public void setCollisionController(CollisionController collisionController) {
         this.collisionController = collisionController;

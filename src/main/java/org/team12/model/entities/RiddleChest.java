@@ -42,15 +42,6 @@ public class RiddleChest extends Item {
                 "What data structure uses FIFO order?",
                 "queue"));
         riddles.add(new Riddle(
-                "What keyword is used to handle exceptions?",
-                "try-catch"));
-        riddles.add(new Riddle(
-                "What are the four pillars of OOP?",
-                "encapsulation, abstraction, inheritance, polymorphism"));
-        riddles.add(new Riddle(
-                "What is the worst-case time complexity of HashMap operations?",
-                "O(n)"));
-        riddles.add(new Riddle(
                 "What Java type is used for precise decimal calculations?",
                 "BigDecimal"));
         riddles.add(new Riddle(
@@ -77,8 +68,9 @@ public class RiddleChest extends Item {
             System.out.println("\nRiddle " + (currentRiddleIndex + 1) + ":");
             System.out.println(currentRiddle.getQuestion());
             System.out.print("Your answer: ");
-
             String userAnswer = scanner.nextLine().trim().toLowerCase();
+            checkUserInput(userAnswer, currentRiddle.getAnswer());
+
         } else {
             System.out.println("You opened the chest!");
             super.itemState = ItemState.UNINTERACTABLE;

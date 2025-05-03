@@ -26,6 +26,7 @@ import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Entity;
 import org.team12.model.entities.LilyFinalBoss;
 import org.team12.model.entities.Player;
+import org.team12.states.GameState;
 
 import javax.swing.JPanel;
 import java.awt.*;
@@ -90,10 +91,12 @@ public class GameUI extends JPanel implements Runnable{
 
 
     // Constructor for a game UI
-    public GameUI(){
-        map = new Map("/map/dungeonMap.txt");
+    public GameUI() {
+        map = new Map(null, null);
         inputController = new InputController();
-        gameController = new GameController(map, inputController);
+        gameController = new GameController(null, inputController);
+        GameState currentState = gameController.getGameState();
+        map.loadMap("/map/dungeonMap.txt", currentState); // You must make loadMap public
         player = gameController.getPlayer();
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize, player);

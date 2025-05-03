@@ -18,7 +18,10 @@
 package org.team12.states;
 
 public enum GameState {
-    MENU,
+    START,
     LEVEL_1,
-    LEVEL_2;
+    LEVEL_2,
+    PAUSE,
+    END;
+
 }
