@@ -22,8 +22,10 @@ import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Item;
 import org.team12.model.entities.Player;
 import org.team12.states.EnemyStatus;
+import org.team12.states.GameState;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
+import org.team12.view.PlayerHud;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -31,23 +33,32 @@ import java.util.ArrayList;
 public class GameController {
     private Map map;
     private Player player;
-    private boolean isRunning;
     private Rectangle playerHitbox;
     private CollisionController collisionController;
     private InputController inputController;
+    private GameState gameState;
+    private PlayerHud playerHud;
 
 
-    public GameController(Map map, InputController inputController) {
+    public GameController(Map map, InputController inputController, PlayerHud playerHud) {
         this.map = map;
+        this.inputController = inputController;
+        this.playerHud = playerHud;
 
         collisionController = new CollisionController(map);
         map.setCollisionController(collisionController);
-        this.inputController = inputController;
         player = new Player(inputController, collisionController, 20);
         map.setPlayer(player);
 
-        this.isRunning = true;
         this.playerHitbox = player.getHitbox();
+
+        //Game State
+        gameState = GameState.PAUSE;
+
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 
     public Player getPlayer() {
@@ -55,17 +66,40 @@ public class GameController {
     }
 
     public void update() {
+//        System.out.println("Game updated");
         // Update player movement, logic per InputController
-//        player.update();
-        generateNewPlayerHitbox();
-        checkEnemyHostility();
-        if (inputController.interactionKeyPressed) {
-            checkPlayerPickup();
+        switch (gameState) {
+            case PAUSE:
+                GameState selectedState = playerHud.checkUserInteraction();
+                if (selectedState == GameState.END) {
+                    gameState = GameState.END;
+                } else if (selectedState == GameState.PLAYING) {
+                    gameState = GameState.PLAYING;
+                }
+                break;
+            case PLAYING:
+                player.update();
+                generateNewPlayerHitbox();
+                checkEnemyHostility();
+                if (inputController.interactionKeyJustPressed) {
+                    checkPlayerPickup();
+                    inputController.resetJustPressed();
+                }
+                if (inputController.attackKeyJustPressed) {
+                    System.out.println("Attack key pressed");
+                    checkPlayerAttack();
+                    inputController.resetJustPressed();
+                }
+                if (inputController.escKeyJustPressed) {
+                    gameState = GameState.PAUSE;
+                }
+                break;
+            case END:
+                System.out.println("End");
+                System.exit(0);
+
         }
-        if (inputController.attackKeyPressed) {
-            System.out.println("Attack key pressed");
-            checkPlayerAttack();
-        }
+
     }
     public void generateNewPlayerHitbox() {
         playerHitbox = new Rectangle(
@@ -74,16 +108,6 @@ public class GameController {
                 player.getHitbox().width,
                 player.getHitbox().height);
     }
-
-
-    public void stopGame() {
-        isRunning = false;
-    }
-
-    public boolean isRunning() {
-        return isRunning;
-    }
-
 
     public Rectangle generateNewEnemyHitbox(Enemy enemy) {
         return new Rectangle(

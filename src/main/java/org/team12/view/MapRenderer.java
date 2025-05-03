@@ -17,6 +17,7 @@
 
 package org.team12.view;
 
+import org.team12.controller.UtilityTool;
 import org.team12.model.Map;
 import org.team12.model.Tile;
 import org.team12.model.entities.*;
@@ -33,7 +34,8 @@ public class MapRenderer {
     private BufferedImage wallImage;
     private BufferedImage swordImage;
     private BufferedImage chestCloseImage;
-    private BufferedImage enemyImage;
+    private BufferedImage heartFull, heartHalf, heartEmpty;
+
 
     private int tileSize;
     private Player player;
@@ -43,6 +45,8 @@ public class MapRenderer {
         this.tileSize = tileSize;
         this.player = player;
         loadImages();
+
+
     }
 
     private void loadImages() {
@@ -52,6 +56,10 @@ public class MapRenderer {
             swordImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
             chestCloseImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/chest1.png")));
 
+            Item heart = new Heart();
+            heartFull = UtilityTool.scaleImage(heart.image, tileSize, tileSize);
+            heartHalf = UtilityTool.scaleImage(heart.image2, tileSize, tileSize);
+            heartEmpty = UtilityTool.scaleImage(heart.image3, tileSize, tileSize);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,6 +104,38 @@ public class MapRenderer {
                 }
             }
         }
+        drawPlayerLife(g2);
 
+    }
+
+    public void drawPlayerLife(Graphics2D g2){
+        int x = tileSize/2;
+        int y = tileSize/2;
+        int i = 0;
+
+        // draw available max life (3 hearts)
+        while (i < player.getMaxHP()/2){
+            g2.drawImage(heartEmpty, x, y, null);
+            i++;
+            x += tileSize;
+
+        }
+
+        //reset
+        x = tileSize/2;
+        y = tileSize/2;
+        i = 0;
+
+        //Draw Current life
+        while (i < player.getHP()){
+            g2.drawImage(heartHalf, x, y, null);
+            i++;
+            // if the player has 2 lives (which form one full heart), draw a full heart
+            if (i < player.getHP()){
+                g2.drawImage(heartFull, x, y, null);
+            }
+            i++;
+            x += tileSize;
+        }
     }
 }

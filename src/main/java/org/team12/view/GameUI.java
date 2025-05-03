@@ -26,6 +26,7 @@ import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Entity;
 import org.team12.model.entities.LilyFinalBoss;
 import org.team12.model.entities.Player;
+import org.team12.states.GameState;
 
 import javax.swing.JPanel;
 import java.awt.*;
@@ -94,12 +95,15 @@ public class GameUI extends JPanel implements Runnable{
     // Constructor for a game UI
     public GameUI(){
         map = new Map("/map/dungeonMap.txt");
+
         inputController = new InputController();
-        gameController = new GameController(map, inputController);
+        playerHud = new PlayerHud(tileSize, inputController);
+
+        gameController = new GameController(map, inputController, playerHud);
+
         player = gameController.getPlayer();
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize, player);
-        playerHud = new PlayerHud(tileSize, player);
 
         // Set the size of the UI to the size of the screen
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -155,9 +159,7 @@ public class GameUI extends JPanel implements Runnable{
                 repaint();
                 delta--;
                 drawCount++;
-                gameController.update();
-                player.update();
-
+                update();
 
             }
 
@@ -177,18 +179,28 @@ public class GameUI extends JPanel implements Runnable{
         super.paintComponent(g);
         // create a new Graphics 2d Object
         Graphics2D g2 = (Graphics2D) g;
-
-        // draw the map
-        mapRenderer.draw(g2);
-        for (Entity entity : map.getEntitiesOnMap()) {
-            entityRenderer.drawEntity(g2, entity);
-            if (entity instanceof Enemy) {
-                entityRenderer.drawEnemyHP(g2, (Enemy) entity);
+        if (gameController.getGameState() == GameState.PAUSE) {
+            playerHud.drawGameState(gameController.getGameState(), g2);
+            gameController.update();
+        } else {
+            // draw the map
+            mapRenderer.draw(g2);
+            for (Entity entity : map.getEntitiesOnMap()) {
+                entityRenderer.drawEntity(g2, entity);
+                if (entity instanceof Enemy) {
+                    entityRenderer.drawEnemyHP(g2, (Enemy) entity);
+                }
             }
         }
 
-        playerHud.drawPlayerLife(g2);
         // dispose of the objects
         g2.dispose();
+    }
+
+    private void update() {
+        // Everything that needs to be updated in one frame
+        gameController.update();
+//        player.update();
+
     }
 }
