@@ -37,7 +37,6 @@ public class Map {
     private Tile[][] grid;
     private List<Item> itemsOnMap;
     private List<Enemy> enemiesOnMap;
-
     private int width;
     private int height;
 
@@ -45,13 +44,13 @@ public class Map {
     private CollisionController collisionController;
 
 
-    public Map(String filepath, GameState gameState) {
+    public Map(String filepath, boolean level2) {
         enemiesOnMap = new ArrayList<>();
         itemsOnMap = new ArrayList<>();
-        loadMap(filepath, gameState);
+        loadMap(filepath, level2);
     }
 
-    public void loadMap(String filepath, GameState gameState) {
+    public void loadMap(String filepath, boolean level2) {
         enemiesOnMap.clear();
         itemsOnMap.clear();
         try {
@@ -69,8 +68,8 @@ public class Map {
                 }
 
                 // Only load LEVEL2 part if GameState is LEVEL2
-                if ((gameState != GameState.LEVEL_2 && !isLevel2Part) ||
-                        (gameState == GameState.LEVEL_2 && isLevel2Part)) {
+                if ((!level2 && !isLevel2Part) ||
+                        (level2 && isLevel2Part)) {
                     lines.add(line);
                 }
             }
@@ -96,7 +95,7 @@ public class Map {
                             grid[x][y].setObstacle(true);
                             break;
                         case 2: // Enemy (Goon)
-                            Enemy enemy = new Enemy(30, 2);
+                            Enemy enemy = new Enemy(10, 2);
                             enemiesOnMap.add(enemy);
                             enemy.setCoord(x, y);
                             grid[x][y].setEnemy(enemy);
@@ -197,13 +196,13 @@ public class Map {
         }
     }
 
-    public void removeEnemy(Entity enemy) {
+    public void removeEnemy(Enemy enemy) {
         // Find the item's tile by position and clear it
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Tile tile = grid[x][y];
                 if (tile.getEnemy() == enemy) {
-                    tile.setItem(null);
+                    tile.setEnemy(null);
                     enemiesOnMap.remove(enemy); // precise removal
                     return;
                 }

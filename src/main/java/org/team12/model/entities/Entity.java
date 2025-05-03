@@ -27,11 +27,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public abstract class Entity {
-
-    protected EnemyStatus currentEntityStatus;
-    protected int HP;
+    private int HP;
     private final int MaxHP;
-    protected boolean state; //true=alive
+    protected EnemyStatus currentEntityStatus;
     public int worldX;
     public int worldY;
     // Used for checking collisions/hitboxes

@@ -127,7 +127,6 @@ public class Enemy extends Entity {
         }
     }
 
-
     @Override
     public BufferedImage getCurrentSprite() {
         try {

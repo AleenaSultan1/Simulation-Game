@@ -18,14 +18,12 @@
 package org.team12.controller;
 
 import org.team12.model.Map;
-import org.team12.model.entities.Enemy;
-import org.team12.model.entities.Item;
-import org.team12.model.entities.Player;
-import org.team12.model.entities.Sword;
+import org.team12.model.entities.*;
 import org.team12.states.EnemyStatus;
 import org.team12.states.GameState;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
+import org.team12.view.PlayerHud;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -33,21 +31,31 @@ import java.util.ArrayList;
 public class GameController {
     private Map map;
     private Player player;
-    private static GameState gameState;
     private Rectangle playerHitbox;
     private CollisionController collisionController;
     private InputController inputController;
+    private static GameState gameState;
+    private PlayerHud playerHud;
+    private boolean level2;
+    private boolean magicChestOpen;
 
 
-    public GameController(Map map, InputController inputController) {
+    public GameController(Map map, InputController inputController, PlayerHud playerHud) {
         this.map = map;
+        this.inputController = inputController;
+        this.playerHud = playerHud;
+
         collisionController = new CollisionController(map);
         map.setCollisionController(collisionController);
         this.inputController = inputController;
         player = new Player(inputController, collisionController, 20);
         map.setPlayer(player);
-        this.gameState = GameState.START;
         this.playerHitbox = player.getHitbox();
+        this.level2 = false;
+        //Game State
+        gameState = GameState.PAUSE;
+        magicChestOpen = false;
+
     }
 
     public Player getPlayer() {
@@ -55,24 +63,48 @@ public class GameController {
     }
 
     public void updateMapLevel() {
-        setGameState(GameState.LEVEL_2);
-        map.loadMap("/map/dungeonMap.txt", gameState);
+        //setGameState(GameState.LEVEL_2);
+        map.loadMap("/map/dungeonMap.txt", true);
         map.setCollisionController(collisionController); // RE-ASSIGN after reloading
         map.setPlayer(player); // RE-ASSIGN player as well
         System.out.println("Map level updated to LEVEL_2");
     }
 
     public void update() {
-        // Update player movement, logic per InputController
-        //player.update();
-        generateNewPlayerHitbox();
-        checkEnemyHostility();
-        if (inputController.interactionKeyPressed) {
-            checkPlayerPickup();
-        }
-        if (inputController.attackKeyPressed) {
-            System.out.println("Attack key pressed");
-            checkPlayerAttack();
+        switch (gameState) {
+            case PAUSE:
+                GameState selectedState = playerHud.checkUserInteraction();
+                if (selectedState == GameState.END) {
+                    gameState = GameState.END;
+                } else if (selectedState == GameState.PLAYING) {
+                    gameState = GameState.PLAYING;
+                }
+                break;
+            case PLAYING:
+                // Update player movement, logic per InputController
+                player.update();
+                generateNewPlayerHitbox();
+                checkEnemyHostility();
+                if (map.getEnemiesOnMap().size() == 0) {
+                    updateMapLevel();
+                }
+                if (inputController.interactionKeyJustPressed) {
+                    checkPlayerPickup();
+                    inputController.resetJustPressed();
+                }
+                if (inputController.attackKeyJustPressed) {
+                    System.out.println("Attack key pressed");
+                    checkPlayerAttack();
+                    inputController.resetJustPressed();
+                }
+                if (inputController.escKeyJustPressed) {
+                    gameState = GameState.PAUSE;
+                }
+                break;
+            case END:
+                System.out.println("End");
+                System.exit(0);
+
         }
     }
     public void generateNewPlayerHitbox() {
@@ -83,7 +115,7 @@ public class GameController {
                 player.getHitbox().height);
     }
 
-    public static void setGameState(GameState newGameState) {
+    public void setGameState(GameState newGameState) {
 
         gameState = newGameState;
     }
@@ -95,7 +127,7 @@ public class GameController {
     public void checkPlayerPickup() {
 
         // Only check against interactable items
-        for (Item item : new ArrayList<>(map.getItemsOnMap())) {
+        for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
             if (item.getItemState() != ItemState.INTERACTABLE) continue;
 
             Rectangle itemHitbox = new Rectangle(
@@ -106,19 +138,21 @@ public class GameController {
             if (playerHitbox.intersects(itemHitbox)){
                 boolean pickedUp = player.pickUpItem(item);
                 if (pickedUp) {
+                    if (item instanceof RiddleChest) {
+                        //add line to spawn magic dust or sth
+                        magicChestOpen = true;
+                    }
                     map.removeItem(item);
                     break; // stop after first pickup
                 }
             }
         }
     }
+
     public void checkPlayerAttack() {
 
         // Only check against alive Enemies
-        if (map.getEnemiesOnMap().size() == 0) {
-                updateMapLevel();
-        }
-        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) {
+        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) { // avoid ConcurrentModification
             if (enemy.getState() == EnemyStatus.DEAD) continue;
 
             Rectangle enemyHitBox = new Rectangle(
@@ -130,12 +164,12 @@ public class GameController {
             if (player.getAttackRange().intersects(enemyHitBox)){
                 System.out.println("Try attacking");
                 boolean attacked = player.attackEnemy(enemy);
-                if (enemy.getState() == EnemyStatus.DEAD) {
+                if (enemy.getState() == EnemyStatus.DEAD || enemy.getState() == EnemyStatus.CURED) {
+                    if (enemy instanceof LilyFinalBoss && magicChestOpen) {
+                        enemy.setEnemyState(EnemyStatus.CURED);
+                    }
                     map.removeEnemy(enemy);
                 }
-//                if (attacked) {
-//                    break; // stop after first enemy
-//                }
             }
         }
     }
