@@ -151,7 +151,7 @@ public class Player extends Entity {
             attack_l_1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_left_1.png")));
             attack_l_2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_left_2.png")));
             attack_u_1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_up_1.png")));
-            attack_d_2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_up_2.png")));
+            attack_u_2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_up_2.png")));
 
             // Debug check
             if (up1 == null) {
