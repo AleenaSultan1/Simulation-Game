@@ -101,14 +101,7 @@ public class Map {
                             enemy.setCoord(x, y);
                             grid[x][y].setEnemy(enemy);
                             break;
-                        // Sword
-                        case 3:
-                            Sword sword = new Sword();
-                            itemsOnMap.add(sword);
-                            grid[x][y].setItem(sword);
-                            sword.setX(x);
-                            sword.setY(y);
-                            break;
+
                         // Riddle chest
                         case 4:
                             Laptop laptop = new Laptop();
@@ -116,14 +109,6 @@ public class Map {
                             grid[x][y].setItem(laptop);
                             laptop.setX(x);
                             laptop.setY(y);
-                            break;
-                        // Magic dust
-                        case 5:
-                            MagicDust magicDust = new MagicDust();
-                            itemsOnMap.add(magicDust);
-                            grid[x][y].setItem(magicDust);
-                            magicDust.setX(x);
-                            magicDust.setY(y);
                             break;
                         case 6: // Lily Final Boss
                             LilyFinalBoss lily = new LilyFinalBoss(10, 2);

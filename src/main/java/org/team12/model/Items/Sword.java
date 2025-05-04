@@ -26,11 +26,9 @@ import java.util.Objects;
 
 public class Sword extends Item {
     public int strength;
-    private PlayerHud playerHud;
 
-    public Sword(PlayerHud playerHud) {
+    public Sword() {
         strength = 5;
-        this.playerHud = playerHud;
     }
 
     @Override
@@ -43,9 +41,4 @@ public class Sword extends Item {
         return image;
     }
 
-    @Override
-    public void pickUp() {
-        super.pickUp();
-        playerHud.setMessage("Sword Picked Up");
-    }
 }

@@ -27,6 +27,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
+import java.util.List;
 
 public class MapRenderer {
 
@@ -100,7 +101,47 @@ public class MapRenderer {
             }
         }
         drawPlayerLife(g2);
+        drawInventory(g2);
 
+    }
+
+    public void drawInventory(Graphics2D g2) {
+        List<Item> inventory = player.getInventory();
+        if (inventory.isEmpty()) return;
+
+        int startX = tileSize / 2;
+        int startY = tileSize / 2 + tileSize * 2; // Position below hearts
+
+        // Draw inventory title
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 14f));
+        g2.setColor(Color.WHITE);
+        g2.drawString("Inventory:", startX, startY - 25);
+
+        // Draw inventory items
+        int itemX = startX;
+        int itemY = startY - 15;
+        int itemsPerRow = 5; // Max items per row before wrapping
+        int spacing = 5; // Space between items
+
+        for (int i = 0; i < inventory.size(); i++) {
+            Item item = inventory.get(i);
+            BufferedImage sprite = item.getSprite();
+
+            if (sprite != null) {
+                // Scale down inventory items slightly
+                int scaledSize = tileSize - 10;
+                g2.drawImage(sprite, itemX, itemY, scaledSize, scaledSize, null);
+
+                // Move position for next item
+                itemX += scaledSize + spacing;
+
+                // Wrap to next row if needed
+                if ((i + 1) % itemsPerRow == 0) {
+                    itemX = startX;
+                    itemY += scaledSize + spacing;
+                }
+            }
+        }
     }
 
     public void drawPlayerLife(Graphics2D g2){

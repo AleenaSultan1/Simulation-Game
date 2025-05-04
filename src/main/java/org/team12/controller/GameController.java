@@ -19,6 +19,7 @@ package org.team12.controller;
 
 import org.team12.model.Items.Item;
 import org.team12.model.Items.Laptop;
+import org.team12.model.Items.MagicDust;
 import org.team12.model.Items.Sword;
 import org.team12.model.Map;
 import org.team12.model.Tile;
@@ -188,7 +189,6 @@ public class GameController {
     }
 
     public void checkPlayerAttack() {
-
         // Only check against alive Enemies
         for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) { // avoid ConcurrentModification
             if (enemy.getState() == EnemyStatus.DEAD) continue;
@@ -262,7 +262,7 @@ public class GameController {
                 // All questions answered correctly
                 playerHud.setMessage("Quiz complete! You earned an A+!");
                 laptop.deactivate();
-                spawnSwordNearPlayer();
+                spawnItemNearPlayer();
                 gameState = GameState.PLAYING;
                 input.resetJustPressed();
                 return;
@@ -298,7 +298,7 @@ public class GameController {
         int spawnY = player.worldY + GameUI.getTileSize();
 
         // Create new sword
-        Sword sword = new Sword(playerHud);
+        Sword sword = new Sword();
 
         // Find and set the tile (optional but recommended)
         int tileX = spawnX / GameUI.getTileSize();
@@ -307,10 +307,35 @@ public class GameController {
         map.addItem(sword, tileX, tileY);
         sword.setX(tileX);
         sword.setY(tileY);
+}
 
-        System.out.println("Item list:\n");
-        System.out.println(map.getItemsOnMap());
-        System.out.println("Sword spawned at: " + spawnX + "," + spawnY);
+    private void spawnDustNearPlayer() {
+        // Convert back to world coordinates
+        int spawnX = player.worldX + GameUI.getTileSize();
+        int spawnY = player.worldY + GameUI.getTileSize();
+
+        // Create new sword
+        MagicDust dust = new MagicDust();
+
+        // Find and set the tile (optional but recommended)
+        int tileX = spawnX / GameUI.getTileSize();
+        int tileY = spawnY / GameUI.getTileSize();
+        // Add to map
+        map.addItem(dust, tileX, tileY);
+        dust.setX(tileX);
+        dust.setY(tileY);
+
+
+    }
+    private void spawnItemNearPlayer() {
+        // Check if player already has sword
+        for (Item item : player.getInventory()) {
+            if (item instanceof Sword) {
+                spawnDustNearPlayer();
+                return;
+            }
+        }
+        spawnSwordNearPlayer();
     }
 }
 
