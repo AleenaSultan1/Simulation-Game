@@ -15,10 +15,7 @@
  * ****************************************
  */
 
-package org.team12.model.entities;
-
-import org.team12.controller.GameController;
-import org.team12.view.GameUI;
+package org.team12.model.Items;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

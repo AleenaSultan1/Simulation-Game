@@ -15,7 +15,7 @@
  * ****************************************
  */
 
-package org.team12.model.entities;
+package org.team12.model.Items;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

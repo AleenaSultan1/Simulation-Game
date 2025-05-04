@@ -2,32 +2,32 @@
  * CSCI 205 - Software Engineering and Design
  * Spring 2025
  *
- * Name: Sebastian Stewart
- * Date: 4/25/25
- * Time: 10:45 PM
+ * Name: Radley Le
+ * Date: 4/18/25
+ * Time: 3:35 PM
  *
  * Project: csci205_final_project
  * Package: org.team12.model.entities
- * Class: EvilPortal
+ * Class: MagicDust
  *
  * Description:
  *
  * ****************************************
  */
 
-package org.team12.model.entities;
+package org.team12.model.Items;
 
-import org.team12.controller.GameController;
+import org.team12.model.entities.LilyFinalBoss;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
 
-public class Table extends Item{
+public class MagicDust extends Item {
 
-    public Table(GameController gameController) {
-        name = "Table";
+    public MagicDust() {
+    }
+
+    public void getCured(LilyFinalBoss lilyFinalBoss) {
+        lilyFinalBoss.getCured();
     }
 
     @Override

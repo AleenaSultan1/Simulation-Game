@@ -15,7 +15,7 @@
  * ****************************************
  */
 
-package org.team12.model.entities;
+package org.team12.model.Items;
 
 import org.team12.view.UtilityTool;
 import org.team12.states.ItemState;

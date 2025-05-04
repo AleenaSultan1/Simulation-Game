@@ -17,7 +17,7 @@
 
 package org.team12.view;
 
-import org.team12.model.entities.Laptop;
+import org.team12.model.Items.Laptop;
 import org.team12.states.GameState;
 
 import java.util.ArrayList;
