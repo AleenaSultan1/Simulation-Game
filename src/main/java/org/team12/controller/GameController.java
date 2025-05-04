@@ -98,7 +98,7 @@ public class GameController {
                 generateNewPlayerHitbox();
                 checkEnemyHostility();
                 // Check for level transition
-                if (map.getEnemiesOnMap().isEmpty() && !level2) {
+                if (map.getEnemiesOnMap().isEmpty() && checkPlayerInventory() && !level2) {
                     level2 = true;
                     updateMapLevel();
                     // Reset player position for new level
@@ -128,9 +128,20 @@ public class GameController {
             case END:
                 System.out.println("End");
                 System.exit(0);
-
         }
-
+    }
+    public boolean checkPlayerInventory() {
+        boolean dust = false;
+        boolean sword = false;
+        for (Item item : player.getInventory()) {
+            if (item instanceof MagicDust) {
+                dust = true;
+            }
+            if (item instanceof Sword) {
+                sword = true;
+            }
+        }
+        return dust && sword;
     }
     public void generateNewPlayerHitbox() {
         playerHitbox = new Rectangle(
