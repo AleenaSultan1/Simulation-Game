@@ -25,9 +25,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Heart extends Item{
-//    private BufferedImage image2;
-//    private BufferedImage image3;
+public class Heart {
+    private BufferedImage image, image2, image3;
+    private String name;
+
 
     public Heart() {
         name = "Heart";
@@ -42,6 +43,10 @@ public class Heart extends Item{
         }
     }
 
+    public BufferedImage getFullHeart() {
+        return image;
+    }
+
     public BufferedImage getHalfHeart() {
         return image2;
     }
@@ -50,7 +55,8 @@ public class Heart extends Item{
         return image3;
     }
 
-
-
+    public BufferedImage getSprite() {
+        return null;
+    }
 }
 

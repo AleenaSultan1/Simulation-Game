@@ -103,13 +103,13 @@ public class Map {
                             break;
                         // Riddle chest
                         case 4:
-                            RiddleChest riddleChest = new RiddleChest();
-                            itemsOnMap.add(riddleChest);
-                            grid[x][y].setItem(riddleChest);
+                            Laptop laptop = new Laptop();
+                            itemsOnMap.add(laptop);
+                            grid[x][y].setItem(laptop);
                             itemsOnMap.getLast().setX(x * GameUI.getTileSize());
                             itemsOnMap.getLast().setY(y * GameUI.getTileSize());
                             break;
-                        // Magic dust
+                        // Laptop
                         case 5:
                             MagicDust magicDust = new MagicDust();
                             itemsOnMap.add(magicDust);

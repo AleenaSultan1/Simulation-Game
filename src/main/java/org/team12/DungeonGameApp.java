@@ -13,6 +13,8 @@ import javax.swing.*;
 public class DungeonGameApp {
 
     public static void main(String[] args) {
+
+
         // Create a window
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

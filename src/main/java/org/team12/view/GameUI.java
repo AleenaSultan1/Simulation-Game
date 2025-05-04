@@ -22,10 +22,7 @@ import org.team12.controller.CollisionController;
 import org.team12.controller.GameController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
-import org.team12.model.entities.Enemy;
-import org.team12.model.entities.Entity;
-import org.team12.model.entities.LilyFinalBoss;
-import org.team12.model.entities.Player;
+import org.team12.model.entities.*;
 import org.team12.states.GameState;
 
 import javax.swing.JPanel;
@@ -97,7 +94,7 @@ public class GameUI extends JPanel implements Runnable{
         map = new Map("/map/dungeonMap.txt");
 
         inputController = new InputController();
-        playerHud = new PlayerHud(tileSize, inputController);
+        playerHud = new PlayerHud(tileSize);
 
         gameController = new GameController(map, inputController, playerHud);
 
@@ -181,7 +178,8 @@ public class GameUI extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D) g;
         if (gameController.getGameState() == GameState.PAUSE) {
             playerHud.drawTitleScreen(g2);
-            gameController.update();
+        } else if (gameController.getGameState() == GameState.QUIZ) {
+            playerHud.drawLaptopQuiz(g2);
         } else {
             // draw the map
             mapRenderer.draw(g2);

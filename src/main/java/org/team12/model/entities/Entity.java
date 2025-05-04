@@ -88,9 +88,7 @@ public abstract class Entity {
         }
     }
 
-    // null method to be overriden
-    public BufferedImage getCurrentSprite() {
-        return null;
-    }
+    // Method to be overriden
+    public abstract BufferedImage getCurrentSprite();
 }
 

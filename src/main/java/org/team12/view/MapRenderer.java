@@ -53,13 +53,11 @@ public class MapRenderer {
         try {
             floorImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/325floor.png")));
             wallImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/325wall.png")));
-            swordImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
-            chestCloseImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/chest1.png")));
 
-            Item heart = new Heart();
-            heartFull = UtilityTool.scaleImage(heart.image, tileSize, tileSize);
-            heartHalf = UtilityTool.scaleImage(heart.image2, tileSize, tileSize);
-            heartEmpty = UtilityTool.scaleImage(heart.image3, tileSize, tileSize);
+            Heart heart = new Heart();
+            heartFull = UtilityTool.scaleImage(heart.getFullHeart(), tileSize, tileSize);
+            heartHalf = UtilityTool.scaleImage(heart.getHalfHeart(), tileSize, tileSize);
+            heartEmpty = UtilityTool.scaleImage(heart.getEmptyHeart(), tileSize, tileSize);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,15 +90,10 @@ public class MapRenderer {
                     }
                     // 2. If there is an Item, draw the item
                     Item item = tile.getItem();
-                    if (item instanceof Sword) {
-                        g2.drawImage(swordImage, screenX, screenY, tileSize, tileSize, null);
+                    if (item != null) {
+                        g2.drawImage(item.getSprite()
+                                , screenX, screenY, tileSize, tileSize, null);
                     }
-
-                    else if (item instanceof RiddleChest){
-                        g2.drawImage(chestCloseImage, screenX, screenY, tileSize, tileSize, null);
-                    }
-
-
                 }
             }
         }

@@ -24,9 +24,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import org.team12.view.GameUI;
 
-public class Item {
+public abstract class Item {
     // Item image
-    public BufferedImage image, image2, image3;
+    protected BufferedImage image, image2;
 
     public String name;
     public boolean collision = false;
@@ -79,4 +79,6 @@ public class Item {
     public Rectangle getHitbox() {
         return hitbox;
     }
+
+    public abstract BufferedImage getSprite();
 }

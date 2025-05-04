@@ -59,7 +59,7 @@ public class EntityRenderer {
                 entity.worldY + tileSize > player.worldY - player.getScreenY() &&
                 entity.worldY - tileSize < player.worldY + player.getScreenY()) {
 
-            BufferedImage image = entity.getCurrentSprite(); // Assume each Entity can provide its current sprite based on direction/animation
+            BufferedImage image = entity.getCurrentSprite(); // Entity can provide its current sprite based on direction/animation
             if (image != null) {
 //            System.out.printf("Drawing entity at (%d, %d), player at (%d, %d)\n",
 //                    entity.worldX, entity.worldY, player.worldX, player.worldY);

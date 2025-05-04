@@ -20,6 +20,7 @@ package org.team12.model.entities;
 import org.team12.controller.GameController;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -27,5 +28,10 @@ public class Table extends Item{
 
     public Table(GameController gameController) {
         name = "Table";
+    }
+
+    @Override
+    public BufferedImage getSprite() {
+        return null;
     }
 }

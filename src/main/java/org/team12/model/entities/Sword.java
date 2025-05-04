@@ -20,6 +20,7 @@ package org.team12.model.entities;
 import org.team12.view.GameUI;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -28,5 +29,15 @@ public class Sword extends Item {
 
     public Sword() {
         strength = 5;
+    }
+
+    @Override
+    public BufferedImage getSprite() {
+        try {
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 }

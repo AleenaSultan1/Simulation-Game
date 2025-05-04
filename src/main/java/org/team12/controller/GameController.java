@@ -20,6 +20,7 @@ package org.team12.controller;
 import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Item;
+import org.team12.model.entities.Laptop;
 import org.team12.model.entities.Player;
 import org.team12.states.EnemyStatus;
 import org.team12.states.GameState;
@@ -38,6 +39,7 @@ public class GameController {
     private InputController inputController;
     private GameState gameState;
     private PlayerHud playerHud;
+    private Laptop currLaptop;
 
 
     public GameController(Map map, InputController inputController, PlayerHud playerHud) {
@@ -49,12 +51,23 @@ public class GameController {
         map.setCollisionController(collisionController);
         player = new Player(inputController, collisionController, 20);
         map.setPlayer(player);
+//        checkForLaptop();
 
         this.playerHitbox = player.getHitbox();
 
         //Game State
         gameState = GameState.PAUSE;
 
+    }
+
+    private void checkForLaptop() {
+        for (Item item : map.getItemsOnMap()) {
+            if (item instanceof Laptop) {
+                playerHud.setLaptop((Laptop) item);
+                currLaptop = (Laptop) item;
+                break;
+            }
+        }
     }
 
     public GameState getGameState() {
@@ -68,7 +81,7 @@ public class GameController {
     public void update() {
         switch (gameState) {
             case PAUSE:
-                GameState selectedState = playerHud.checkUserInteraction();
+                GameState selectedState = handleTitleScreenInput(inputController);
                 if (selectedState == GameState.END) {
                     gameState = GameState.END;
                 } else if (selectedState == GameState.PLAYING) {
@@ -81,8 +94,8 @@ public class GameController {
                 generateNewPlayerHitbox();
                 checkEnemyHostility();
                 if (inputController.interactionKeyJustPressed) {
-                    checkPlayerPickup();
                     inputController.resetJustPressed();
+                    checkPlayerPickup();
                 }
                 if (inputController.attackKeyJustPressed) {
                     System.out.println("Attack key pressed");
@@ -92,6 +105,9 @@ public class GameController {
                 if (inputController.escKeyJustPressed) {
                     gameState = GameState.PAUSE;
                 }
+                break;
+            case QUIZ:
+                handleLaptopInput(inputController, currLaptop);
                 break;
             case END:
                 System.out.println("End");
@@ -130,7 +146,17 @@ public class GameController {
             if (playerHitbox.intersects(itemHitbox)){
                 boolean pickedUp = player.pickUpItem(item);
                 if (pickedUp) {
-                    map.removeItem(item);
+                    if (item instanceof Laptop) {
+                        playerHud.setLaptop((Laptop) item);
+                        currLaptop = (Laptop) item;
+                        if (currLaptop.isActive()) {
+                            System.out.println("Laptop is active");
+                            currLaptop.resetLaptop(); // Reset quiz progress
+//                        ((Laptop)item).activate();
+                            gameState = GameState.QUIZ;
+                        }
+                    }
+                    else map.removeItem(item);
                     break; // stop after first pickup
                 }
             }
@@ -193,6 +219,57 @@ public class GameController {
                 enemy.moveRandomly();
             }
         }
+    }
+
+    public void handleLaptopInput(InputController input, Laptop laptop) {
+        if (laptop == null || !laptop.isActive()) return;
+
+        if (input.upJustPressed) {
+            laptop.moveSelectionUp();
+        }
+        else if (input.downJustPressed) {
+            laptop.moveSelectionDown();
+        }
+        else if (input.enterKeyJustPressed) {
+            boolean correct = laptop.submitAnswer();
+            if (!correct) {
+                // Wrong answer - exit immediately
+                laptop.resetLaptop();
+                gameState = GameState.PLAYING;
+            }
+            else if (laptop.getItemState() == ItemState.UNINTERACTABLE) {
+                // All questions answered correctly
+                playerHud.showMessage("Quiz complete! You earned an A+!");
+                laptop.deactivate();
+                System.out.println("Quiz complete! You earned an A+!");
+                gameState = GameState.PLAYING;
+                input.resetJustPressed();
+                return;
+            }
+            // If correct but not complete, stays in quiz for next question
+            laptop.resetAnswerSubmitted();
+        }
+        else if (input.escKeyJustPressed) {
+            laptop.resetLaptop();
+            gameState = GameState.PLAYING;
+        }
+        input.resetJustPressed();
+    }
+
+    public GameState handleTitleScreenInput(InputController input) {
+        if (inputController.downJustPressed | inputController.upJustPressed) {
+            // Toggle
+            playerHud.toggleTitleScreen();
+            inputController.resetJustPressed();
+        }
+        if (inputController.enterKeyJustPressed & (playerHud.getCommandNumber() == -1)) {
+            inputController.resetJustPressed();
+            return GameState.PLAYING;
+        } else if (inputController.enterKeyJustPressed & (playerHud.getCommandNumber() == 1)) {
+            inputController.resetJustPressed();
+            return GameState.END;
+        }
+        return null;
     }
 
 }
