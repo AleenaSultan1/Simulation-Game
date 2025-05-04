@@ -20,11 +20,13 @@ package org.team12.controller;
 import org.team12.model.Map;
 import org.team12.model.entities.Enemy;
 import org.team12.model.entities.Item;
+import org.team12.model.entities.Laptop;
 import org.team12.model.entities.Player;
 import org.team12.states.EnemyStatus;
 import org.team12.states.GameState;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
+import org.team12.view.PlayerHud;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -32,46 +34,87 @@ import java.util.ArrayList;
 public class GameController {
     private Map map;
     private Player player;
-    private static GameState gameState;
     private Rectangle playerHitbox;
     private CollisionController collisionController;
     private InputController inputController;
+    private GameState gameState;
+    private PlayerHud playerHud;
+    private Laptop currLaptop;
 
 
-    public GameController(Map map, InputController inputController) {
+    public GameController(Map map, InputController inputController, PlayerHud playerHud) {
         this.map = map;
+        this.inputController = inputController;
+        this.playerHud = playerHud;
+
         collisionController = new CollisionController(map);
         map.setCollisionController(collisionController);
-        this.inputController = inputController;
         player = new Player(inputController, collisionController, 20);
         map.setPlayer(player);
-        this.gameState = GameState.START;
+//        checkForLaptop();
+
         this.playerHitbox = player.getHitbox();
+
+        //Game State
+        gameState = GameState.PAUSE;
+
+    }
+
+    private void checkForLaptop() {
+        for (Item item : map.getItemsOnMap()) {
+            if (item instanceof Laptop) {
+                playerHud.setLaptop((Laptop) item);
+                currLaptop = (Laptop) item;
+                break;
+            }
+        }
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public void updateMapLevel() {
-        setGameState(GameState.LEVEL_2);
-        map.loadMap("/map/dungeonMap.txt", gameState);
-    }
-
-
     public void update() {
-        // Update player movement, logic per InputController
-//        player.update();
-        //updateMapLevel();
-        generateNewPlayerHitbox();
-        checkEnemyHostility();
-        if (inputController.interactionKeyPressed) {
-            checkPlayerPickup();
+        switch (gameState) {
+            case PAUSE:
+                GameState selectedState = handleTitleScreenInput(inputController);
+                if (selectedState == GameState.END) {
+                    gameState = GameState.END;
+                } else if (selectedState == GameState.PLAYING) {
+                    gameState = GameState.PLAYING;
+                }
+                break;
+            case PLAYING:
+                // Update player movement, logic per InputController
+                player.update();
+                generateNewPlayerHitbox();
+                checkEnemyHostility();
+                if (inputController.interactionKeyJustPressed) {
+                    inputController.resetJustPressed();
+                    checkPlayerPickup();
+                }
+                if (inputController.attackKeyJustPressed) {
+                    System.out.println("Attack key pressed");
+                    checkPlayerAttack();
+                    inputController.resetJustPressed();
+                }
+                if (inputController.escKeyJustPressed) {
+                    gameState = GameState.PAUSE;
+                }
+                break;
+            case QUIZ:
+                handleLaptopInput(inputController, currLaptop);
+                break;
+            case END:
+                System.out.println("End");
+                System.exit(0);
+
         }
-        if (inputController.attackKeyPressed) {
-            System.out.println("Attack key pressed");
-            checkPlayerAttack();
-        }
+
     }
     public void generateNewPlayerHitbox() {
         playerHitbox = new Rectangle(
@@ -81,18 +124,18 @@ public class GameController {
                 player.getHitbox().height);
     }
 
-    public static void setGameState(GameState newGameState) {
-        gameState = newGameState;
-    }
-
-    public static GameState getGameState() {
-        return gameState;
+    public Rectangle generateNewEnemyHitbox(Enemy enemy) {
+        return new Rectangle(
+                enemy.worldX + enemy.getHitbox().x,
+                enemy.worldY + enemy.getHitbox().y,
+                enemy.getHitbox().width,
+                enemy.getHitbox().height);
     }
 
     public void checkPlayerPickup() {
 
         // Only check against interactable items
-        for (Item item : new ArrayList<>(map.getItemsOnMap())) {
+        for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
             if (item.getItemState() != ItemState.INTERACTABLE) continue;
 
             Rectangle itemHitbox = new Rectangle(
@@ -103,7 +146,17 @@ public class GameController {
             if (playerHitbox.intersects(itemHitbox)){
                 boolean pickedUp = player.pickUpItem(item);
                 if (pickedUp) {
-                    map.removeItem(item);
+                    if (item instanceof Laptop) {
+                        playerHud.setLaptop((Laptop) item);
+                        currLaptop = (Laptop) item;
+                        if (currLaptop.isActive()) {
+                            System.out.println("Laptop is active");
+                            currLaptop.resetLaptop(); // Reset quiz progress
+//                        ((Laptop)item).activate();
+                            gameState = GameState.QUIZ;
+                        }
+                    }
+                    else map.removeItem(item);
                     break; // stop after first pickup
                 }
             }
@@ -112,21 +165,25 @@ public class GameController {
     public void checkPlayerAttack() {
 
         // Only check against alive Enemies
-        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) {
+        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) { // avoid ConcurrentModification
             if (enemy.getState() == EnemyStatus.DEAD) continue;
 
-            Rectangle enemyHitBox = new Rectangle(
-                    enemy.worldX + enemy.getHitbox().x,
-                    enemy.worldY + enemy.getHitbox().y,
-                    enemy.getHitbox().width,
-                    enemy.getHitbox().height);
+            int attackSize = player.getAttackRangeScale();
+            Rectangle enemyHitBox = generateNewEnemyHitbox(enemy);
+            Rectangle playerAttackRange = new Rectangle(
+                    player.worldX - player.getAttackRangeScale() / 2,
+                    player.worldY - player.getAttackRangeScale() / 2,
+                    player.getAttackRangeScale(),
+                    player.getAttackRangeScale()
+            );
 
-            if (player.getAttackRange().intersects(enemyHitBox)){
+
+            if (playerAttackRange.intersects(enemyHitBox)){
                 System.out.println("Try attacking");
-                boolean attacked = player.attackEnemy(enemy);
-//                if (attacked) {
-//                    break; // stop after first enemy
-//                }
+                boolean atattacked = player.attackEnemy(enemy);
+                if (atattacked) {
+                    break; // stop after first enemy
+                }
             }
         }
     }
@@ -162,6 +219,57 @@ public class GameController {
                 enemy.moveRandomly();
             }
         }
+    }
+
+    public void handleLaptopInput(InputController input, Laptop laptop) {
+        if (laptop == null || !laptop.isActive()) return;
+
+        if (input.upJustPressed) {
+            laptop.moveSelectionUp();
+        }
+        else if (input.downJustPressed) {
+            laptop.moveSelectionDown();
+        }
+        else if (input.enterKeyJustPressed) {
+            boolean correct = laptop.submitAnswer();
+            if (!correct) {
+                // Wrong answer - exit immediately
+                laptop.resetLaptop();
+                gameState = GameState.PLAYING;
+            }
+            else if (laptop.getItemState() == ItemState.UNINTERACTABLE) {
+                // All questions answered correctly
+                playerHud.showMessage("Quiz complete! You earned an A+!");
+                laptop.deactivate();
+                System.out.println("Quiz complete! You earned an A+!");
+                gameState = GameState.PLAYING;
+                input.resetJustPressed();
+                return;
+            }
+            // If correct but not complete, stays in quiz for next question
+            laptop.resetAnswerSubmitted();
+        }
+        else if (input.escKeyJustPressed) {
+            laptop.resetLaptop();
+            gameState = GameState.PLAYING;
+        }
+        input.resetJustPressed();
+    }
+
+    public GameState handleTitleScreenInput(InputController input) {
+        if (inputController.downJustPressed | inputController.upJustPressed) {
+            // Toggle
+            playerHud.toggleTitleScreen();
+            inputController.resetJustPressed();
+        }
+        if (inputController.enterKeyJustPressed & (playerHud.getCommandNumber() == -1)) {
+            inputController.resetJustPressed();
+            return GameState.PLAYING;
+        } else if (inputController.enterKeyJustPressed & (playerHud.getCommandNumber() == 1)) {
+            inputController.resetJustPressed();
+            return GameState.END;
+        }
+        return null;
     }
 
 }

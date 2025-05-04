@@ -17,6 +17,7 @@
 
 package org.team12.view;
 
+import org.team12.controller.UtilityTool;
 import org.team12.model.Map;
 import org.team12.model.Tile;
 import org.team12.model.entities.*;
@@ -33,26 +34,30 @@ public class MapRenderer {
     private BufferedImage wallImage;
     private BufferedImage swordImage;
     private BufferedImage chestCloseImage;
-    private BufferedImage enemyImage;
-    //private PlayerHud playerHud;
+    private BufferedImage heartFull, heartHalf, heartEmpty;
+
+
     private int tileSize;
     private Player player;
 
     public MapRenderer(Player player, Map map, int tileSize) {
         this.map = map;
-        //this.playerHud = new PlayerHud();
         this.tileSize = tileSize;
         this.player = player;
         loadImages();
+
+
     }
 
     private void loadImages() {
         try {
             floorImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/325floor.png")));
             wallImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/325wall.png")));
-            swordImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/sword.png")));
-            chestCloseImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/chest1.png")));
 
+            Heart heart = new Heart();
+            heartFull = UtilityTool.scaleImage(heart.getFullHeart(), tileSize, tileSize);
+            heartHalf = UtilityTool.scaleImage(heart.getHalfHeart(), tileSize, tileSize);
+            heartEmpty = UtilityTool.scaleImage(heart.getEmptyHeart(), tileSize, tileSize);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,7 +65,6 @@ public class MapRenderer {
     }
 
     public void draw(Graphics2D g2) {
-        //playerHud.draw(g2);
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 // worldX/Y is the absolute position of the tile
@@ -86,18 +90,45 @@ public class MapRenderer {
                     }
                     // 2. If there is an Item, draw the item
                     Item item = tile.getItem();
-                    if (item instanceof Sword) {
-                        g2.drawImage(swordImage, screenX, screenY, tileSize, tileSize, null);
+                    if (item != null) {
+                        g2.drawImage(item.getSprite()
+                                , screenX, screenY, tileSize, tileSize, null);
                     }
-
-                    else if (item instanceof RiddleChest){
-                        g2.drawImage(chestCloseImage, screenX, screenY, tileSize, tileSize, null);
-                    }
-
-
                 }
             }
         }
+        drawPlayerLife(g2);
 
+    }
+
+    public void drawPlayerLife(Graphics2D g2){
+        int x = tileSize/2;
+        int y = tileSize/2;
+        int i = 0;
+
+        // draw available max life (3 hearts)
+        while (i < player.getMaxHP()/2){
+            g2.drawImage(heartEmpty, x, y, null);
+            i++;
+            x += tileSize;
+
+        }
+
+        //reset
+        x = tileSize/2;
+        y = tileSize/2;
+        i = 0;
+
+        //Draw Current life
+        while (i < player.getHP()){
+            g2.drawImage(heartHalf, x, y, null);
+            i++;
+            // if the player has 2 lives (which form one full heart), draw a full heart
+            if (i < player.getHP()){
+                g2.drawImage(heartFull, x, y, null);
+            }
+            i++;
+            x += tileSize;
+        }
     }
 }

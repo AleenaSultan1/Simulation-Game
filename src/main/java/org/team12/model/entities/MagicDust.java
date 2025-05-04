@@ -19,6 +19,8 @@ package org.team12.model.entities;
 
 import org.team12.states.ItemState;
 
+import java.awt.image.BufferedImage;
+
 public class MagicDust extends Item {
 
     public MagicDust() {
@@ -28,4 +30,8 @@ public class MagicDust extends Item {
         lilyFinalBoss.getCured();
     }
 
+    @Override
+    public BufferedImage getSprite() {
+        return null;
+    }
 }

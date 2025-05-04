@@ -22,10 +22,7 @@ import org.team12.controller.CollisionController;
 import org.team12.controller.GameController;
 import org.team12.controller.InputController;
 import org.team12.model.Map;
-import org.team12.model.entities.Enemy;
-import org.team12.model.entities.Entity;
-import org.team12.model.entities.LilyFinalBoss;
-import org.team12.model.entities.Player;
+import org.team12.model.entities.*;
 import org.team12.states.GameState;
 
 import javax.swing.JPanel;
@@ -84,6 +81,8 @@ public class GameUI extends JPanel implements Runnable{
     private Map map;
     private MapRenderer mapRenderer;
     private EntityRenderer entityRenderer;
+    private PlayerHud playerHud;
+
     private InputController inputController = new InputController();
     private CollisionController collisionController;
     public Player player;
@@ -91,10 +90,14 @@ public class GameUI extends JPanel implements Runnable{
 
 
     // Constructor for a game UI
-    public GameUI() {
-        map = new Map("/map/dungeonMap.txt", GameState.LEVEL_2);
+    public GameUI(){
+        map = new Map("/map/dungeonMap.txt");
+
         inputController = new InputController();
-        gameController = new GameController(map, inputController);
+        playerHud = new PlayerHud(tileSize);
+
+        gameController = new GameController(map, inputController, playerHud);
+
         player = gameController.getPlayer();
         mapRenderer = new MapRenderer(player, map, tileSize);
         entityRenderer = new EntityRenderer(tileSize, player);
@@ -153,9 +156,7 @@ public class GameUI extends JPanel implements Runnable{
                 repaint();
                 delta--;
                 drawCount++;
-                gameController.update();
-                player.update();
-
+                update();
 
             }
 
@@ -175,18 +176,29 @@ public class GameUI extends JPanel implements Runnable{
         super.paintComponent(g);
         // create a new Graphics 2d Object
         Graphics2D g2 = (Graphics2D) g;
-
-        // draw the map
-        mapRenderer.draw(g2);
-        for (Entity entity : map.getEntitiesOnMap()) {
-            entityRenderer.drawEntity(g2, entity);
-            if (entity instanceof Enemy) {
-                entityRenderer.drawEnemyHP(g2, (Enemy) entity);
+        if (gameController.getGameState() == GameState.PAUSE) {
+            playerHud.drawTitleScreen(g2);
+        } else if (gameController.getGameState() == GameState.QUIZ) {
+            playerHud.drawLaptopQuiz(g2);
+        } else {
+            // draw the map
+            mapRenderer.draw(g2);
+            for (Entity entity : map.getEntitiesOnMap()) {
+                entityRenderer.drawEntity(g2, entity);
+                if (entity instanceof Enemy) {
+                    entityRenderer.drawEnemyHP(g2, (Enemy) entity);
+                }
             }
         }
 
-        entityRenderer.drawPlayerLife(g2);
         // dispose of the objects
         g2.dispose();
+    }
+
+    private void update() {
+        // Everything that needs to be updated in one frame
+        gameController.update();
+//        player.update();
+
     }
 }

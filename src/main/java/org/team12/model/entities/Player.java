@@ -217,7 +217,11 @@ public class Player extends Entity {
     public boolean pickUpItem(Item item) {
         if (item != null && item.getItemState() == ItemState.INTERACTABLE) {
             item.pickUp();
-            inventory.add(item);
+            if (item instanceof Laptop) {
+                ;
+            } else {
+                inventory.add(item);
+            }
             return true;
         }
         return false;

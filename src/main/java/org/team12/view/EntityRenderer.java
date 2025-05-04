@@ -42,38 +42,32 @@ public class EntityRenderer {
     }
 
     public void drawEntity(Graphics2D g2, Entity entity) {
-        int drawX, drawY;
-
+        // Calculate where on the screen the entity should appear
         if (entity instanceof Player) {
-            drawX = ((Player) entity).getScreenX();
-            drawY = ((Player) entity).getScreenY();
-
-            // Draw the attack range relative to the screen
-            Rectangle attack = ((Player) entity).getAttackRange();
-            int drawRangeX = attack.x - player.worldX + player.getScreenX();
-            int drawRangeY = attack.y - player.worldY + player.getScreenY();
-
-            g2.setColor(new Color(255, 0, 0, 100)); // Transparent red
-            g2.fillRect(drawRangeX, drawRangeY, attack.width, attack.height);
+            screenX = ((Player) entity).getScreenX();
+            screenY = ((Player) entity).getScreenY();
+            g2.setColor(Color.RED);
+            g2.draw(((Player) entity).getAttackRange());
 
         } else {
-            drawX = entity.worldX - player.worldX + player.getScreenX();
-            drawY = entity.worldY - player.worldY + player.getScreenY();
+            screenX = entity.worldX - player.worldX + player.getScreenX();
+            screenY = entity.worldY - player.worldY + player.getScreenY();
         }
-
-        // Only draw if on screen
+// Only draw tiles that are within the visible screen area
         if (entity.worldX + tileSize > player.worldX - player.getScreenX() &&
                 entity.worldX - tileSize < player.worldX + player.getScreenX() &&
                 entity.worldY + tileSize > player.worldY - player.getScreenY() &&
                 entity.worldY - tileSize < player.worldY + player.getScreenY()) {
 
-            BufferedImage image = entity.getCurrentSprite();
+            BufferedImage image = entity.getCurrentSprite(); // Entity can provide its current sprite based on direction/animation
             if (image != null) {
-                g2.drawImage(image, drawX, drawY, tileSize, tileSize, null);
+//            System.out.printf("Drawing entity at (%d, %d), player at (%d, %d)\n",
+//                    entity.worldX, entity.worldY, player.worldX, player.worldY);
+                g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
             }
-        }
 
-}
+        }
+    }
 
     public void drawEnemyHP(Graphics2D g2, Enemy enemy) {
         // Step 1: Convert worldX/Y to screenX/Y

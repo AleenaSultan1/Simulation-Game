@@ -2,9 +2,9 @@
  * CSCI 205 - Software Engineering and Design
  * Spring 2025
  *
- * Name: Sebastian Stewart
- * Date: 4/25/25
- * Time: 2:32 PM
+ * Name: Radley Le
+ * Date: 4/30/25
+ * Time: 1:01 PM
  *
  * Project: csci205_final_project
  * Package: org.team12.model.entities
@@ -19,21 +19,20 @@ package org.team12.model.entities;
 
 import org.team12.controller.GameController;
 import org.team12.view.GameUI;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-
-
-import javax.imageio.ImageIO;
-
 import java.io.IOException;
 import java.util.Objects;
 
-public class Heart extends Item{
-    //private BufferedImage image2;
-    //private BufferedImage image3;
+public class Heart {
+    private BufferedImage image, image2, image3;
+    private String name;
 
-    public Heart( ) {
+
+    public Heart() {
         name = "Heart";
+
         try{
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartFull.png")));
             image2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/heartHalf.png")));
@@ -42,6 +41,22 @@ public class Heart extends Item{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public BufferedImage getFullHeart() {
+        return image;
+    }
+
+    public BufferedImage getHalfHeart() {
+        return image2;
+    }
+
+    public BufferedImage getEmptyHeart() {
+        return image3;
+    }
+
+    public BufferedImage getSprite() {
+        return null;
     }
 }
 
