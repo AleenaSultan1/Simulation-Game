@@ -91,7 +91,7 @@ public class GameUI extends JPanel implements Runnable{
 
     // Constructor for a game UI
     public GameUI(){
-        map = new Map("/map/dungeonMap.txt");
+        map = new Map("/map/dungeonMap.txt", false);
 
         inputController = new InputController();
         playerHud = new PlayerHud(tileSize);

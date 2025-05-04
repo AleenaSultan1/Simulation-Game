@@ -42,18 +42,26 @@ public class EntityRenderer {
     }
 
     public void drawEntity(Graphics2D g2, Entity entity) {
-        // Calculate where on the screen the entity should appear
+        int drawX, drawY;
+
         if (entity instanceof Player) {
-            screenX = ((Player) entity).getScreenX();
-            screenY = ((Player) entity).getScreenY();
-            g2.setColor(Color.RED);
-            g2.draw(((Player) entity).getAttackRange());
+            drawX = ((Player) entity).getScreenX();
+            drawY = ((Player) entity).getScreenY();
+
+            // Draw the attack range relative to the screen
+            Rectangle attack = ((Player) entity).getAttackRange();
+            int drawRangeX = attack.x - player.worldX + player.getScreenX();
+            int drawRangeY = attack.y - player.worldY + player.getScreenY();
+
+            g2.setColor(new Color(255, 0, 0, 100)); // Transparent red
+            g2.fillRect(drawRangeX, drawRangeY, attack.width, attack.height);
 
         } else {
-            screenX = entity.worldX - player.worldX + player.getScreenX();
-            screenY = entity.worldY - player.worldY + player.getScreenY();
+            drawX = entity.worldX - player.worldX + player.getScreenX();
+            drawY = entity.worldY - player.worldY + player.getScreenY();
         }
-// Only draw tiles that are within the visible screen area
+
+        // Only draw if on screen
         if (entity.worldX + tileSize > player.worldX - player.getScreenX() &&
                 entity.worldX - tileSize < player.worldX + player.getScreenX() &&
                 entity.worldY + tileSize > player.worldY - player.getScreenY() &&
@@ -61,9 +69,7 @@ public class EntityRenderer {
 
             BufferedImage image = entity.getCurrentSprite(); // Entity can provide its current sprite based on direction/animation
             if (image != null) {
-//            System.out.printf("Drawing entity at (%d, %d), player at (%d, %d)\n",
-//                    entity.worldX, entity.worldY, player.worldX, player.worldY);
-                g2.drawImage(image, screenX, screenY, tileSize, tileSize, null);
+                g2.drawImage(image, drawX, drawY, tileSize, tileSize, null);
             }
 
         }

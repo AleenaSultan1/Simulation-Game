@@ -18,10 +18,7 @@
 package org.team12.controller;
 
 import org.team12.model.Map;
-import org.team12.model.entities.Enemy;
-import org.team12.model.entities.Item;
-import org.team12.model.entities.Laptop;
-import org.team12.model.entities.Player;
+import org.team12.model.entities.*;
 import org.team12.states.EnemyStatus;
 import org.team12.states.GameState;
 import org.team12.states.ItemState;
@@ -40,6 +37,8 @@ public class GameController {
     private GameState gameState;
     private PlayerHud playerHud;
     private Laptop currLaptop;
+    private boolean level2;
+    private boolean magicChestOpen;
 
 
     public GameController(Map map, InputController inputController, PlayerHud playerHud) {
@@ -51,23 +50,12 @@ public class GameController {
         map.setCollisionController(collisionController);
         player = new Player(inputController, collisionController, 20);
         map.setPlayer(player);
-//        checkForLaptop();
 
         this.playerHitbox = player.getHitbox();
-
+        this.level2 = false;
         //Game State
         gameState = GameState.PAUSE;
 
-    }
-
-    private void checkForLaptop() {
-        for (Item item : map.getItemsOnMap()) {
-            if (item instanceof Laptop) {
-                playerHud.setLaptop((Laptop) item);
-                currLaptop = (Laptop) item;
-                break;
-            }
-        }
     }
 
     public GameState getGameState() {
@@ -76,6 +64,15 @@ public class GameController {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public void updateMapLevel() {
+        //setGameState(GameState.LEVEL_2);
+        map.loadMap("/map/dungeonMap.txt", true);
+        map.setCollisionController(collisionController); // RE-ASSIGN after reloading
+        map.setPlayer(player); // RE-ASSIGN player as well
+        System.out.println("Map level updated to LEVEL_2");
+//        collisionController.setMap(map);
     }
 
     public void update() {
@@ -93,9 +90,17 @@ public class GameController {
                 player.update();
                 generateNewPlayerHitbox();
                 checkEnemyHostility();
+                // Check for level transition
+                if (map.getEnemiesOnMap().isEmpty()) {
+                    level2 = true;
+                    updateMapLevel();
+                    // Reset player position for new level
+                    player.worldX = 100;
+                    player.worldY = 100;
+                }
                 if (inputController.interactionKeyJustPressed) {
-                    inputController.resetJustPressed();
                     checkPlayerPickup();
+                    inputController.resetJustPressed();
                 }
                 if (inputController.attackKeyJustPressed) {
                     System.out.println("Attack key pressed");
@@ -168,21 +173,20 @@ public class GameController {
         for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) { // avoid ConcurrentModification
             if (enemy.getState() == EnemyStatus.DEAD) continue;
 
-            int attackSize = player.getAttackRangeScale();
-            Rectangle enemyHitBox = generateNewEnemyHitbox(enemy);
-            Rectangle playerAttackRange = new Rectangle(
-                    player.worldX - player.getAttackRangeScale() / 2,
-                    player.worldY - player.getAttackRangeScale() / 2,
-                    player.getAttackRangeScale(),
-                    player.getAttackRangeScale()
-            );
+            Rectangle enemyHitBox = new Rectangle(
+                    enemy.worldX + enemy.getHitbox().x,
+                    enemy.worldY + enemy.getHitbox().y,
+                    enemy.getHitbox().width,
+                    enemy.getHitbox().height);
 
-
-            if (playerAttackRange.intersects(enemyHitBox)){
+            if (player.getAttackRange().intersects(enemyHitBox)){
                 System.out.println("Try attacking");
-                boolean atattacked = player.attackEnemy(enemy);
-                if (atattacked) {
-                    break; // stop after first enemy
+                boolean attacked = player.attackEnemy(enemy);
+                if (enemy.getState() == EnemyStatus.DEAD || enemy.getState() == EnemyStatus.CURED) {
+                    if (enemy instanceof LilyFinalBoss && magicChestOpen) {
+                        enemy.setEnemyState(EnemyStatus.CURED);
+                    }
+                    map.removeEnemy(enemy);
                 }
             }
         }

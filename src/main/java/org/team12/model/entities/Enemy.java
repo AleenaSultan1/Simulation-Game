@@ -65,6 +65,7 @@ public class Enemy extends Entity {
     }
 
     public void enemyMoveToPlayer(Player player) {
+        //System.out.println("is hostile");
         setEnemyState(EnemyStatus.HOSTILE);
 //        System.out.println("Hostile");
         moveToPlayer(player);
@@ -74,9 +75,10 @@ public class Enemy extends Entity {
         attackCounter++;
         //System.out.println(attackCounter);
         if (attackCounter >= 60) {
+            //System.out.println("is attacking");
             player.takeDamage(2);
             attackCounter = 0;
-//            System.out.println("HP: " + player.getHP());
+            System.out.println("HP: " + player.getHP());
         }
     }
 
@@ -90,7 +92,7 @@ public class Enemy extends Entity {
         // Decide new direction and step count every 60 ticks (1 second if 60 FPS)
         if (actionLockCounter >= 60 || stepsTaken >= stepLimit) {
             int turn = rand.nextInt(4);
-            stepLimit = rand.nextInt(5) + 10; // Move steps in chosen direction
+            stepLimit = rand.nextInt(10) + 20; // Move steps in chosen direction
             stepsTaken = 0;
 
             switch (turn) {
@@ -124,7 +126,6 @@ public class Enemy extends Entity {
             actionLockCounter = 60;
         }
     }
-
 
     @Override
     public BufferedImage getCurrentSprite() {

@@ -96,4 +96,7 @@ public class CollisionController {
         );
     }
 
+    public void setMap(Map map) {
+        this.map = map;
+    }
 }

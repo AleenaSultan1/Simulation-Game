@@ -83,6 +83,9 @@ public class MapRenderer {
 
                     Tile tile = map.getTile(x, y);
                     // 1. Draw the wall and floor
+                    if (tile == null) {
+                        continue;
+                    }
                     if (tile.isObstacle) {
                         g2.drawImage(wallImage, screenX, screenY, tileSize, tileSize, null);
                     } else {
