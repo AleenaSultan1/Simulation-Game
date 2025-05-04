@@ -17,7 +17,7 @@
 
 package org.team12.model.entities;
 
-import org.team12.controller.UtilityTool;
+import org.team12.view.UtilityTool;
 import org.team12.states.ItemState;
 
 import java.awt.*;

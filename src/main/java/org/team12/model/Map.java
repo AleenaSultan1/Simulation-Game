@@ -18,11 +18,7 @@
 package org.team12.model;
 
 import org.team12.controller.CollisionController;
-import org.team12.controller.GameController;
-import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
-import org.team12.states.GameState;
-import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
 import java.awt.*;

@@ -17,7 +17,6 @@
 
 package org.team12.view;
 
-import org.team12.controller.UtilityTool;
 import org.team12.model.entities.*;
 
 import java.awt.*;

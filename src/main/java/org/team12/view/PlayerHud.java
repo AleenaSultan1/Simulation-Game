@@ -17,18 +17,10 @@
 
 package org.team12.view;
 
-import org.team12.controller.GameController;
-import org.team12.controller.InputController;
-import org.team12.controller.UtilityTool;
-import org.team12.model.entities.Heart;
-import org.team12.model.entities.Item;
 import org.team12.model.entities.Laptop;
-import org.team12.model.entities.Player;
 import org.team12.states.GameState;
 
-import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import java.awt.*;
