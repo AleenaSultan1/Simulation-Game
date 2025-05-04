@@ -86,4 +86,4 @@ You can run the game through DungeonGameApp.java.
 - *Movement*: The `arrow keys` or `W` `A` `S` `D` keys allow the player to move around the map.
 - *Attacking*: To attack enemies, move into them as if you were going in that certain direction. Press `E` to attack them.
 - *Picking up an object*: To pick up an item, move the player over it and press the `Space bar`.
-- *Pause/Resume game*: To pause or continue the game, press `P`.
+- *Pause/Resume game*: To pause the game, press `ESC`.
