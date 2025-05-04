@@ -17,6 +17,8 @@
 
 package org.team12.model.Items;
 
+import org.team12.view.PlayerHud;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -24,9 +26,11 @@ import java.util.Objects;
 
 public class Sword extends Item {
     public int strength;
+    private PlayerHud playerHud;
 
-    public Sword() {
+    public Sword(PlayerHud playerHud) {
         strength = 5;
+        this.playerHud = playerHud;
     }
 
     @Override
@@ -37,5 +41,11 @@ public class Sword extends Item {
             e.printStackTrace();
         }
         return image;
+    }
+
+    @Override
+    public void pickUp() {
+        super.pickUp();
+        playerHud.setMessage("Sword Picked Up");
     }
 }

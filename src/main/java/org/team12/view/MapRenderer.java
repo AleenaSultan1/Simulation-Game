@@ -33,8 +33,6 @@ public class MapRenderer {
     private Map map;
     private BufferedImage floorImage;
     private BufferedImage wallImage;
-    private BufferedImage swordImage;
-    private BufferedImage chestCloseImage;
     private BufferedImage heartFull, heartHalf, heartEmpty;
 
 

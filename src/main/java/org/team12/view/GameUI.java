@@ -156,7 +156,7 @@ public class GameUI extends JPanel implements Runnable{
                 repaint();
                 delta--;
                 drawCount++;
-                update();
+                gameController.update();
 
             }
 
@@ -176,11 +176,10 @@ public class GameUI extends JPanel implements Runnable{
         super.paintComponent(g);
         // create a new Graphics 2d Object
         Graphics2D g2 = (Graphics2D) g;
-        if (gameController.getGameState() == GameState.PAUSE) {
-            playerHud.drawTitleScreen(g2);
-        } else if (gameController.getGameState() == GameState.QUIZ) {
+
+        if (gameController.getGameState() == GameState.QUIZ) {
             playerHud.drawLaptopQuiz(g2);
-        } else {
+        } else if (gameController.getGameState() == GameState.PLAYING) {
             // draw the map
             mapRenderer.draw(g2);
             for (Entity entity : map.getEntitiesOnMap()) {
@@ -189,16 +188,12 @@ public class GameUI extends JPanel implements Runnable{
                     entityRenderer.drawEnemyHP(g2, (Enemy) entity);
                 }
             }
+        } else {
+            playerHud.drawTitleScreen(g2, gameController.getGameState());
         }
 
         // dispose of the objects
         g2.dispose();
     }
 
-    private void update() {
-        // Everything that needs to be updated in one frame
-        gameController.update();
-//        player.update();
-
-    }
 }

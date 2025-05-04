@@ -13,14 +13,11 @@ import javax.swing.*;
 public class DungeonGameApp {
 
     public static void main(String[] args) {
-
-
         // Create a window
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Dungeon Game");
-
 
         // Create the GameUI (our main game panel)
         GameUI gameUI = new GameUI();

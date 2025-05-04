@@ -35,24 +35,18 @@ public abstract class Item {
 
     public Rectangle hitbox = new Rectangle(worldX, worldY, GameUI.getTileSize(), GameUI.getTileSize());
 
-
-    UtilityTool utilTool = new UtilityTool();
-
     public ItemState itemState;
-    public double interactDistance;
-    public double playerDistance;
-
 
     public Item() {
         this.itemState = ItemState.INTERACTABLE;
     }
 
     public void setX(int x) {
-         this.worldX = x;
+         this.worldX = x * GameUI.getTileSize();
     }
 
     public void setY(int y) {
-         this.worldY = y;
+         this.worldY = y * GameUI.getTileSize();
     }
 
     public int getWorldX() {

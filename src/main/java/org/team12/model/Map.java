@@ -106,24 +106,24 @@ public class Map {
                             Sword sword = new Sword();
                             itemsOnMap.add(sword);
                             grid[x][y].setItem(sword);
-                            sword.setX(x * GameUI.getTileSize());
-                            sword.setY(y * GameUI.getTileSize());
+                            sword.setX(x);
+                            sword.setY(y);
                             break;
                         // Riddle chest
                         case 4:
                             Laptop laptop = new Laptop();
                             itemsOnMap.add(laptop);
                             grid[x][y].setItem(laptop);
-                            laptop.setX(x * GameUI.getTileSize());
-                            laptop.setY(y * GameUI.getTileSize());
+                            laptop.setX(x);
+                            laptop.setY(y);
                             break;
                         // Magic dust
                         case 5:
                             MagicDust magicDust = new MagicDust();
                             itemsOnMap.add(magicDust);
                             grid[x][y].setItem(magicDust);
-                            magicDust.setX(x * GameUI.getTileSize());
-                            magicDust.setY(y * GameUI.getTileSize());
+                            magicDust.setX(x);
+                            magicDust.setY(y);
                             break;
                         case 6: // Lily Final Boss
                             LilyFinalBoss lily = new LilyFinalBoss(10, 2);
@@ -184,6 +184,14 @@ public class Map {
         List<Entity> entities = new ArrayList<>(enemiesOnMap);
         entities.add(player);
         return entities;
+    }
+
+    public void addItem (Item item, int x, int y) {
+        Tile targetTile = getTile(x, y);
+        if (targetTile != null) {
+            itemsOnMap.add(item);
+            grid[x][y].setItem(item);
+        }
     }
 
     public void removeItem(Item item) {

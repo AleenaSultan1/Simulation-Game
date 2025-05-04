@@ -20,11 +20,14 @@ package org.team12.view;
 import org.team12.model.Items.Laptop;
 import org.team12.states.GameState;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 public class PlayerHud {
     private int tileSize;
@@ -35,7 +38,7 @@ public class PlayerHud {
     int messageTimer = 0;
     public int commandNumber = -1;
 
-    private BufferedImage openLaptop;
+    private BufferedImage openLaptop, skull, lily;
 
     private Laptop laptop;
 
@@ -43,9 +46,23 @@ public class PlayerHud {
     public PlayerHud(int tileSize) {
         arial_40 = new Font("Arial", Font.PLAIN, 40);
         this.tileSize = tileSize;
+
+        try{
+            openLaptop = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/openLaptop.png")));
+            skull = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/skull.png")));
+            lily = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Lily/lily_down_1.png")));
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void showMessage(String text){
+    public void loadImages() {
+
+    }
+
+    public void setMessage(String text){
         message = text;
         messageOn = true;
     }
@@ -59,12 +76,12 @@ public class PlayerHud {
         g2.setColor(Color.WHITE);
 
         if (gameState == GameState.PAUSE) {
-            drawTitleScreen(g2);
+//            drawTitleScreen(g2);
         }
 
     }
 
-    public void drawPlayScreen(Graphics2D g2) {
+    public void drawMessage(Graphics2D g2, String text) {
         // display messages when items or events happen
         if (messageOn) {
             g2.setFont(g2.getFont().deriveFont(20f));
@@ -80,14 +97,30 @@ public class PlayerHud {
 
     }
 
-    public void drawTitleScreen(Graphics2D g2) {
+    public void drawTitleScreen(Graphics2D g2, GameState gameState) {
         g2.setColor(new Color (10,10,50));
         g2.fillRect(0,0, GameUI.getScreenWidth(), GameUI.getScreenHeight());
 
 
         //TITLE NAME
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,50f));
-        String text = "CSCI 205 Simulator";
+
+        String text = "Default, Error";
+        BufferedImage image = null;
+
+
+        if (gameState == GameState.PLAYER_DEAD) {
+            text = "You're dead, haha!";
+            image = skull;
+        } else if (gameState == GameState.LILY_CURED) {
+            text = "Cured Lily, A+!";
+            image = lily;
+        } else if (gameState == GameState.PAUSE) {
+            text = "CSCI 205: Code Crisis";
+            image = openLaptop;
+        } else if (gameState == GameState.END) {
+            System.exit(0);
+        }
         int x = centerText(text, g2);
         int y = tileSize*3;
 
@@ -100,28 +133,59 @@ public class PlayerHud {
 
         //Laptop Image
         x=GameUI.getScreenWidth()/2 - (tileSize*2)/2;
-        y+=tileSize*2;
-        Laptop laptopTitle = new Laptop();
-        g2.drawImage(laptopTitle.getOpenLaptop(), x, y, tileSize *2, tileSize*2, null);
+        y+=tileSize*2 - 50;
+        g2.drawImage(image, x, y - 30, tileSize *2, tileSize*2, null);
 
-        //MENU
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 40f));
+        if (gameState == GameState.PAUSE) {
+            // Story text
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 18f));
+            String story = "Professor Lily has been possessed by evil code!";
+            String story2 = "Complete coding quizzes to earn weapons, defeat the TA Goons,";
+            String story3 = "and use MagicDust to debug Lily's corrupted code!";
 
-        text = "Play Game";
-        x = centerText(text, g2);
-        y += tileSize * 4;
-        g2.drawString(text, x, y);
-        if(commandNumber == -1) {
+            int storyX = centerText(story, g2);
+            g2.setColor(new Color(192, 204, 213));
+            g2.drawString(story, storyX, y + tileSize * 2 );
+            g2.drawString(story2, centerText(story2, g2), y + tileSize * 2 + 30);
+            g2.drawString(story3, centerText(story3, g2), y + tileSize * 2 + 60);
+
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 15f));
+            g2.setColor(new Color(147, 180, 204));
+            String controlsTitle = "- CONTROLS -";
+            String instructions = "WASD/Arrows: Move - ESC: Menu";
+            String instructions2 = "SPACE: Interact - E: Attack";
+            g2.drawString(controlsTitle, centerText(controlsTitle, g2), y + tileSize * 2 + 90);
+            g2.drawString(instructions, centerText(instructions, g2), y + tileSize * 2 + 110);
+            g2.drawString(instructions2, centerText(instructions2, g2), y + tileSize * 2 + 130);
+
+            //MENU
+            g2.setColor(Color.WHITE);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 40f));
+
+            text = "Play Game";
+            x = centerText(text, g2);
+            y += tileSize * 6 - 10;
+            g2.drawString(text, x, y);
+            if(commandNumber == -1) {
+                g2.drawString(">", x - tileSize, y);
+            }
+            text = "Quit";
+            x = centerText(text, g2);
+            y += tileSize;
+            g2.drawString(text, x, y);
+            if(commandNumber == 1) {
+                g2.drawString(">", x - tileSize, y);
+            }
+        } else {
+            text = "Quit";
+            x = centerText(text, g2);
+            y += 4*tileSize;
+            commandNumber = 1;
+            g2.drawString(text, x, y);
             g2.drawString(">", x - tileSize, y);
         }
 
-        text = "Quit";
-        x = centerText(text, g2);
-        y += tileSize;
-        g2.drawString(text, x, y);
-        if(commandNumber == 1) {
-            g2.drawString(">", x - tileSize, y);
-        }
+
     }
 
     public int centerText(String text, Graphics2D g2) {
