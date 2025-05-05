@@ -106,8 +106,5 @@ public class EntityRenderer {
             g2.drawRect(barX, barY, barWidth, barHeight);
         }
     }
-
-
-
 }
 
