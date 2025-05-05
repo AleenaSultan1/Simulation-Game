@@ -108,7 +108,7 @@ All game assets such as sprite images, tile textures, and map files are stored u
   Text-based dungeon layout files used by the `Map` class to generate levels (e.g., `dungeonMap.txt`).
 
 - `resources/objects/`  
-  Icons and images for interactive items like swords, riddle chests, and magic dust.
+  Icons and images for interactive items like swords, laptop, heart, and magic dust.
 
 - `resources/player/`  
   Player character sprites facing all four directions, with animation frames.
