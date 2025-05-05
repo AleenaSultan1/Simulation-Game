@@ -76,6 +76,10 @@ public abstract class Entity {
         return hitbox;
     }
 
+    public void setHP(int hp) {
+        this.HP = hp;
+    }
+
     public int getHP() {
         return HP;
     }
