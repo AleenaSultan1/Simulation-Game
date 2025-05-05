@@ -19,9 +19,9 @@ package org.team12.model.entities;
 
 import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
-import org.team12.model.Items.Item;
-import org.team12.model.Items.Laptop;
-import org.team12.model.Items.Sword;
+import org.team12.model.items.Item;
+import org.team12.model.items.Laptop;
+import org.team12.model.items.Sword;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 import javax.imageio.ImageIO;

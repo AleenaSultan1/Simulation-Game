@@ -76,11 +76,6 @@ public abstract class Entity {
         return hitbox;
     }
 
-    // For testing
-    public void setHP(int hp) {
-        this.HP = hp;
-    }
-
     public int getHP() {
         return HP;
     }

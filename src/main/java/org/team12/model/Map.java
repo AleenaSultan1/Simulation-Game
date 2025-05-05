@@ -18,12 +18,9 @@
 package org.team12.model;
 
 import org.team12.controller.CollisionController;
-import org.team12.model.Items.Item;
-import org.team12.model.Items.Laptop;
-import org.team12.model.Items.MagicDust;
-import org.team12.model.Items.Sword;
+import org.team12.model.items.Item;
+import org.team12.model.items.Laptop;
 import org.team12.model.entities.*;
-import org.team12.view.GameUI;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

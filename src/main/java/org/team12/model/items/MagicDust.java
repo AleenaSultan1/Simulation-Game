@@ -15,7 +15,7 @@
  * ****************************************
  */
 
-package org.team12.model.Items;
+package org.team12.model.items;
 
 import org.team12.model.entities.LilyFinalBoss;
 

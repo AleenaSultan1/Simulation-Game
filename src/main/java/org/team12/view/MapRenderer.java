@@ -17,8 +17,8 @@
 
 package org.team12.view;
 
-import org.team12.model.Items.Heart;
-import org.team12.model.Items.Item;
+import org.team12.model.items.Heart;
+import org.team12.model.items.Item;
 import org.team12.model.Map;
 import org.team12.model.Tile;
 import org.team12.model.entities.*;

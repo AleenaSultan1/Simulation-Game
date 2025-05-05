@@ -17,10 +17,10 @@
 
 package org.team12.controller;
 
-import org.team12.model.Items.Item;
-import org.team12.model.Items.Laptop;
-import org.team12.model.Items.MagicDust;
-import org.team12.model.Items.Sword;
+import org.team12.model.items.Item;
+import org.team12.model.items.Laptop;
+import org.team12.model.items.MagicDust;
+import org.team12.model.items.Sword;
 import org.team12.model.Map;
 import org.team12.model.Tile;
 import org.team12.model.entities.*;

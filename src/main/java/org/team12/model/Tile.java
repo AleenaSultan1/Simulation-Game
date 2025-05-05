@@ -17,7 +17,7 @@
 
 package org.team12.model;
 
-import org.team12.model.Items.Item;
+import org.team12.model.items.Item;
 import org.team12.model.entities.*;
 
 import java.awt.image.BufferedImage;

@@ -15,9 +15,8 @@
  * ****************************************
  */
 
-package org.team12.model.Items;
+package org.team12.model.items;
 
-import org.team12.view.UtilityTool;
 import org.team12.states.ItemState;
 
 import java.awt.*;

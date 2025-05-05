@@ -17,7 +17,7 @@
 
 package org.team12.view;
 
-import org.team12.model.Items.Laptop;
+import org.team12.model.items.Laptop;
 import org.team12.states.GameState;
 
 import javax.imageio.ImageIO;
