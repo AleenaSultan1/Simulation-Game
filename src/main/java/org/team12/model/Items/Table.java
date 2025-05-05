@@ -15,14 +15,11 @@
  * ****************************************
  */
 
-package org.team12.model.entities;
+package org.team12.model.Items;
 
 import org.team12.controller.GameController;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
 
 public class Table extends Item{
 

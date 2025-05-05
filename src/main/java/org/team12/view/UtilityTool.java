@@ -15,7 +15,7 @@
  * ****************************************
  */
 
-package org.team12.controller;
+package org.team12.view;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

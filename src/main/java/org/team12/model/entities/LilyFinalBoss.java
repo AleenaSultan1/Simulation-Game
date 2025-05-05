@@ -45,6 +45,7 @@ public class LilyFinalBoss extends Enemy {
     }
 
     public void setEnemyState (EnemyStatus newState) {
+
         this.enemyState = newState;
     }
 

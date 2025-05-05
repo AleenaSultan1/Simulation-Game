@@ -17,11 +17,13 @@
 
 package org.team12.controller;
 
+import org.team12.model.Items.Item;
+import org.team12.model.Items.Laptop;
+import org.team12.model.Items.MagicDust;
+import org.team12.model.Items.Sword;
 import org.team12.model.Map;
-import org.team12.model.entities.Enemy;
-import org.team12.model.entities.Item;
-import org.team12.model.entities.Laptop;
-import org.team12.model.entities.Player;
+import org.team12.model.Tile;
+import org.team12.model.entities.*;
 import org.team12.states.EnemyStatus;
 import org.team12.states.GameState;
 import org.team12.states.ItemState;
@@ -40,6 +42,8 @@ public class GameController {
     private GameState gameState;
     private PlayerHud playerHud;
     private Laptop currLaptop;
+    private boolean level2;
+    private LilyFinalBoss lily;
 
 
     public GameController(Map map, InputController inputController, PlayerHud playerHud) {
@@ -51,23 +55,11 @@ public class GameController {
         map.setCollisionController(collisionController);
         player = new Player(inputController, collisionController, 20);
         map.setPlayer(player);
-//        checkForLaptop();
 
         this.playerHitbox = player.getHitbox();
-
+        this.level2 = false;
         //Game State
         gameState = GameState.PAUSE;
-
-    }
-
-    private void checkForLaptop() {
-        for (Item item : map.getItemsOnMap()) {
-            if (item instanceof Laptop) {
-                playerHud.setLaptop((Laptop) item);
-                currLaptop = (Laptop) item;
-                break;
-            }
-        }
     }
 
     public GameState getGameState() {
@@ -78,8 +70,20 @@ public class GameController {
         return player;
     }
 
+
+    public void updateMapLevel() {
+        //setGameState(GameState.LEVEL_2);
+        map.loadMap("/map/dungeonMap.txt", true);
+        map.setCollisionController(collisionController); // RE-ASSIGN after reloading
+        map.setPlayer(player); // RE-ASSIGN player as well
+        System.out.println("Map level updated to LEVEL_2");
+//        collisionController.setMap(map);
+    }
+
     public void update() {
         switch (gameState) {
+            case PLAYER_DEAD:
+            case LILY_CURED:
             case PAUSE:
                 GameState selectedState = handleTitleScreenInput(inputController);
                 if (selectedState == GameState.END) {
@@ -93,12 +97,24 @@ public class GameController {
                 player.update();
                 generateNewPlayerHitbox();
                 checkEnemyHostility();
+                // Check for level transition
+                if (map.getEnemiesOnMap().isEmpty() && checkPlayerInventory() && !level2) {
+                    level2 = true;
+                    updateMapLevel();
+                    // Reset player position for new level
+                    player.worldX = 100;
+                    player.worldY = 100;
+                }
+                if (player.getHP() == 0) gameState = GameState.PLAYER_DEAD;
+                if (level2) {
+                    lily = getLily();
+                    if (lily.getHP() == 0) gameState = GameState.LILY_CURED;
+                }
                 if (inputController.interactionKeyJustPressed) {
-                    inputController.resetJustPressed();
                     checkPlayerPickup();
+                    inputController.resetJustPressed();
                 }
                 if (inputController.attackKeyJustPressed) {
-                    System.out.println("Attack key pressed");
                     checkPlayerAttack();
                     inputController.resetJustPressed();
                 }
@@ -112,9 +128,20 @@ public class GameController {
             case END:
                 System.out.println("End");
                 System.exit(0);
-
         }
-
+    }
+    public boolean checkPlayerInventory() {
+        boolean dust = false;
+        boolean sword = false;
+        for (Item item : player.getInventory()) {
+            if (item instanceof MagicDust) {
+                dust = true;
+            }
+            if (item instanceof Sword) {
+                sword = true;
+            }
+        }
+        return dust && sword;
     }
     public void generateNewPlayerHitbox() {
         playerHitbox = new Rectangle(
@@ -124,20 +151,20 @@ public class GameController {
                 player.getHitbox().height);
     }
 
-    public Rectangle generateNewEnemyHitbox(Enemy enemy) {
-        return new Rectangle(
-                enemy.worldX + enemy.getHitbox().x,
-                enemy.worldY + enemy.getHitbox().y,
-                enemy.getHitbox().width,
-                enemy.getHitbox().height);
-    }
-
     public void checkPlayerPickup() {
-
         // Only check against interactable items
         for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
             if (item.getItemState() != ItemState.INTERACTABLE) continue;
+// Get the item's tile position
+            int itemTileX = item.getWorldX() / GameUI.getTileSize();
+            int itemTileY = item.getWorldY() / GameUI.getTileSize();
+            Tile itemTile = map.getTile(itemTileX, itemTileY);
 
+            // Verify the item is actually on this tile
+            if (itemTile == null || itemTile.getItem() != item) {
+                System.out.println("Orphaned item detected at " + itemTileX + "," + itemTileY);
+                continue;
+            }
             Rectangle itemHitbox = new Rectangle(
                     item.getWorldX(), item.getWorldY(),
                     GameUI.getTileSize(), GameUI.getTileSize()
@@ -162,27 +189,32 @@ public class GameController {
             }
         }
     }
-    public void checkPlayerAttack() {
 
+    public LilyFinalBoss getLily() {
+        for (Enemy enemy : map.getEnemiesOnMap()) {
+            if (enemy instanceof LilyFinalBoss) {
+                return (LilyFinalBoss) enemy;
+            }
+        }
+        return null;
+    }
+
+    public void checkPlayerAttack() {
         // Only check against alive Enemies
         for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) { // avoid ConcurrentModification
             if (enemy.getState() == EnemyStatus.DEAD) continue;
 
-            int attackSize = player.getAttackRangeScale();
-            Rectangle enemyHitBox = generateNewEnemyHitbox(enemy);
-            Rectangle playerAttackRange = new Rectangle(
-                    player.worldX - player.getAttackRangeScale() / 2,
-                    player.worldY - player.getAttackRangeScale() / 2,
-                    player.getAttackRangeScale(),
-                    player.getAttackRangeScale()
-            );
+            Rectangle enemyHitBox = new Rectangle(
+                    enemy.worldX + enemy.getHitbox().x,
+                    enemy.worldY + enemy.getHitbox().y,
+                    enemy.getHitbox().width,
+                    enemy.getHitbox().height);
 
-
-            if (playerAttackRange.intersects(enemyHitBox)){
+            if (player.getAttackRange().intersects(enemyHitBox)){
                 System.out.println("Try attacking");
-                boolean atattacked = player.attackEnemy(enemy);
-                if (atattacked) {
-                    break; // stop after first enemy
+                boolean attacked = player.attackEnemy(enemy);
+                if (enemy.getState() == EnemyStatus.DEAD && attacked) {
+                    map.removeEnemy(enemy);
                 }
             }
         }
@@ -239,9 +271,9 @@ public class GameController {
             }
             else if (laptop.getItemState() == ItemState.UNINTERACTABLE) {
                 // All questions answered correctly
-                playerHud.showMessage("Quiz complete! You earned an A+!");
+                playerHud.setMessage("Quiz complete! You earned an A+!");
                 laptop.deactivate();
-                System.out.println("Quiz complete! You earned an A+!");
+                spawnItemNearPlayer();
                 gameState = GameState.PLAYING;
                 input.resetJustPressed();
                 return;
@@ -271,7 +303,51 @@ public class GameController {
         }
         return null;
     }
+    private void spawnSwordNearPlayer() {
+        // Convert back to world coordinates
+        int spawnX = player.worldX + GameUI.getTileSize();
+        int spawnY = player.worldY + GameUI.getTileSize();
 
+        // Create new sword
+        Sword sword = new Sword();
+
+        // Find and set the tile (optional but recommended)
+        int tileX = spawnX / GameUI.getTileSize();
+        int tileY = spawnY / GameUI.getTileSize();
+        // Add to map
+        map.addItem(sword, tileX, tileY);
+        sword.setX(tileX);
+        sword.setY(tileY);
+}
+
+    private void spawnDustNearPlayer() {
+        // Convert back to world coordinates
+        int spawnX = player.worldX + GameUI.getTileSize();
+        int spawnY = player.worldY + GameUI.getTileSize();
+
+        // Create new sword
+        MagicDust dust = new MagicDust();
+
+        // Find and set the tile (optional but recommended)
+        int tileX = spawnX / GameUI.getTileSize();
+        int tileY = spawnY / GameUI.getTileSize();
+        // Add to map
+        map.addItem(dust, tileX, tileY);
+        dust.setX(tileX);
+        dust.setY(tileY);
+
+
+    }
+    private void spawnItemNearPlayer() {
+        // Check if player already has sword
+        for (Item item : player.getInventory()) {
+            if (item instanceof Sword) {
+                spawnDustNearPlayer();
+                return;
+            }
+        }
+        spawnSwordNearPlayer();
+    }
 }
 
 

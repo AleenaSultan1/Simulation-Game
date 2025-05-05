@@ -15,9 +15,9 @@
  * ****************************************
  */
 
-package org.team12.model.entities;
+package org.team12.model.Items;
 
-import org.team12.view.GameUI;
+import org.team12.view.PlayerHud;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -40,4 +40,5 @@ public class Sword extends Item {
         }
         return image;
     }
+
 }

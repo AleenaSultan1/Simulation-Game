@@ -18,14 +18,14 @@
 package org.team12.model;
 
 import org.team12.controller.CollisionController;
-import org.team12.controller.UtilityTool;
+import org.team12.model.Items.Item;
+import org.team12.model.Items.Laptop;
+import org.team12.model.Items.MagicDust;
+import org.team12.model.Items.Sword;
 import org.team12.model.entities.*;
-import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 
-import java.awt.*;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -44,46 +44,54 @@ public class Map {
     private CollisionController collisionController;
 
 
-    public Map(String filepath) {
+    public Map(String filepath, boolean level2) {
         enemiesOnMap = new ArrayList<>();
         itemsOnMap = new ArrayList<>();
-        loadMap(filepath);
+        loadMap(filepath, level2);
     }
-    private void loadMap(String filepath) {
+
+    public void loadMap(String filepath, boolean level2) {
+        enemiesOnMap.clear();
+        itemsOnMap.clear();
         try {
             InputStream is = getClass().getResourceAsStream(filepath);
             BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(is)));
 
-            // First, read all lines to determine dimensions
+            List<String> lines = new ArrayList<>();
             String line;
-            int rows = 0;
-            int cols = 0;
-            while ((line = br.readLine()) != null) {
-                if (rows == 0) {
-                    cols = line.split(" ").length;
-                }
-                rows++;
-            }
-            this.width = cols;
-            this.height = rows;
+            boolean isLevel2Part = false;
 
-            // Initialize grid
+            while ((line = br.readLine()) != null) {
+                if (line.trim().startsWith("*")) {
+                    isLevel2Part = true;
+                    continue; // skip the separator line itself
+                }
+
+                // Only load LEVEL2 part if GameState is LEVEL2
+                if ((!level2 && !isLevel2Part) ||
+                        (level2 && isLevel2Part)) {
+                    lines.add(line);
+                }
+            }
+
+            this.height = lines.size();
+            this.width = lines.get(0).split(" ").length;
             grid = new Tile[width][height];
 
-            // Reset reader to beginning
-            is = getClass().getResourceAsStream(filepath);
-            br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(is)));
-
-            int y = 0;
-            while ((line = br.readLine()) != null) {
-                String[] numbers = line.split(" ");
+            for (int y = 0; y < height; y++) {
+                String[] numbers = lines.get(y).trim().split(" ");
                 for (int x = 0; x < numbers.length; x++) {
                     grid[x][y] = new Tile(x, y);
-                    int tileType = Integer.parseInt(numbers[x]);
-                    char tileTypeChar = (char) tileType;
-                    // Wall
-                    switch (tileTypeChar) {
-                        case 1:
+                    int tileType;
+                    try {
+                        tileType = Integer.parseInt(numbers[x]);
+                    } catch (NumberFormatException e) {
+                        continue; // skip non-integer tiles in level2 region (e.g. hyphens or dashes)
+                    }
+
+                    switch (tileType) {
+                        case 1: // Wall
+                        case 9:
                             grid[x][y].setObstacle(true);
                             break;
                         // Goon
@@ -93,42 +101,25 @@ public class Map {
                             enemy.setCoord(x, y);
                             grid[x][y].setEnemy(enemy);
                             break;
-                        // Sword
-                        case 3:
-                            Sword sword = new Sword();
-                            itemsOnMap.add(sword);
-                            grid[x][y].setItem(sword);
-                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
-                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
-                            break;
+
                         // Riddle chest
                         case 4:
                             Laptop laptop = new Laptop();
                             itemsOnMap.add(laptop);
                             grid[x][y].setItem(laptop);
-                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
-                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
+                            laptop.setX(x);
+                            laptop.setY(y);
                             break;
-                        // Laptop
-                        case 5:
-                            MagicDust magicDust = new MagicDust();
-                            itemsOnMap.add(magicDust);
-                            grid[x][y].setItem(magicDust);
-                            itemsOnMap.getLast().setX(x * GameUI.getTileSize());
-                            itemsOnMap.getLast().setY(y * GameUI.getTileSize());
-                            break;
-                        // Lily Final Boss
-                        case 6:
-                            LilyFinalBoss lilyFinalBoss = new LilyFinalBoss(10, 2);
-                            enemiesOnMap.add(lilyFinalBoss);
-                            lilyFinalBoss.setCoord(x, y);
-                            grid[x][y].setEnemy(lilyFinalBoss);
+                        case 6: // Lily Final Boss
+                            LilyFinalBoss lily = new LilyFinalBoss(10, 2);
+                            enemiesOnMap.add(lily);
+                            lily.setCoord(x, y);
+                            grid[x][y].setEnemy(lily);
                             break;
                         default:
                             break;
                     }
                 }
-                y++;
             }
             br.close();
         } catch (Exception e) {
@@ -180,6 +171,14 @@ public class Map {
         return entities;
     }
 
+    public void addItem (Item item, int x, int y) {
+        Tile targetTile = getTile(x, y);
+        if (targetTile != null) {
+            itemsOnMap.add(item);
+            grid[x][y].setItem(item);
+        }
+    }
+
     public void removeItem(Item item) {
         // Find the item's tile by position and clear it
         for (int x = 0; x < width; x++) {
@@ -194,4 +193,17 @@ public class Map {
         }
     }
 
+    public void removeEnemy(Enemy enemy) {
+        // Find the item's tile by position and clear it
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Tile tile = grid[x][y];
+                if (tile.getEnemy() == enemy) {
+                    tile.setEnemy(null);
+                    enemiesOnMap.remove(enemy); // precise removal
+                    return;
+                }
+            }
+        }
+    }
 }

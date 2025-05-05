@@ -15,11 +15,14 @@
  * ****************************************
  */
 
-package org.team12.model.entities;
+package org.team12.model.Items;
 
-import org.team12.states.ItemState;
+import org.team12.model.entities.LilyFinalBoss;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 
 public class MagicDust extends Item {
 
@@ -32,6 +35,11 @@ public class MagicDust extends Item {
 
     @Override
     public BufferedImage getSprite() {
-        return null;
+        try {
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/magicDust.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 }

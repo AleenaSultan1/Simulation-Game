@@ -15,11 +15,12 @@
  * ****************************************
  */
 
-package org.team12.model.entities;
+package org.team12.model.Items;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Objects;
 import org.team12.states.ItemState;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.List;
 public class Laptop extends Item {
 
     private List<QuizQuestion> quizQuestions = new ArrayList<>();
+    private List<QuizQuestion> currentQuizSession = new ArrayList<>();
     public int currentQuestionIndex = 0;
     private boolean isActive = false;
     private int selectedOption = 0;
@@ -50,21 +52,31 @@ public class Laptop extends Item {
                 "What command shows which files have unchanged but not committed?",
                 "git status",
                 new String[]{"git commit", "git push", "git status", "git diff"}));
-
         quizQuestions.add(new QuizQuestion(
                 "What data structure uses FIFO order?",
                 "queue",
-                new String[]{"stack", "tree", "queue", "graph"}));
-
-        // Add more questions...
+                new String[]{"stack", "tree", "graph", "queue"}));
+        quizQuestions.add(new QuizQuestion("Which traversal visits root, then left, then right in a tree?",
+                "Preorder Traversal",
+                new String[] {"Inorder Traversal", "Preorder Traversal", "Postorder Traversal", "Breadth First Search"}));
+        quizQuestions.add(new QuizQuestion("What keyword refers to the current object?",
+                "this",
+                new String[]{"this", "that", "self", "Lily"}));
     }
 
     public void activate() {
-        if (currentQuestionIndex < quizQuestions.size()) {
+        // Select 2 unique random questions
+        currentQuizSession = new ArrayList<>(quizQuestions);
+        Collections.shuffle(currentQuizSession);
+        if (currentQuizSession.size() > 2) {
+            currentQuizSession = currentQuizSession.subList(0, 2);
+        }
+//        if (currentQuestionIndex < quizQuestions.size()) {
+        currentQuestionIndex = 0;
             isActive = true;
             selectedOption = 0;
             answerSubmitted = false;
-        }
+//        }
     }
 
     public void deactivate() {
@@ -77,8 +89,8 @@ public class Laptop extends Item {
     }
 
     public QuizQuestion getCurrentQuestion() {
-        if (currentQuestionIndex < quizQuestions.size()) {
-            return quizQuestions.get(currentQuestionIndex);
+        if (currentQuestionIndex < currentQuizSession.size()) {
+            return currentQuizSession.get(currentQuestionIndex);
         }
         return null;
     }
@@ -108,7 +120,7 @@ public class Laptop extends Item {
             String selectedAnswer = current.getOptions()[selectedOption];
             if (selectedAnswer.equalsIgnoreCase(current.getAnswer())) {
                 currentQuestionIndex++;
-                if (currentQuestionIndex >= quizQuestions.size()) {
+                if (currentQuestionIndex >= currentQuizSession.size()) {
                     deactivate();
                 }
                 return true;
@@ -160,10 +172,5 @@ public class Laptop extends Item {
     @Override
     public void pickUp() {
     }
-
-    public BufferedImage getOpenLaptop() {
-        return image;
-    }
-
 }
 

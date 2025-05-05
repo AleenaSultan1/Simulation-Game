@@ -19,6 +19,9 @@ package org.team12.model.entities;
 
 import org.team12.controller.CollisionController;
 import org.team12.controller.InputController;
+import org.team12.model.Items.Item;
+import org.team12.model.Items.Laptop;
+import org.team12.model.Items.Sword;
 import org.team12.states.ItemState;
 import org.team12.view.GameUI;
 import javax.imageio.ImageIO;
@@ -39,9 +42,13 @@ public class Player extends Entity {
     private CollisionController collisionController;
     private int attackRangeScale;
     private Rectangle attackRange;
+    private boolean hasSword;
+    private BufferedImage attack_d_1, attack_d_2, attack_r_1, attack_r_2, attack_l_1, attack_l_2, attack_u_1, attack_u_2;
 
     public Player(InputController inputController, CollisionController collisionController, int hp) {
         super(hp);
+        hasSword = false;
+
         this.inventory = new ArrayList<>();
         this.inputController = inputController;
         this.collisionController = collisionController;
@@ -72,8 +79,6 @@ public class Player extends Entity {
 
         return new Rectangle(rangeX, rangeY, rangeWidth, rangeHeight);
     }
-
-
 
     public int getAttackRangeScale() {
         return attackRangeScale;
@@ -139,6 +144,15 @@ public class Player extends Entity {
             left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_1.png"))); // This one works
             left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_left_2.png")));
 
+            attack_d_1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_down_1.png")));
+            attack_d_2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_down_2.png")));
+            attack_r_1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_right_1.png")));
+            attack_r_2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_right_2.png")));
+            attack_l_1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_left_1.png")));
+            attack_l_2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_left_2.png")));
+            attack_u_1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_up_1.png")));
+            attack_u_2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/player_attack_up_2.png")));
+
             // Debug check
             if (up1 == null) {
                 System.err.println("Failed to load player sprites!");
@@ -150,40 +164,49 @@ public class Player extends Entity {
 
     @Override
     public BufferedImage getCurrentSprite() {
-        // Animation for walking
         BufferedImage image = null;
+        if (hasSword) {
+            image = getBufferedImageFromDir(image, attack_u_1, attack_u_2, attack_d_1, attack_d_2, attack_l_1, attack_l_2, attack_r_1, attack_r_2);
+        } else {
+            // Animation for walking
+            image = getBufferedImageFromDir(image, up1, up2, down1, down2, left1, left2, right1, right2);
+        }
+        return image;
+    }
+
+    private BufferedImage getBufferedImageFromDir(BufferedImage image, BufferedImage attackU1, BufferedImage attackU2, BufferedImage attackD1, BufferedImage attackD2, BufferedImage attackL1, BufferedImage attackL2, BufferedImage attackR1, BufferedImage attackR2) {
         switch (direction) {
             case "up":
                 if (spriteNum == 1) {
-                    image = up1;
+                    image = attackU1;
                 }
                 if (spriteNum == 2) {
-                    image = up2;
+                    image = attackU2;
                 }
                 break;
             case "down":
                 if (spriteNum == 1) {
-                    image = down1;
+                    image = attackD1;
                 }
                 if (spriteNum == 2) {
-                    image = down2;
+                    image = attackD2;
                 }
                 ;
                 break;
             case "left":
                 if (spriteNum == 1) {
-                    image = left1;
+                    image = attackL1;
                 }
                 if (spriteNum == 2) {
-                    image = left2;
+                    image = attackL2;
                 }
                 break;
             case "right":
                 if (spriteNum == 1) {
-                    image = right1;
+                    image = attackR1;
                 }
                 if (spriteNum == 2) {
-                    image = right2;
+                    image = attackR2;
                 }
                 break;
         }
@@ -218,7 +241,9 @@ public class Player extends Entity {
         if (item != null && item.getItemState() == ItemState.INTERACTABLE) {
             item.pickUp();
             if (item instanceof Laptop) {
-                ;
+            } else if (item instanceof Sword) {
+                hasSword = true;
+                inventory.add(item);
             } else {
                 inventory.add(item);
             }
@@ -227,6 +252,7 @@ public class Player extends Entity {
         return false;
 
     }
+
 
     public ArrayList<Item> getInventory() {
         return inventory;
@@ -252,5 +278,6 @@ public class Player extends Entity {
         }
         return null;
     }
+
 
 }
