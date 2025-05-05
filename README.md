@@ -27,38 +27,72 @@ while managing their health and using collected items for survival.
 Object-oriented programming principles are applied with event-driven game logic through its tile-based map rendering system and 
 dynamic entity animations. 
 
+### Game demonstration
+  <div>
+    <a href="https://www.loom.com/share/1bb2f74a12474038b498b5b672981e9e">
+    </a>
+    <a href="https://www.loom.com/share/1bb2f74a12474038b498b5b672981e9e">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/1bb2f74a12474038b498b5b672981e9e-a8bc39aa50f6d7ef-full-play.gif">
+    </a>
+  </div>
+
 
 ## Package Structure
-### `org.team12.controller`
+### `src/main`
+#### `org.team12.controller`
 Contains the game logic and control flow:
 - `GameController` – Coordinates game state updates, including player actions, enemy movements, and item interactions.
 - `InputController` – Handles user keyboard input for movement and interactions.
 - `CollisionController` – Manages collision detection between the player, enemies, and obstacles.
 
-### `org.team12.model`
+#### `org.team12.model`
 Defines the core game model:
 - `Map` – Represents the dungeon layout, loaded from a `.txt` file, and manages all items and enemies.
 - `Tile` – Represents individual tiles of the dungeon grid and their properties.
-- `entities` (subpackage) – Contains all entity and item classes:
+- `entities` (subpackage) – Contains all entity classes:
     - `Player` – Represents the main playable character.
     - `Enemy` – Represents the evil TA goons with custom behavior.
     - `LilyFinalBoss` – Special final boss character with custom behavior.
+- `items` (subpackage) – Contains all entity classes:
     - `Item` – Abstract class for interactable items.
-    - `Sword`, `MagicDust`, `Laptop` – Specific item types with different functions.
+    - `Sword`, `MagicDust`, `Laptop`, `Heart` – Specific item types with different functions.
 
-### `org.team12.states`
+#### `org.team12.states`
 Defines the state enums used by entities and items:
 - `EnemyStatus` – Indicates enemy behavior state (e.g., PEACEFUL, HOSTILE, DEAD, CURED).
 - `ItemState` – Tracks whether an item is interactable or already picked up.
 - `GameState` – Tracks the global game flow (e.g., PLAYING, QUIZ, PLAYER_DEAD, LILY_CURED, PAUSE, END).
 
-### `org.team12.view`
+#### `org.team12.view`
 Handles rendering and UI presentation:
 - `GameUI` – Main game panel responsible for launching the game loop and rendering the interface.
 - `MapRenderer` – Renders the dungeon layout and tile-based map.
 - `EntityRenderer` – Draws player and enemy entities with sprite animations.
 - `PlayerHud` – Displays title menu, player's inventory, and quiz popups.
 - `UtilityTool` – Provides helper functions (e.g., image scaling) used throughout the project.
+
+### `src/test`
+Contains Junit tests for non-GUI core classes:
+#### `org.team12.controller`
+- `GameControllerTest`
+- `InputControllerTest`
+- `CollisionControllerTest`
+
+#### `org.team12.model`
+- `MapTest` 
+- `TileTest` 
+- `entities` (subpackage)
+  - `PlayerTest` 
+  - `EnemyTest` 
+  - `LilyFinalBossTest` 
+- `items`
+  - `ItemTest`
+  - `SwordTest`, `MagicDustTest`, `LaptopTest`, `HeartTest`
+
+#### `org.team12.states`
+- `EnemyStatusTest`
+- `ItemStateTest`
+- `GameStateTest`
 
 ### Resources Folder Structure
 
