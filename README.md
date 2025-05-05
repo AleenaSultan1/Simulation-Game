@@ -16,7 +16,7 @@ Lewisburg, PA
 player to cure Professor Lily - the final boss. It comprises 2 parts:
 
 1. Level 1 allows the player to interact with sword objects and chest containers that require riddle-solving to 
-obtain equipment and magic dust. The player then encounters the notorious TA goon squad and fight them with the equipments.
+obtain equipment and magic dust. The player then encounters the notorious TA goon squad and fight them with the equipments
 they collected.
 2. Level 2 introduces the player to Professor Lily, who is the final boss. The player can access this level by 
 passing through an evil teleporting portal after defeating all the evil goons. The player has to cure Lily to win the game.
