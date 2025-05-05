@@ -1,3 +1,20 @@
+/* *****************************************
+ * CSCI 205 - Software Engineering and Design
+ * Spring 2025
+ *
+ * Name: Radley Le
+ * Date: 5/5/25
+ * Time: 12:49 AM
+ *
+ * Project: csci205_final_project
+ * Package: org.team12.model.items
+ * Class: ItemTest
+ *
+ * Description:
+ *
+ * ****************************************
+ */
+
 package org.team12.model.items;
 
 import org.junit.jupiter.api.BeforeEach;

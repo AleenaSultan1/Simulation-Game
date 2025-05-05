@@ -7,7 +7,7 @@
  * Time: 12:49 AM
  *
  * Project: csci205_final_project
- * Package: PACKAGE_NAME
+ * Package: org.team12.controller
  * Class: CollisionControllerTest
  *
  * Description:
