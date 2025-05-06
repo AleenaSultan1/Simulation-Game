@@ -11,7 +11,8 @@
  * Class: Map
  *
  * Description:
- *
+ * The Map class represents the tile-based game world. It stores information about
+ * tiles, enemies, and items on the map, and handles level loading and entity placement.
  * ****************************************
  */
 
@@ -33,23 +34,31 @@ public class Map {
     private Tile[][] grid;
     private List<Item> itemsOnMap;
     private List<Enemy> enemiesOnMap;
-
     private int width;
     private int height;
-
     private Player player;
     private CollisionController collisionController;
 
-
+    /**
+     * Constructs a Map object and loads tile/entity data from a map file
+     * @param filepath Path to the tile map text file
+     * @param level2 Whether to load the second section of the map
+     */
     public Map(String filepath, boolean level2) {
         enemiesOnMap = new ArrayList<>();
         itemsOnMap = new ArrayList<>();
         loadMap(filepath, level2);
     }
 
+    /**
+     * Loads the map data from a file. Handles tile generation and entity/item placement.
+     * @param filepath The path to the tile data
+     * @param level2 Whether to load the LEVEL2 portion of the map
+     */
     public void loadMap(String filepath, boolean level2) {
         enemiesOnMap.clear();
         itemsOnMap.clear();
+
         try {
             InputStream is = getClass().getResourceAsStream(filepath);
             BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(is)));
@@ -61,12 +70,11 @@ public class Map {
             while ((line = br.readLine()) != null) {
                 if (line.trim().startsWith("*")) {
                     isLevel2Part = true;
-                    continue; // skip the separator line itself
+                    continue;
                 }
 
-                // Only load LEVEL2 part if GameState is LEVEL2
-                if ((!level2 && !isLevel2Part) ||
-                        (level2 && isLevel2Part)) {
+                // Load appropriate section of map depending on level2 flag
+                if ((!level2 && !isLevel2Part) || (level2 && isLevel2Part)) {
                     lines.add(line);
                 }
             }
@@ -75,6 +83,7 @@ public class Map {
             this.width = lines.get(0).split(" ").length;
             grid = new Tile[width][height];
 
+            // Populate tiles and place enemies/items based on tile values
             for (int y = 0; y < height; y++) {
                 String[] numbers = lines.get(y).trim().split(" ");
                 for (int x = 0; x < numbers.length; x++) {
@@ -83,31 +92,27 @@ public class Map {
                     try {
                         tileType = Integer.parseInt(numbers[x]);
                     } catch (NumberFormatException e) {
-                        continue; // skip non-integer tiles in level2 region (e.g. hyphens or dashes)
+                        continue; // skip symbols or malformed tiles
                     }
 
                     switch (tileType) {
-                        case 1: // Wall
-                        case 9:
+                        case 1: case 9:
                             grid[x][y].setObstacle(true);
                             break;
-                        // Goon
-                        case 2:
+                        case 2: // Normal enemy
                             Enemy enemy = new Enemy(10, 2);
                             enemiesOnMap.add(enemy);
                             enemy.setCoord(x, y);
                             grid[x][y].setEnemy(enemy);
                             break;
-
-                        // Riddle chest
-                        case 4:
+                        case 4: // Laptop (quiz chest)
                             Laptop laptop = new Laptop();
                             itemsOnMap.add(laptop);
                             grid[x][y].setItem(laptop);
                             laptop.setX(x);
                             laptop.setY(y);
                             break;
-                        case 6: // Lily Final Boss
+                        case 6: // Final boss
                             LilyFinalBoss lily = new LilyFinalBoss(10, 2);
                             enemiesOnMap.add(lily);
                             lily.setCoord(x, y);
@@ -118,12 +123,16 @@ public class Map {
                     }
                 }
             }
+
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Assigns the collision controller to all enemies on the map
+     */
     public void setCollisionController(CollisionController collisionController) {
         this.collisionController = collisionController;
         for (Enemy enemy : enemiesOnMap) {
@@ -131,43 +140,51 @@ public class Map {
         }
     }
 
+    /**
+     * Assigns the player reference to the map
+     */
     public void setPlayer(Player player) {
         this.player = player;
     }
 
-    public Tile getTile (int x, int y){
+    /**
+     * Retrieves the tile at the specified coordinates
+     * @param x Column index
+     * @param y Row index
+     * @return The Tile object or null if out of bounds
+     */
+    public Tile getTile(int x, int y){
         if (x >= 0 && x < width && y >= 0 && y < height) {
             return grid[x][y];
         }
         return null;
     }
 
-    public int getWidth () {
-        return width;
-    }
+    public int getWidth () { return width; }
+    public int getHeight () { return height; }
 
-    public int getHeight () {
-        return height;
-    }
-
-    public boolean isInsideBounds ( int x, int y){
+    /**
+     * Checks if a coordinate lies within the map boundaries
+     */
+    public boolean isInsideBounds (int x, int y){
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-    public List<Item> getItemsOnMap () {
-        return itemsOnMap;
-    }
+    public List<Item> getItemsOnMap () { return itemsOnMap; }
+    public List<Enemy> getEnemiesOnMap () { return enemiesOnMap; }
 
-    public List<Enemy> getEnemiesOnMap () {
-        return enemiesOnMap;
-    }
-
+    /**
+     * Returns all entities on the map including enemies and the player
+     */
     public List<Entity> getEntitiesOnMap () {
         List<Entity> entities = new ArrayList<>(enemiesOnMap);
         entities.add(player);
         return entities;
     }
 
+    /**
+     * Adds an item to a specific tile on the map
+     */
     public void addItem (Item item, int x, int y) {
         Tile targetTile = getTile(x, y);
         if (targetTile != null) {
@@ -176,28 +193,32 @@ public class Map {
         }
     }
 
+    /**
+     * Removes the given item from both the map and tile grid
+     */
     public void removeItem(Item item) {
-        // Find the item's tile by position and clear it
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Tile tile = grid[x][y];
                 if (tile.getItem() == item) {
                     tile.setItem(null);
-                    itemsOnMap.remove(item); // precise removal
+                    itemsOnMap.remove(item);
                     return;
                 }
             }
         }
     }
 
+    /**
+     * Removes the given enemy from both the map and tile grid
+     */
     public void removeEnemy(Enemy enemy) {
-        // Find the item's tile by position and clear it
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Tile tile = grid[x][y];
                 if (tile.getEnemy() == enemy) {
                     tile.setEnemy(null);
-                    enemiesOnMap.remove(enemy); // precise removal
+                    enemiesOnMap.remove(enemy);
                     return;
                 }
             }

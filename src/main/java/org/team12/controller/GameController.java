@@ -33,7 +33,12 @@ import org.team12.view.PlayerHud;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * The central controller class that manages all game logic and state transitions.
+ * Handles player input, enemy AI, item interactions, and level progression.
+ */
 public class GameController {
+    // Core game components
     private Map map;
     private Player player;
     private Rectangle playerHitbox;
@@ -42,44 +47,51 @@ public class GameController {
     private GameState gameState;
     private PlayerHud playerHud;
     private Laptop currLaptop;
+
+    // Level progression tracking
     private boolean level2;
     private LilyFinalBoss lily;
 
-
+    /**
+     * Constructs a new GameController with the specified dependencies.
+     */
     public GameController(Map map, InputController inputController, PlayerHud playerHud) {
         this.map = map;
         this.inputController = inputController;
         this.playerHud = playerHud;
 
+        // Setup systems
         collisionController = new CollisionController(map);
         map.setCollisionController(collisionController);
+
+        // Setup player
         player = new Player(inputController, collisionController, 20);
         map.setPlayer(player);
 
         this.playerHitbox = player.getHitbox();
         this.level2 = false;
-        //Game State
         gameState = GameState.PAUSE;
     }
 
-    public GameState getGameState() {
-        return gameState;
-    }
+    /** Returns the current game state. */
+    public GameState getGameState() { return gameState; }
 
-    public Player getPlayer() {
-        return player;
-    }
+    /** Returns the current player instance. */
+    public Player getPlayer() { return player; }
 
-
+    /**
+     * Load the second level map and update player reference.
+     */
     public void updateMapLevel() {
-        //setGameState(GameState.LEVEL_2);
         map.loadMap("/map/dungeonMap.txt", true);
-        map.setCollisionController(collisionController); // RE-ASSIGN after reloading
-        map.setPlayer(player); // RE-ASSIGN player as well
+        map.setCollisionController(collisionController);
+        map.setPlayer(player);
         System.out.println("Map level updated to LEVEL_2");
-//        collisionController.setMap(map);
     }
 
+    /**
+     * Main game loop logic based on the current GameState.
+     */
     public void update() {
         switch (gameState) {
             case PLAYER_DEAD:
@@ -93,56 +105,67 @@ public class GameController {
                 }
                 break;
             case PLAYING:
-                // Update player movement, logic per InputController
-                player.update();
-                generateNewPlayerHitbox();
-                checkEnemyHostility();
-                // Check for level transition
-                if (map.getEnemiesOnMap().isEmpty() && checkPlayerInventory() && !level2) {
-                    level2 = true;
-                    updateMapLevel();
-                    // Reset player position for new level
-                    player.worldX = 100;
-                    player.worldY = 100;
-                }
-                if (player.getHP() == 0) gameState = GameState.PLAYER_DEAD;
-                if (level2) {
-                    lily = getLily();
-                    if (lily.getHP() == 0) gameState = GameState.LILY_CURED;
-                }
-                if (inputController.interactionKeyJustPressed) {
-                    checkPlayerPickup();
-                    inputController.resetJustPressed();
-                }
-                if (inputController.attackKeyJustPressed) {
-                    checkPlayerAttack();
-                    inputController.resetJustPressed();
-                }
-                if (inputController.escKeyJustPressed) {
-                    gameState = GameState.PAUSE;
-                }
+                updatePlayingState();
                 break;
             case QUIZ:
                 handleLaptopInput(inputController, currLaptop);
                 break;
             case END:
-                System.out.println("End");
                 System.exit(0);
         }
     }
-    public boolean checkPlayerInventory() {
-        boolean dust = false;
-        boolean sword = false;
-        for (Item item : player.getInventory()) {
-            if (item instanceof MagicDust) {
-                dust = true;
-            }
-            if (item instanceof Sword) {
-                sword = true;
-            }
+
+    /**
+     * Game logic while actively playing: input, AI, items, level switching.
+     */
+    private void updatePlayingState() {
+        player.update();
+        generateNewPlayerHitbox();
+        checkEnemyHostility();
+
+        // Level progression logic
+        if (map.getEnemiesOnMap().isEmpty() && checkPlayerInventory() && !level2) {
+            level2 = true;
+            updateMapLevel();
+            player.worldX = 100;
+            player.worldY = 100;
         }
-        return dust && sword;
+
+        if (player.getHP() == 0) gameState = GameState.PLAYER_DEAD;
+
+        if (level2) {
+            lily = getLily();
+            if (lily.getHP() == 0) gameState = GameState.LILY_CURED;
+        }
+
+        // Handle input-based events
+        if (inputController.interactionKeyJustPressed) {
+            checkPlayerPickup();
+            inputController.resetJustPressed();
+        }
+        if (inputController.attackKeyJustPressed) {
+            checkPlayerAttack();
+            inputController.resetJustPressed();
+        }
+        if (inputController.escKeyJustPressed) {
+            gameState = GameState.PAUSE;
+        }
     }
+
+    /**
+     * Returns true if the player has both MagicDust and Sword in inventory.
+     */
+    public boolean checkPlayerInventory() {
+        boolean hasDust = false;
+        boolean hasSword = false;
+        for (Item item : player.getInventory()) {
+            if (item instanceof MagicDust) hasDust = true;
+            if (item instanceof Sword) hasSword = true;
+        }
+        return hasDust && hasSword;
+    }
+
+    /** Refresh player hitbox to match their current position. */
     public void generateNewPlayerHitbox() {
         playerHitbox = new Rectangle(
                 player.worldX + player.getHitbox().x,
@@ -151,20 +174,20 @@ public class GameController {
                 player.getHitbox().height);
     }
 
+    /** Handle item pickup interaction logic and edge cases. */
     public void checkPlayerPickup() {
-        // Only check against interactable items
-        for (Item item : new ArrayList<>(map.getItemsOnMap())) { // avoid ConcurrentModification
+        for (Item item : new ArrayList<>(map.getItemsOnMap())) {
             if (item.getItemState() != ItemState.INTERACTABLE) continue;
-// Get the item's tile position
+
             int itemTileX = item.getWorldX() / GameUI.getTileSize();
             int itemTileY = item.getWorldY() / GameUI.getTileSize();
             Tile itemTile = map.getTile(itemTileX, itemTileY);
 
-            // Verify the item is actually on this tile
             if (itemTile == null || itemTile.getItem() != item) {
                 System.out.println("Orphaned item detected at " + itemTileX + "," + itemTileY);
                 continue;
             }
+
             Rectangle itemHitbox = new Rectangle(
                     item.getWorldX(), item.getWorldY(),
                     GameUI.getTileSize(), GameUI.getTileSize()
@@ -174,22 +197,31 @@ public class GameController {
                 boolean pickedUp = player.pickUpItem(item);
                 if (pickedUp) {
                     if (item instanceof Laptop) {
-                        playerHud.setLaptop((Laptop) item);
-                        currLaptop = (Laptop) item;
-                        if (currLaptop.isActive()) {
-                            System.out.println("Laptop is active");
-                            currLaptop.resetLaptop(); // Reset quiz progress
-//                        ((Laptop)item).activate();
-                            gameState = GameState.QUIZ;
-                        }
+                        handleLaptopPickup((Laptop)item);
+                    } else {
+                        map.removeItem(item);
                     }
-                    else map.removeItem(item);
-                    break; // stop after first pickup
+                    break;
                 }
             }
         }
     }
 
+    /**
+     * Begin quiz interaction with laptop item.
+     */
+    private void handleLaptopPickup(Laptop laptop) {
+        playerHud.setLaptop(laptop);
+        currLaptop = laptop;
+        if (currLaptop.isActive()) {
+            currLaptop.resetLaptop();
+            gameState = GameState.QUIZ;
+        }
+    }
+
+    /**
+     * Returns Lily boss instance if present on map.
+     */
     public LilyFinalBoss getLily() {
         for (Enemy enemy : map.getEnemiesOnMap()) {
             if (enemy instanceof LilyFinalBoss) {
@@ -199,9 +231,12 @@ public class GameController {
         return null;
     }
 
+    /**
+     * Checks if player's attack intersects any enemy.
+     * Removes enemy if killed.
+     */
     public void checkPlayerAttack() {
-        // Only check against alive Enemies
-        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) { // avoid ConcurrentModification
+        for (Enemy enemy : new ArrayList<>(map.getEnemiesOnMap())) {
             if (enemy.getState() == EnemyStatus.DEAD) continue;
 
             Rectangle enemyHitBox = new Rectangle(
@@ -211,7 +246,6 @@ public class GameController {
                     enemy.getHitbox().height);
 
             if (player.getAttackRange().intersects(enemyHitBox)){
-                System.out.println("Try attacking");
                 boolean attacked = player.attackEnemy(enemy);
                 if (enemy.getState() == EnemyStatus.DEAD && attacked) {
                     map.removeEnemy(enemy);
@@ -220,9 +254,9 @@ public class GameController {
         }
     }
 
+    /** Updates enemy AI to follow and attack player if nearby. */
     public void checkEnemyHostility() {
         for (Enemy enemy : map.getEnemiesOnMap()) {
-            // Define the enemy's hostility detection area as a square around its position
             Rectangle enemyHostilityBox = new Rectangle(
                     enemy.worldX - enemy.getHostilityArea() / 2,
                     enemy.worldY - enemy.getHostilityArea() / 2,
@@ -230,7 +264,6 @@ public class GameController {
                     enemy.getHostilityArea()
             );
 
-            // Define the enemy's attack detection area as a square around its position
             Rectangle enemyAttackRange = new Rectangle(
                     enemy.worldX - enemy.getAttackRange() / 2,
                     enemy.worldY - enemy.getAttackRange() / 2,
@@ -238,12 +271,8 @@ public class GameController {
                     enemy.getAttackRange()
             );
 
-
             if (playerHitbox.intersects(enemyHostilityBox)) {
                 enemy.enemyMoveToPlayer(player);
-                // Reduce player's life (assuming you have a method or field for this)
-                //player.reduceLives();
-
                 if (playerHitbox.intersects(enemyAttackRange)) {
                     enemy.enemyAttackPlayer(player);
                 }
@@ -253,44 +282,48 @@ public class GameController {
         }
     }
 
+    /**
+     * Quiz mode input handler.
+     */
     public void handleLaptopInput(InputController input, Laptop laptop) {
         if (laptop == null || !laptop.isActive()) return;
 
         if (input.upJustPressed) {
             laptop.moveSelectionUp();
-        }
-        else if (input.downJustPressed) {
+        } else if (input.downJustPressed) {
             laptop.moveSelectionDown();
-        }
-        else if (input.enterKeyJustPressed) {
-            boolean correct = laptop.submitAnswer();
-            if (!correct) {
-                // Wrong answer - exit immediately
-                laptop.resetLaptop();
-                gameState = GameState.PLAYING;
-            }
-            else if (laptop.getItemState() == ItemState.UNINTERACTABLE) {
-                // All questions answered correctly
-                playerHud.setMessage("Quiz complete! You earned an A+!");
-                laptop.deactivate();
-                spawnItemNearPlayer();
-                gameState = GameState.PLAYING;
-                input.resetJustPressed();
-                return;
-            }
-            // If correct but not complete, stays in quiz for next question
-            laptop.resetAnswerSubmitted();
-        }
-        else if (input.escKeyJustPressed) {
+        } else if (input.enterKeyJustPressed) {
+            handleQuizAnswer(laptop);
+        } else if (input.escKeyJustPressed) {
             laptop.resetLaptop();
             gameState = GameState.PLAYING;
         }
         input.resetJustPressed();
     }
 
+    /**
+     * Checks quiz answer submission and transitions accordingly.
+     */
+    private void handleQuizAnswer(Laptop laptop) {
+        boolean correct = laptop.submitAnswer();
+        if (!correct) {
+            laptop.resetLaptop();
+            gameState = GameState.PLAYING;
+        } else if (laptop.getItemState() == ItemState.UNINTERACTABLE) {
+            playerHud.setMessage("Quiz complete! You earned an A+!");
+            laptop.deactivate();
+            spawnItemNearPlayer();
+            gameState = GameState.PLAYING;
+        } else {
+            laptop.resetAnswerSubmitted();
+        }
+    }
+
+    /**
+     * Title screen menu navigation input logic.
+     */
     public GameState handleTitleScreenInput(InputController input) {
         if (inputController.downJustPressed | inputController.upJustPressed) {
-            // Toggle
             playerHud.toggleTitleScreen();
             inputController.resetJustPressed();
         }
@@ -303,43 +336,33 @@ public class GameController {
         }
         return null;
     }
+
+    /** Spawns a sword near the player. */
     private void spawnSwordNearPlayer() {
-        // Convert back to world coordinates
         int spawnX = player.worldX + GameUI.getTileSize();
         int spawnY = player.worldY + GameUI.getTileSize();
-
-        // Create new sword
         Sword sword = new Sword();
-
-        // Find and set the tile (optional but recommended)
         int tileX = spawnX / GameUI.getTileSize();
         int tileY = spawnY / GameUI.getTileSize();
-        // Add to map
         map.addItem(sword, tileX, tileY);
         sword.setX(tileX);
         sword.setY(tileY);
-}
+    }
 
+    /** Spawns magic dust near the player. */
     private void spawnDustNearPlayer() {
-        // Convert back to world coordinates
         int spawnX = player.worldX + GameUI.getTileSize();
         int spawnY = player.worldY + GameUI.getTileSize();
-
-        // Create new sword
         MagicDust dust = new MagicDust();
-
-        // Find and set the tile (optional but recommended)
         int tileX = spawnX / GameUI.getTileSize();
         int tileY = spawnY / GameUI.getTileSize();
-        // Add to map
         map.addItem(dust, tileX, tileY);
         dust.setX(tileX);
         dust.setY(tileY);
-
-
     }
+
+    /** Spawns either dust or sword depending on what player is missing. */
     private void spawnItemNearPlayer() {
-        // Check if player already has sword
         for (Item item : player.getInventory()) {
             if (item instanceof Sword) {
                 spawnDustNearPlayer();
@@ -349,5 +372,3 @@ public class GameController {
         spawnSwordNearPlayer();
     }
 }
-
-

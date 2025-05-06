@@ -11,7 +11,8 @@
  * Class: Sword
  *
  * Description:
- *
+ * Represents a collectible weapon item that increases the player's attack strength.
+ * When picked up, it enables the player to deal damage to enemies.
  * ****************************************
  */
 
@@ -23,12 +24,19 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Sword extends Item {
+
+    /** The strength or damage this sword deals to enemies */
     public int strength;
 
+    /** Constructs a sword with default strength */
     public Sword() {
         strength = 5;
     }
 
+    /**
+     * Loads and returns the sword's sprite image.
+     * @return BufferedImage representing the sword icon
+     */
     @Override
     public BufferedImage getSprite() {
         try {
@@ -38,5 +46,4 @@ public class Sword extends Item {
         }
         return image;
     }
-
 }
