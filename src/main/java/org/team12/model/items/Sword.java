@@ -22,13 +22,25 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * Represents a sword item in the game that can be picked up and used by the player.
+ * The sword provides additional strength to the player for attacking enemies.
+ */
 public class Sword extends Item {
     public int strength;
 
+    /**
+     * Constructs a new Sword object with a default strength value.
+     */
     public Sword() {
         strength = 5;
     }
 
+    /**
+     * Loads and returns the sprite image representing the sword.
+     *
+     * @return a {@link BufferedImage} of the sword sprite
+     */
     @Override
     public BufferedImage getSprite() {
         try {
@@ -38,5 +50,4 @@ public class Sword extends Item {
         }
         return image;
     }
-
 }
