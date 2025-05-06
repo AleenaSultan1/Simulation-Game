@@ -17,11 +17,25 @@
 
 package org.team12.states;
 
+/**
+ * Represents the possible states of the game.
+ */
 public enum GameState {
+    /** The game is currently being played normally. */
     PLAYING,
+
+    /** The game is in quiz mode (possibly for a puzzle or dialogue). */
     QUIZ,
+
+    /** The player has died and the game is over. */
     PLAYER_DEAD,
+
+    /** Lily has been cured (special win condition). */
     LILY_CURED,
+
+    /** The game is currently paused. */
     PAUSE,
-    END;
+
+    /** The game has ended (terminal state). */
+    END
 }

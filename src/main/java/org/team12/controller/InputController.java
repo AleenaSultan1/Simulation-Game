@@ -10,8 +10,8 @@
  * Package: org.team12.controller
  * Class: InputController
  *
- * Description:
- *
+ * Description: Handles keyboard input for player movement and actions.
+ * Tracks both continuous key holds and one-time key presses for precise interaction control.
  * ****************************************
  */
 
@@ -20,27 +20,37 @@ package org.team12.controller;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * InputController tracks player input using key states.
+ * It supports both held and single-time (just pressed) key tracking for game actions.
+ */
 public class InputController implements KeyListener {
 
+    // Continuous key press states
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     public boolean interactionKeyPressed, attackKeyPressed, enterKeyPressed, escKeyPressed;
 
+    // One-time key press triggers (reset after use)
     public boolean upJustPressed, downJustPressed, leftJustPressed, rightJustPressed;
     public boolean attackKeyJustPressed, interactionKeyJustPressed, enterKeyJustPressed, escKeyJustPressed;
 
-
     @Override
     public void keyTyped(KeyEvent e) {
+        // Not used
     }
 
+    /**
+     * Called when a key is pressed. Updates both held and justPressed flags.
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
+
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
             upPressed = true;
             upJustPressed = true;
         }
-        if (code == KeyEvent.VK_S|| code == KeyEvent.VK_DOWN) {
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
             downPressed = true;
             downJustPressed = true;
         }
@@ -70,6 +80,9 @@ public class InputController implements KeyListener {
         }
     }
 
+    /**
+     * Called when a key is released. Resets held states.
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
@@ -92,8 +105,17 @@ public class InputController implements KeyListener {
         if (code == KeyEvent.VK_E) {
             attackKeyPressed = false;
         }
+        if (code == KeyEvent.VK_ENTER) {
+            enterKeyPressed = false;
+        }
+        if (code == KeyEvent.VK_ESCAPE) {
+            escKeyPressed = false;
+        }
     }
 
+    /**
+     * Resets all justPressed flags. Should be called at the end of input processing each frame.
+     */
     public void resetJustPressed() {
         upJustPressed = false;
         downJustPressed = false;
@@ -103,7 +125,5 @@ public class InputController implements KeyListener {
         interactionKeyJustPressed = false;
         enterKeyJustPressed = false;
         escKeyJustPressed = false;
-
     }
-
 }

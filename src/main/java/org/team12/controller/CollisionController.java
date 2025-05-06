@@ -10,8 +10,10 @@
  * Package: org.team12.controller
  * Class: CollisionController
  *
- * Description:
- *
+ * Description: Handles all collision detection logic for the game, including
+ *              tile-based obstacle collisions and entity-to-entity collisions.
+ *              Uses predictive hitbox checking to prevent movement through solid
+ *              objects and detect interactions between game entities.
  * ****************************************
  */
 package org.team12.controller;
@@ -31,10 +33,21 @@ public class CollisionController {
 
     private Map map;
 
+    /**
+     * Constructs a new CollisionController with the specified game map
+     * @param map The game map containing tiles and entities to check against
+     */
     public CollisionController(Map map) {
         this.map = map;
     }
 
+    /**
+     * Checks if an entity can move to a new position without colliding with obstacles
+     * @param e The entity attempting to move
+     * @param dx The proposed x-axis movement amount
+     * @param dy The proposed y-axis movement amount
+     * @return true if the movement is allowed, false if it would collide with obstacles
+     */
     public boolean canMoveTo(Entity e, int dx, int dy) {
         Rectangle futureHitbox = getFutureHitbox(e, dx, dy);
 
@@ -54,7 +67,13 @@ public class CollisionController {
         return true;
     }
 
-    // Collision with other entities (including Player)
+    /**
+     * Checks for collisions between an entity and all other entities in the game world
+     * @param e The entity to check collisions for
+     * @param dx The proposed x-axis movement amount
+     * @param dy The proposed y-axis movement amount
+     * @return The first entity that would be collided with, or null if no collision
+     */
     public Entity checkEntityCollision(Entity e, int dx, int dy) {
         Rectangle eBox = getFutureHitbox(e, dx, dy);
         List<Entity> others = new ArrayList<>(map.getEntitiesOnMap());
@@ -73,6 +92,14 @@ public class CollisionController {
         return null;
     }
 
+    /**
+     * Specialized check for player collisions with another entity
+     * @param e The entity that might collide with the player
+     * @param player The player entity
+     * @param dx The proposed x-axis movement amount
+     * @param dy The proposed y-axis movement amount
+     * @return true if the entity would collide with the player, false otherwise
+     */
     public boolean checkPlayerCollision(Entity e, Player player, int dx, int dy) {
         Rectangle eBox = getFutureHitbox(e, dx, dy);
         Rectangle playerBox = new Rectangle(
@@ -84,9 +111,13 @@ public class CollisionController {
         return eBox.intersects(playerBox);
     }
 
-
-
-    // Helper: get predicted hitbox
+    /**
+     * Calculates an entity's future hitbox based on proposed movement
+     * @param e The entity to calculate for
+     * @param dx The proposed x-axis movement amount
+     * @param dy The proposed y-axis movement amount
+     * @return Rectangle representing the predicted hitbox position
+     */
     private Rectangle getFutureHitbox(Entity e, int dx, int dy) {
         return new Rectangle(
                 e.worldX + e.getHitbox().x + dx,
@@ -96,6 +127,10 @@ public class CollisionController {
         );
     }
 
+    /**
+     * Updates the map reference for collision detection
+     * @param map The new game map to use for collision checks
+     */
     public void setMap(Map map) {
         this.map = map;
     }

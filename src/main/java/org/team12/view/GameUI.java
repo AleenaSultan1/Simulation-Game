@@ -28,64 +28,116 @@ import org.team12.states.GameState;
 import javax.swing.JPanel;
 import java.awt.*;
 
-public class GameUI extends JPanel implements Runnable{
-
+/**
+ * Main game panel that handles rendering and game loop execution.
+ * Manages all game components including map, entities, and UI elements.
+ */
+public class GameUI extends JPanel implements Runnable {
     // SCREEN SETTINGS AND VARIABLES
+    /** Original tile size before scaling */
     private static final int originalTileSize = 16; // 16 x 16 pixel tile
+
+    /** Scaling factor for graphics */
     private static final int scale = 3; // scale everything up by a factor or 3
-    private static int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
 
-    private static int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
-    private static int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
-    private static int screenWidth = tileSize * maxScreenCol; // 786 pixels
-    private static int screenHeight = tileSize * maxScreenRow; // 576 pixels
-    private GameController gameController;
+    /** Scaled tile size */
+    private static final int tileSize = originalTileSize * scale; // Standard tile size 48x48 pixels
 
+    /** Maximum number of visible screen columns */
+    private static final int maxScreenCol = 16; // Number of tiles visible on the screen (vertically)
 
+    /** Maximum number of visible screen rows */
+    private static final int maxScreenRow = 12; // number of tiles visible on the screen (horizontally)
+
+    /** Total screen width in pixels */
+    private static final int screenWidth = tileSize * maxScreenCol; // 786 pixels
+
+    /** Total screen height in pixels */
+    private static final int screenHeight = tileSize * maxScreenRow; // 576 pixels
+
+    /** Main game controller */
+    private final GameController gameController;
+
+    /**
+     * @return The current tile size in pixels
+     */
     public static int getTileSize() {
         return tileSize;
     }
 
+    /**
+     * @return The maximum number of world columns
+     */
     public int getMaxWorldCol() {
         return maxWorldCol;
     }
 
+    /**
+     * @return The screen width in pixels
+     */
     public static int getScreenWidth() {
         return screenWidth;
     }
 
+    /**
+     * @return The screen height in pixels
+     */
     public static int getScreenHeight() {
         return screenHeight;
     }
 
+    /**
+     * @return The maximum number of world rows
+     */
     public int getMaxWorldRow() {
         return maxWorldRow;
     }
 
-
     // GAME LOOP VARIABLES
+    /** Thread for game execution */
     private Thread gameThread; // Thread to start the game loop of 60 frames per second
+
+    /** Target frames per second */
     int FPS = 60; // Used in the main game loop to run the game at 60 frames per second
 
     // WORLD SETTINGS: Will change to specific map size
+    /** Maximum columns in the game world */
     public final int maxWorldCol = 50;
+
+    /** Maximum rows in the game world */
     public final int maxWorldRow = 12;
+
+    /** Total world width in pixels */
     public final int worldWidth = tileSize * maxWorldCol;
+
+    /** Total world height in pixels */
     public final int worldHeight = tileSize * maxWorldRow;
 
+    /** Game map */
     private Map map;
-    private MapRenderer mapRenderer;
-    private EntityRenderer entityRenderer;
-    private PlayerHud playerHud;
 
+    /** Map rendering component */
+    private final MapRenderer mapRenderer;
+
+    /** Entity rendering component */
+    private final EntityRenderer entityRenderer;
+
+    /** Player HUD component */
+    private final PlayerHud playerHud;
+
+    /** Input handler */
     private InputController inputController = new InputController();
+
+    /** Collision detector */
     private CollisionController collisionController;
+
+    /** Player character */
     public Player player;
 
-
-
-    // Constructor for a game UI
-    public GameUI(){
+    /**
+     * Constructs the game UI and initializes all game components.
+     */
+    public GameUI() {
         map = new Map("/map/dungeonMap.txt", false);
 
         inputController = new InputController();
@@ -108,24 +160,22 @@ public class GameUI extends JPanel implements Runnable{
         this.setFocusable(true);
         // Creates an object to register user inputs
         this.addKeyListener(inputController);
-
     }
 
-    // Starts a gameThread which is used to run the game loop
+    /**
+     * Starts the game thread which runs the main game loop.
+     */
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
 
-    // Runs the actual GameUI/Game
-
     /**
-     * Update information such as character position
-     * Draw the screen with the updated information
+     * Main game loop that updates game state and renders frames at target FPS.
+     * Handles timing, updates, and rendering in a continuous loop.
      */
     @Override
     public void run() {
-
         // Set variables to run the game at 60FPS
         double drawInterval = (double) 1000000000 / FPS; // 0.01666 seconds
         double delta = 0;
@@ -138,13 +188,11 @@ public class GameUI extends JPanel implements Runnable{
 
         // implement GameLoop: Update backend, update front end
         while (gameThread != null) {
-
             currentTime = System.nanoTime();
 
             delta += (currentTime - lastTime) / drawInterval;
             timer += (currentTime - lastTime);
             lastTime = currentTime;
-
 
             if(delta>=1){
                 // Makes a new frame for the Game UI with the updated changes
@@ -152,7 +200,6 @@ public class GameUI extends JPanel implements Runnable{
                 delta--;
                 drawCount++;
                 gameController.update();
-
             }
 
             // Displays FPS
@@ -164,9 +211,11 @@ public class GameUI extends JPanel implements Runnable{
         }
     }
 
-    // Paints the player as a white rectangle
-    // HIERARCHY MATTERS, map should always be first and player should always be last
-    public void paintComponent(Graphics g){
+    /**
+     * Renders all game components based on current game state.
+     * @param g The Graphics context to draw with
+     */
+    public void paintComponent(Graphics g) {
         // inherit the paintComponent method
         super.paintComponent(g);
         // create a new Graphics 2d Object
