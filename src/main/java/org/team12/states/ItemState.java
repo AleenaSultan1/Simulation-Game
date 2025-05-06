@@ -17,9 +17,13 @@
 
 package org.team12.states;
 
+/**
+ * Represents the interaction states of game items.
+ */
 public enum ItemState {
+    /** The item can be interacted with by the player. */
     INTERACTABLE,
+
+    /** The item cannot be interacted with by the player. */
     UNINTERACTABLE;
 }
-
-

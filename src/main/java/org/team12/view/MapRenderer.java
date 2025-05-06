@@ -28,27 +28,46 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import java.util.List;
-
+/**
+ * Handles rendering of the game map including tiles, items, and player HUD elements.
+ * Manages the conversion between world coordinates and screen coordinates for proper rendering.
+ */
 public class MapRenderer {
-
+    /** Reference to the game map */
     private Map map;
+
+    /** Image for floor tiles */
     private BufferedImage floorImage;
+
+    /** Image for wall tiles */
     private BufferedImage wallImage;
+
+    /** Images for player health display */
     private BufferedImage heartFull, heartHalf, heartEmpty;
 
+    /** Size of each tile in pixels */
+    private final int tileSize;
 
-    private int tileSize;
-    private Player player;
+    /** Reference to the player for positioning calculations */
+    private final Player player;
 
+    /**
+     * Constructs a MapRenderer with specified player, map, and tile size.
+     * @param player The player instance used for relative positioning
+     * @param map The game map to render
+     * @param tileSize The size of each tile in pixels
+     */
     public MapRenderer(Player player, Map map, int tileSize) {
         this.map = map;
         this.tileSize = tileSize;
         this.player = player;
         loadImages();
-
-
     }
 
+    /**
+     * Loads all required images for rendering including tiles and health indicators.
+     * @throws RuntimeException if any image fails to load
+     */
     private void loadImages() {
         try {
             floorImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/325floor.png")));
@@ -61,9 +80,14 @@ public class MapRenderer {
 
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Failed to load map rendering assets");
         }
     }
 
+    /**
+     * Renders the entire map including tiles and items, only drawing visible portions.
+     * @param g2 The Graphics2D context to draw with
+     */
     public void draw(Graphics2D g2) {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
@@ -102,9 +126,12 @@ public class MapRenderer {
         }
         drawPlayerLife(g2);
         drawInventory(g2);
-
     }
 
+    /**
+     * Renders the player's inventory items in the HUD.
+     * @param g2 The Graphics2D context to draw with
+     */
     public void drawInventory(Graphics2D g2) {
         List<Item> inventory = player.getInventory();
         if (inventory.isEmpty()) return;
@@ -144,17 +171,20 @@ public class MapRenderer {
         }
     }
 
-    public void drawPlayerLife(Graphics2D g2){
+    /**
+     * Renders the player's health as heart icons in the HUD.
+     * @param g2 The Graphics2D context to draw with
+     */
+    public void drawPlayerLife(Graphics2D g2) {
         int x = tileSize/2;
         int y = tileSize/2;
         int i = 0;
 
         // draw available max life (3 hearts)
-        while (i < player.getMaxHP()/2){
+        while (i < player.getMaxHP()/2) {
             g2.drawImage(heartEmpty, x, y, null);
             i++;
             x += tileSize;
-
         }
 
         //reset
@@ -163,11 +193,11 @@ public class MapRenderer {
         i = 0;
 
         //Draw Current life
-        while (i < player.getHP()){
+        while (i < player.getHP()) {
             g2.drawImage(heartHalf, x, y, null);
             i++;
             // if the player has 2 lives (which form one full heart), draw a full heart
-            if (i < player.getHP()){
+            if (i < player.getHP()) {
                 g2.drawImage(heartFull, x, y, null);
             }
             i++;

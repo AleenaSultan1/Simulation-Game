@@ -22,39 +22,39 @@ import org.team12.model.entities.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Handles rendering of game entities (players, enemies, etc.) to the screen.
+ * Manages entity sprites, positions, and health bar displays.
+ */
 public class EntityRenderer {
-    private Player player;
+    /** Reference to the player for relative positioning calculations */
+    private final Player player;
 
-    private int tileSize;
-    public int screenX;
-    public int screenY;
-    BufferedImage heartFull, heartHalf, heartEmpty;
+    /** Size of each tile in pixels, used for scaling and positioning */
+    private final int tileSize;
 
-
-
+    /**
+     * Constructs an EntityRenderer with specified tile size and player reference.
+     * @param tileSize The size of each game tile in pixels
+     * @param player The player instance used for relative positioning
+     */
     public EntityRenderer(int tileSize, Player player) {
         this.player = player;
         this.tileSize = tileSize;
-
-
-
     }
 
+    /**
+     * Draws an entity on the screen at its current position.
+     * Only renders entities that are within the visible screen area.
+     * @param g2 The Graphics2D context to draw with
+     * @param entity The entity to be rendered
+     */
     public void drawEntity(Graphics2D g2, Entity entity) {
         int drawX, drawY;
 
         if (entity instanceof Player) {
             drawX = ((Player) entity).getScreenX();
             drawY = ((Player) entity).getScreenY();
-
-//            // Draw the attack range relative to the screen
-//            Rectangle attack = ((Player) entity).getAttackRange();
-//            int drawRangeX = attack.x - player.worldX + player.getScreenX();
-//            int drawRangeY = attack.y - player.worldY + player.getScreenY();
-//
-//            g2.setColor(new Color(255, 0, 0, 100)); // Transparent red
-//            g2.fillRect(drawRangeX, drawRangeY, attack.width, attack.height);
-
         } else {
             drawX = entity.worldX - player.worldX + player.getScreenX();
             drawY = entity.worldY - player.worldY + player.getScreenY();
@@ -69,10 +69,15 @@ public class EntityRenderer {
             BufferedImage image = entity.getCurrentSprite(); // Entity can provide its current sprite based on direction/animation
             image = UtilityTool.scaleImage(image, tileSize*2, tileSize*2);
             g2.drawImage(image, drawX, drawY, tileSize, tileSize, null);
-
         }
     }
 
+    /**
+     * Draws an enemy's health bar above their sprite.
+     * Only renders health bars for enemies visible on screen.
+     * @param g2 The Graphics2D context to draw with
+     * @param enemy The enemy whose health to display
+     */
     public void drawEnemyHP(Graphics2D g2, Enemy enemy) {
         // Step 1: Convert worldX/Y to screenX/Y
         int screenX = enemy.worldX - player.worldX + player.getScreenX();

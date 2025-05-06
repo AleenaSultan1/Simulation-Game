@@ -29,58 +29,74 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
+/**
+ * Handles rendering of player HUD elements including messages, title screens, and quizzes.
+ * Manages all user interface elements not directly tied to the game map.
+ */
 public class PlayerHud {
-    private int tileSize;
+    /** Size of each tile in pixels */
+    private final int tileSize;
 
+    /** Default font for HUD elements */
     Font arial_40;
+
+    /** Flag indicating if a message should be displayed */
     public boolean messageOn = false;
+
+    /** Current message text to display */
     public String message = "";
+
+    /** Timer for message display duration */
     int messageTimer = 0;
+
+    /** Currently selected command in menus */
     public int commandNumber = -1;
 
+    /** Images for various HUD elements */
     private BufferedImage openLaptop, skull, lily;
 
+    /** Reference to the laptop quiz system */
     private Laptop laptop;
 
-
+    /**
+     * Constructs a PlayerHUD with specified tile size.
+     * @param tileSize The size of each tile in pixels
+     */
     public PlayerHud(int tileSize) {
         arial_40 = new Font("Arial", Font.PLAIN, 40);
         this.tileSize = tileSize;
 
-        try{
+        try {
             openLaptop = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/openLaptop.png")));
             skull = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/skull.png")));
             lily = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Lily/lily_down_1.png")));
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void loadImages() {
-
-    }
-
-    public void setMessage(String text){
+    /**
+     * Sets a temporary message to display in the HUD.
+     * @param text The message text to display
+     */
+    public void setMessage(String text) {
         message = text;
         messageOn = true;
     }
 
+    /**
+     * Sets the laptop reference for quiz rendering.
+     * @param laptop The laptop instance to use for quizzes
+     */
     public void setLaptop(Laptop laptop) {
         this.laptop = laptop;
     }
 
-    public void drawGameState(GameState gameState, Graphics2D g2) {
-        g2.setFont(arial_40);
-        g2.setColor(Color.WHITE);
-
-        if (gameState == GameState.PAUSE) {
-//            drawTitleScreen(g2);
-        }
-
-    }
-
+    /**
+     * Draws a temporary message in the HUD.
+     * @param g2 The Graphics2D context to draw with
+     * @param text The message text to display
+     */
     public void drawMessage(Graphics2D g2, String text) {
         // display messages when items or events happen
         if (messageOn) {
@@ -89,25 +105,27 @@ public class PlayerHud {
             messageTimer++;
 
             // Displays the message for 2 seconds
-            if (messageTimer > 120){
+            if (messageTimer > 120) {
                 messageTimer = 0;
                 messageOn = false;
             }
         }
-
     }
 
+    /**
+     * Draws the title screen appropriate for the current game state.
+     * @param g2 The Graphics2D context to draw with
+     * @param gameState The current game state
+     */
     public void drawTitleScreen(Graphics2D g2, GameState gameState) {
-        g2.setColor(new Color (10,10,50));
+        g2.setColor(new Color(10,10,50));
         g2.fillRect(0,0, GameUI.getScreenWidth(), GameUI.getScreenHeight());
-
 
         //TITLE NAME
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,50f));
 
         String text = "Default, Error";
         BufferedImage image = null;
-
 
         if (gameState == GameState.PLAYER_DEAD) {
             text = "You're dead, haha!";
@@ -184,16 +202,24 @@ public class PlayerHud {
             g2.drawString(text, x, y);
             g2.drawString(">", x - tileSize, y);
         }
-
-
     }
 
+    /**
+     * Calculates the x position to center text horizontally on screen.
+     * @param text The text to center
+     * @param g2 The Graphics2D context for font metrics
+     * @return The x coordinate to start drawing for centered text
+     */
     public int centerText(String text, Graphics2D g2) {
         FontMetrics fm = g2.getFontMetrics();
         int textWidth = fm.stringWidth(text);
         return (GameUI.getScreenWidth() - textWidth) / 2;
     }
 
+    /**
+     * Draws the laptop quiz interface when active.
+     * @param g2 The Graphics2D context to draw with
+     */
     public void drawLaptopQuiz(Graphics2D g2) {
         if (laptop == null || !laptop.isActive()) return;
 
@@ -214,16 +240,6 @@ public class PlayerHud {
         // Screen "glow"
         g2.setColor(new Color(161, 193, 202));
         g2.fillRoundRect(screenX + 15, screenY + 15, screenWidth - 30, screenHeight - 30, 10, 10);
-
-        // Draw laptop details
-        // Shadow Text
-//        int y = tileSize*3;
-//
-//        g2.setColor(Color.gray);
-//        g2.drawString(header, headerX+3, y+3);
-//
-//        g2.setColor(Color.WHITE);
-//        g2.drawString(header, headerX, y);
 
         int boxWidth = screenWidth * 3/4;
         int boxHeight = screenHeight *3/4;
@@ -314,18 +330,6 @@ public class PlayerHud {
                 optionY += 40;
             }
 
-//            // Draw feedback if answer was submitted
-//            if (laptop.isAnswerSubmitted()) {
-//                g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20f));
-//                if (laptop.submitAnswer()) {
-//                    g2.setColor(Color.GREEN);
-//                    g2.drawString("Correct! Press ENTER to continue", screenX + 30, screenY + screenHeight - 50);
-//                } else {
-//                    g2.setColor(Color.RED);
-//                    g2.drawString("Incorrect! Try again", screenX + 30, screenY + screenHeight - 50);
-//                }
-//            }
-
             // Draw instructions
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 16f));
             g2.setColor(new Color(150, 150, 200));
@@ -335,6 +339,13 @@ public class PlayerHud {
         g2.setClip(null);
     }
 
+    /**
+     * Wraps text to fit within a specified width.
+     * @param text The text to wrap
+     * @param maxWidth The maximum width in pixels
+     * @param g2 The Graphics2D context for font metrics
+     * @return List of strings representing each line of wrapped text
+     */
     private List<String> wrapText(String text, int maxWidth, Graphics2D g2) {
         List<String> lines = new ArrayList<>();
         FontMetrics fm = g2.getFontMetrics();
@@ -354,16 +365,18 @@ public class PlayerHud {
         return lines;
     }
 
+    /**
+     * Toggles between menu options on the title screen.
+     */
     public void toggleTitleScreen() {
         commandNumber = commandNumber*(-1);
     }
 
+    /**
+     * Gets the currently selected command number.
+     * @return The command number (-1 for first option, 1 for second)
+     */
     public int getCommandNumber() {
         return commandNumber;
     }
-
-    // YOU CURED LILY, SHE GAVE YOU AN A+
-
 }
-
-
