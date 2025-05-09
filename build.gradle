@@ -46,7 +46,7 @@ dependencies {
 
 application {
     mainModule.set("csci205_final_project")
-    mainClass.set("org.team12.controller.GameController")
+    mainClass.set("org.team12.DungeonGameApp")
 
     if (project.hasProperty("mainClass")) {
         mainClass.set(project.property("mainClass").toString())
