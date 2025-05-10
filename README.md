@@ -25,7 +25,7 @@ The combat system features a basic melee mechanic which requires players to appr
 while managing their health and using collected items for survival.
 
 Object-oriented programming principles are applied with event-driven game logic through its tile-based map rendering system and 
-dynamic entity animations. 
+dynamic entity animations.
 
 ### Game demonstration
   <div>
@@ -35,6 +35,8 @@ dynamic entity animations.
       <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/1bb2f74a12474038b498b5b672981e9e-a8bc39aa50f6d7ef-full-play.gif">
     </a>
   </div>
+
+### Presentation: [Click here to watch our presentation](https://mediaspace.bucknell.edu/media/Team12+Final+Presentation/1_xk5nol8u?st=0)
 
 
 ## Package Structure
