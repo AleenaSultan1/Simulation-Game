@@ -1,18 +1,11 @@
-# CSCI 205 - Software Engineering and Design
-Bucknell University
-Lewisburg, PA
-
-### Course Info
-- Instructor: Lily Romano
-- Semester: Spring 2025
-## Team 12
+## Team
 - Sebastian Stewart (Scrum Master)
 - Aleena Sultan (Product Owner)
 - Khanh Cao (Developer)
 - Radley Le (Developer)
 
 ## Project Information
-*205 Simulator* is a Java-based 2D simulation of the Dungeon Crawler game genre. The main goal in DANA 325 is for the 
+*205 Simulator* is a Java-based 2D simulation of the Dungeon Crawler game genre. The main goal in DANA 325 (our computer science classroom) is for the 
 player to cure Professor Lily - the final boss. It comprises 2 parts:
 
 1. Level 1 allows the player to interact with sword objects and chest containers that require riddle-solving to 
