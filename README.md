@@ -1,4 +1,4 @@
-CSCI 205 Classroom Simulation Game
+# CSCI 205 Classroom Simulation Game
 ## Team
 - Sebastian Stewart (Scrum Master)
 - Aleena Sultan (Product Owner)
